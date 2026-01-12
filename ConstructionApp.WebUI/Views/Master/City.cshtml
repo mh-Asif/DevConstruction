@@ -1,0 +1,277 @@
+﻿@model Construction.Infrastructure.Models.CityMasterDTO
+@{
+    ViewData["Title"] = "Add State";
+
+}
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+
+                <div class="row">
+                    <div class="col-12">
+
+
+                        <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between flex-wrap gap-5">
+                                    <h4 class="fw-bold"><span class="text-muted fw-light"></span> City </h4>
+                                    <div>
+
+                                        <button type="button"
+                                                class="btn btn-primary mb-2 ms-2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4"
+                                                data-bs-placement="right"
+                                                data-bs-html="true"
+                                                onclick="AddView()">
+                                            @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                            Add Record
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-datatable table-responsive pt-0">
+                                    <table class="master-datatable table" id="List">
+                                        <thead>
+                                            <tr>
+                                                <th>Country</th>
+                                                <th>State</th>
+                                                <th>City</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                            @if (Model.CityMasterList != null)
+                                                @foreach (var item in Model.CityMasterList)
+                                                {
+                                                    <tr>
+                                                        <td>@item.CountryName</td>
+                                                        <td>@item.StateName</td>
+                                                        <td>@item.CityName</td>
+                                                        <td>
+                                                            <a href="/Master/GetCityById/@item.EncryptedCityId"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.EncryptedCityId')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                            <div class="card-body">
+                                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                <div style="clear:both"></div>
+                                <form method="post" action="/Master/CityMaster">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="multicol-last-name">Country Name</label>
+                                            <select id="selCountryId" name="CountryId" required onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select">
+                                                <option value=" ">Select Country</option>
+                                                @if (Model.CountryList != null)
+                                                {
+                                                    foreach (var item in Model.CountryList)
+                                                    {
+
+                                                        if (item.CountryId == Model.CountryId)
+                                                        {
+                                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="multicol-last-name">State  Name</label>
+                                            <select id="selState" name="StateId" required class="select2 form-select">
+                                                @*    <option value="">Select State</option> *@
+                                            </select>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="multicol-last-name">City  Name</label>
+                                            <input type="text" id="CityName" name="CityName" required maxlength="100" value="@Model.CityName" class="form-control" placeholder="City Name">
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <input type="hidden" id="CityId" name="CityId" value="@Model.CityId">
+                                        <input type="hidden" id="hdnCountryId" name="CountryId" value="@Model.CountryId">
+                                        <input type="hidden" id="StateId" name="StateId" value="@Model.StateId">
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+              
+            </div>
+            <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var environmentUrl = '@ViewBag.EnvironmentUrl';
+
+    $(document).ready(function () {
+
+        if (@Model.CityId != 0 || @Model.HttpStatusCode!= 200) {
+            PopulateStateDDL(jQuery("#hdnCountryId").val());
+            $("#List").hide();
+            $("#Add").show();
+        }
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+            else {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+        }
+    });
+    //  new DataTable('#List');
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+        ClearInputs();
+    }
+
+    function PopulateStateDDL(countryId) {
+
+
+        jQuery("#selState").html("")
+        var optionhtml1 = '';
+        $("#selState").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",
+            url: "/Master/GetCountryState",
+            data: { countryId: countryId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].stateId + '">' + response[i].stateName + '</option>';
+                    $("#selState").append(optionhtml);
+                });
+
+                if (@Model.StateId != 0) {
+                    $('#selState option[value="@Model.StateId"]').attr('selected', 'selected');
+                }
+            },
+            failure: function (response) {
+                ShowServerMessage("errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                ShowServerMessage("errror<br>" + response.responseText);
+            }
+
+        });
+
+    }
+
+    function DeleteRecord(cId) {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                window.location.href = "/Master/DeleteCity/" + cId; // Redirect to the delete action
+
+                Swal.fire(
+                    'Deleted!',
+                    'City has been deleted.',
+                    'success'
+                );
+
+            }
+        });
+
+        // if (confirm("Sure want to delete department '" + countryName + "'?")) {
+        //     window.location.href = "/Master/DeleteDepartment/" + countryId;
+        // }
+        return false;
+    }
+    function GetCountry() {
+        //var objDDL = countryDDL
+        // jQuery("#CountryId").attr("disabled", true)
+        jQuery("#mycountrytbl").html("")
+        jQuery.ajax({
+            url: environmentUrl + '/MasterAPIs/GetCountry',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (key, item) {
+                    // alert(item.countryName);
+                    $("#mycountrytbl").append('<tr><td>' + item.countryCode + '</td><td>' + item.countryName + '</td><td>' + item.countryName + '</td></tr>');
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function ShowServerMessage(sMsg) {
+
+        Swal.fire({
+            title: 'Message',
+            text: sMsg,
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        });
+    }
+
+    function ClearInputs() {
+        $("#CityName").val("");
+        $("#selCountryId").val(" ");
+        $("#selState").val(" ");
+        $("#CityId").val(0);
+    }
+
+
+</script>

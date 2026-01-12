@@ -1,0 +1,648 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div>
+            <div class="page-content-section">
+                <!-- Content wrapper -->
+                <div class="container-fluid">
+                    <!-- Content -->
+
+
+                    <div class="flex-grow-1 container-p-y">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                                    <h2 class="app-brand-link page-heading me-2">
+                                        <span class="app-brand-text demo menu-text p-0 fw-bold">Add User</span>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- add-user Wizard -->
+                                <div id="add-user" class="bs-stepper wizard-icons wizard-icons-example">
+                                    <div class="bs-stepper-header m-lg-auto border-0 px-2">
+                                        <div class="step" data-target="#personal-infomation">
+                                            <button type="button" class="step-trigger">
+                                                <span class="bs-stepper-circle">1</span>
+                                                <span class="bs-stepper-label mt-1">
+                                                    <span class="bs-stepper-label">Personal Information</span>
+                                                    <span class="bs-stepper-subtitle">Setup Client Details</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="line"><i class="ti ti-chevron-right"></i></div>
+
+                                        <div class="step" data-target="#job-information">
+                                            <button type="button" class="step-trigger">
+                                                <span class="bs-stepper-circle">2</span>
+                                                <span class="bs-stepper-label mt-1">
+                                                    <span class="bs-stepper-label">Job Information</span>
+                                                    <span class="bs-stepper-subtitle">Setup Client Details</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="bs-stepper-content border-top">
+                                        <form id="add-user-form" method="post" action="/User/SaveUser">
+                                            <!-- Personal Information -->
+                                            <div id="personal-infomation" class="content">
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+
+                                                        <div class="row g-6">
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="first-name">First Name <span class="text-danger">*</span></label>
+                                                                <input type="text" id="FirstName" name="FirstName" class="form-control" value="@Model.FirstName" placeholder="Enter First Name" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="last-name">Last Name </label>
+                                                                <input type="text" id="LastName" name="LastName" class="form-control" value="@Model.LastName" placeholder="Enter Last Name" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
+                                                                <input type="email" id="email" name="EmailAddress" class="form-control" value="@Model.EmailAddress" placeholder="example@example.com" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="gender">Gender</label>
+                                                                <select id="gender" class="select2 form-select">
+                                                                    <option selected>Select Gender</option>
+                                                                    <option value="1">Male</option>
+                                                                    <option value="2">Female</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="dob">Date of Birth <span class="text-danger">*</span></label>
+                                                                <input type="text" id="dob" name="DOB" value="@Model.DOB" class="form-control date-picker" placeholder="YYYY-MM-DD" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="blood-group">Blood Group</label>
+                                                                <select id="blood-group" name="BloodGroup" class="select2 form-select">
+                                                                    <option selected>Select Blood Group</option>
+                                                                    <option value="A+">A+</option>
+                                                                    <option value="A-">A-</option>
+                                                                    <option value="B+">B+</option>
+                                                                    <option value="B-">B-</option>
+                                                                    <option value="O+">O+</option>
+                                                                    <option value="O-">O-</option>
+                                                                    <option value="AB+">AB+</option>
+                                                                    <option value="AB-">AB-</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="national-id">National ID Name</label>
+                                                                <input type="text" id="national-id" name="NationalId" value="@Model.NationalIdName" class="form-control" placeholder="Enter National ID" />
+                                                            </div>
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="national-id">
+                                                                    National ID Upload
+                                                                    <!-- <button type="button" title="Upload Natinal ID"  data-bs-toggle="tooltip" data-bs-placement="top" class="btn p-1 ml-2 btn-project btn-create-folder" data-bs-toggle="modal" data-bs-target="#uploadnationalidModal">
+                                                                    <i class="fa fa-upload"></i></button> -->
+                                                                </label>
+                                                                <input type="file" id="national-id" class="form-control" />
+                                                            </div>
+                                                        </div>
+
+                                                        <hr class="my-6 mx-n4" />
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h5 class="heading-form-section">Contact Details</h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row g-6">
+                                                            <!-- Current Address -->
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="current-address-1">Current Address 1 <span class="text-danger">*</span></label>
+                                                                <input type="text" id="current-address-1" name="Address1" value="@Model.Address1" class="form-control" placeholder="Enter Address Line 1" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="current-address-2">Address Line 2</label>
+                                                                <input type="text" id="current-address-2" name="Address2" value="@Model.Address2" class="form-control" placeholder="Enter Address Line 2" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="current-country">Country <span class="text-danger">*</span></label>
+                                                                <select id="selCountryId" name="CountryId" onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select">
+                                                                   </select>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="current-state">State <span class="text-danger">*</span></label>
+                                                                <select id="selStateId" name="StateId" onchange="javascript:PopulateCityDDL(this.value)" class="select2 form-select">
+                                                                    @*  <option selected>Select State</option> *@
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="current-city">City <span class="text-danger">*</span></label>
+                                                                <select id="selCityId" name="CityId" class="select2 form-select">
+                                                                    @*  <option selected>Select City</option> *@
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="current-pincode">Zip Code <span class="text-danger">*</span></label>
+                                                                <input type="text" id="current-pincode" name="PostalOrZipCode" value="@Model.PostalOrZipCode" class="form-control" placeholder="Enter Pincode" />
+                                                            </div>
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="current-contact-number">Contact Number  <span class="text-danger">*</span></label>
+                                                                <input type="tel" id="current-contact-number" name="ContactNumber" value="@Model.ContactNumber" class="form-control" placeholder="Enter Contact Number" />
+                                                            </div>
+                                                        </div>
+
+
+                                                        <hr class="my-6 mx-n4" />
+
+
+                                                        <!-- ---academic--------  -->
+                                                        @*
+                                                        <div class="row">
+                                                        <div class="col-12">
+                                                        <h5 class="heading-form-section">Academic / Certification Details</h5>
+                                                        </div>
+                                                        </div>
+
+                                                        <div class="row g-6">
+
+                                                        <div class="form-repeater">
+                                                        <div data-repeater-list="group-a">
+                                                        <div data-repeater-item>
+                                                        <div class="row">
+                                                        <div class="mb-6 col-lg-4 col-xl-3 col-sm-6 mb-0">
+                                                        <label class="form-label" for="institute">Institute/University </label>
+                                                        <input type="text" id="institute" class="form-control" placeholder="Enter Institute/University Name" />
+                                                        </div>
+                                                        <div class="mb-6 col-lg-4 col-xl-3 col-sm-6 mb-0">
+                                                        <label class="form-label" for="qualification">Qualification Name </label>
+                                                        <input type="text" id="year-of-passing" class="form-control date-picker" placeholder="YYYY-MM-DD" />
+                                                        </div>
+                                                        <div class="mb-6 col-lg-4 col-xl-2 col-sm-5 mb-0">
+                                                        <label class="form-label" for="year-of-passing">Year of Passing </label>
+                                                        <input type="text" id="year-of-passing" class="form-control date-picker" placeholder="YYYY-MM-DD" />
+                                                        </div>
+                                                        <div class="mb-6 col-lg-4 col-xl-2 col-sm-5 mb-0">
+                                                        <label class="form-label" for="percentage">Percentage/Grade </label>
+                                                        <input type="text" id="percentage" class="form-control" placeholder="Enter Percentage or Grade" />
+                                                        </div>
+                                                        <div class="mb-6 col-lg-3 col-xl-2 col-sm-2 d-flex align-items-end mb-0">
+                                                        <button class="btn btn-label-danger" data-repeater-delete>
+                                                        <i class="ti ti-x ti-xs me-1"></i>
+                                                        <span class="align-middle">Delete</span>
+                                                        </button>
+                                                        </div>
+                                                        </div>
+                                                        <hr class="mt-0" />
+                                                        </div>
+                                                        </div>
+                                                        <div class="mb-0">
+                                                        <button class="btn btn-primary" data-repeater-create>
+                                                        <i class="ti ti-plus ti-xs me-2"></i>
+                                                        <span class="align-middle">Add</span>
+                                                        </button>
+                                                        </div>
+                                                        </div>
+                                                        </div>
+                                                        *@
+
+                                                        <hr class="my-6 mx-n4" />
+
+                                                        <div class="pt-6 d-flex justify-content-between flex-wrap">
+                                                            <button type="reset" class="btn btn-label-secondary btn-prev">Previous</button>
+                                                            <button type="button" class="btn btn-primary me-4 btn-next">Next Step</button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Job Information -->
+                                            <div id="job-information" class="content">
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h5 class="heading-form-section">Job information</h5>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row g-6">
+                                                            <!-- Employee Code -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="employee-code">Employee Code <span class="text-danger">*</span></label>
+                                                                <input type="text" id="employee-code" name="EmpCode" value="@Model.EmpCode" class="form-control" placeholder="Enter Employee Code" />
+                                                            </div>
+
+                                                            <!-- Job Title -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="job-title">Designation <span class="text-danger">*</span></label>
+                                                                <select id="selDesigId" name="JobTitleId" class="select2 form-select">
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Department -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="department">Department <span class="text-danger">*</span></label>
+                                                                <select id="selDeptId" name="DepartmentId" class="select2 form-select">
+                                                                </select>
+                                                            </div>
+                                                            <!-- Role -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="role">Role <span class="text-danger">*</span></label>
+                                                                <select id="selRoleId" name="RoleId" class="select2 form-select">
+                                                                </select>
+                                                            </div>
+
+
+                                                            <!-- Supervisor/Manager -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="supervisor">Supervisor/Manager</label>
+                                                                <select id="selMgrId" name="MgrId" class="select2 form-select">
+                                                                    @if (Model.UsersKey != null)
+                                                                    {
+                                                                        <option value=""> Select</option>
+                                                                        @foreach (var item in Model.UsersKey)
+                                                                        {
+                                                                            if (item.UserId == Model.UserId)
+                                                                            {
+                                                                                <option value="@item.UserId" selected>
+                                                                                    @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                                                </option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@item.UserId">
+                                                                                    @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                                                </option>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- HOD -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="hod">HOD</label>
+                                                                <select id="selHODId" name="HODId" class="select2 form-select">
+                                                                    @if (Model.UsersKey != null)
+                                                                    {
+                                                                        <option value=""> Select</option>
+                                                                        @foreach (var item in Model.UsersKey)
+                                                                        {
+                                                                            if (item.UserId == Model.UserId)
+                                                                            {
+                                                                                <option value="@item.UserId" selected>
+                                                                                    @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                                                </option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@item.UserId">
+                                                                                    @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                                                </option>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Hiring Date -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="hiring-date">Date of Joining </label>
+                                                                <input type="text" id="hiring-date" name="DOJ" value="@Model.DOJ" class="form-control date-picker" placeholder="YYYY-MM-DD" />
+                                                            </div>
+
+                                                            <!-- Work Location -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="work-location">Work Location</label>
+                                                                <input type="text" id="work-location" name="WorkLocation" value="@Model.WorkLocation" class="form-control" placeholder="Enter Work Location" />
+                                                            </div>
+
+                                                            <!-- Employment Type -->
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="employment-type">Employment Type</label>
+                                                                <select id="employment-type" name="EmpTypeId" class="select2 form-select">
+                                                                    <option selected>Select Employment Type</option>
+                                                                    <option value="F">Full Time</option>
+                                                                    <option value="P">Part Time</option>
+                                                                    <option value="C">Contract</option>
+                                                                    <option value="I">Internship</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Employment Status -->
+                                                            <div class="col-md-4 col-xl-3 select2-primary">
+                                                                <label class="form-label" for="employment-status">Employment Status</label>
+                                                                <select id="employment-status" name="EmpStatus" class="select2 form-select">
+                                                                    <option selected>Select Employment Status</option>
+                                                                    <option value="1">Active</option>
+                                                                    <option value="0">InActive</option>
+
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Work Email -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="work-email">Work Email </label>
+                                                                <input type="email" id="work-email" name="BusinessEmail" value="@Model.BusinessEmail" class="form-control" placeholder="example@company.com" />
+                                                            </div>
+
+
+
+                                                        </div>
+
+                                                        <hr class="my-6 mx-n4" />
+
+
+
+
+                                                        <div class="pt-6 d-flex justify-content-between flex-wrap">
+                                                            <input type="hidden" id="hdnUserType" name="UserType" value="1">
+                                                            <input type="hidden" id="hdnUserId" name="UserId" value="@Model.UserId">
+                                                            <button type="reset" class="btn btn-label-secondary btn-prev">Previous</button>
+                                                            <button type="submit" class="btn btn-primary me-4 btn-next">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--/ add=user Wizard -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Content -->
+                    @*    <div class="content-backdrop fade"></div> *@
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+       
+        GetCountry();
+        GetDepartment();
+        GetDesignation();
+        GetRole();
+       
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                alert("@Model.DisplayMessage");
+            }
+            else {
+                alert("@Model.DisplayMessage");
+            }
+        }
+    });
+
+
+
+
+
+
+    function GetCountry() {
+
+
+        jQuery("#selCountryId").html("")
+        var optionhtml1 = '';
+        $("#selCountryId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetCountry',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetCountry',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].countryId + '">' + response[i].countryName + '</option>';
+                    $("#selCountryId").append(optionhtml);
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function GetDepartment() {
+
+
+        jQuery("#selDeptId").html("")
+        var optionhtml1 = '';
+        $("#selDeptId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetDepartment',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetDepartment',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].departmentId + '">' + response[i].departmentName + '</option>';
+                    $("#selDeptId").append(optionhtml);
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function GetDesignation() {
+
+
+        jQuery("#selDesigId").html("")
+        var optionhtml1 = '';
+        $("#selDesigId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetJobTitle',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetJobTitle',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].jobTitleId + '">' + response[i].jobTitle + '</option>';
+                    $("#selDesigId").append(optionhtml);
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function GetRole() {
+
+
+        jQuery("#selRoleId").html("")
+        var optionhtml1 = '';
+        $("#selRoleId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetRole',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetRole',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].roleId + '">' + response[i].roleName + '</option>';
+                    $("#selRoleId").append(optionhtml);
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function PopulateStateDDL(countryId) {
+
+
+        jQuery("#selStateId").html("")
+        var optionhtml1 = '';
+        $("#selStateId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",
+            //  url: "/Master/GetCountryState",
+            // url: 'https://localhost:7013/api/MasterAPIs/GetCountryState',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetCountryState',
+            data: { countryId: countryId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].stateId + '">' + response[i].stateName + '</option>';
+                    $("#selStateId").append(optionhtml);
+                });
+
+                // if (@Model.StateId != 0) {
+                //     $('#selStateId option[value="@Model.StateId"]').attr('selected', 'selected');
+                // }
+            },
+            failure: function (response) {
+                alert("State Validation", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                alert("City", "errror<br>" + response.responseText);
+            }
+
+        });
+
+    }
+
+    function PopulateCityDDL(stateId) {
+
+
+        jQuery("#selCityId").html("")
+        var optionhtml1 = '';
+        $("#selCityId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",
+            // url: 'https://localhost:7013/api/MasterAPIs/GetStateCity',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetStateCity',
+            data: { stateId: stateId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].cityId + '">' + response[i].cityName + '</option>';
+                    $("#selCityId").append(optionhtml);
+                });
+            },
+            failure: function (response) {
+                alert("errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                alert("errror<br>" + response.responseText);
+            }
+
+        });
+
+    }
+
+    // function PopulateUser(userType) {
+
+    //     jQuery("#selMgrId").html("")
+    //     jQuery("#selHODId").html("")
+    //     var optionhtml1 = '';
+    //     $("#selMgrId").append('<option value=" ">' + "--Select--" + '</option>');
+    //     $("#selHODId").append('<option value=" ">' + "--Select--" + '</option>');
+
+    //     jQuery.ajax({
+    //         type: "GET",
+    //         url: 'https://localhost:7013/api/UsersAPI/GetUsers',
+    //         data: { UserType: userType },
+    //         success: function (response) {
+    //             if (response.length <= 0) {
+    //                 $("#selMgrId").append('<option value="0">' + "NA" + '</option>');
+    //                 $("#selHODId").append('<option value="0">' + "NA" + '</option>');
+    //             }
+    //             else {
+    //                 $.each(response, function (i) {
+    //                     var optionhtml = '<option value="' +
+    //                         response[i].userId + '">' + response[i].firstName + ' ' + response[i].lastName + '</option>';
+    //                     $("#selMgrId").append(optionhtml);
+    //                     $("#selHODId").append(optionhtml);
+    //                 });
+    //             }
+    //         },
+    //         failure: function (response) {
+    //             alert("errror<br>" + response.responseText);
+    //         },
+    //         error: function (response) {
+    //             alert("errror<br>" + response.responseText);
+    //         }
+
+    //     });
+
+    // }
+
+    
+
+</script>

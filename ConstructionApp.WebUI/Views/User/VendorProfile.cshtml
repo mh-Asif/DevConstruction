@@ -1,0 +1,210 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "User Profile";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid">
+        <!-- Content -->
+
+        <div class="flex-grow-1 container-p-y">
+            @if (Model.UserList != null)
+            {
+                @foreach (var item in Model.UserList)
+                {
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-6">
+                                <div class="d-flex flex-column flex-lg-row text-sm-start text-center my-2">
+                                    <div class="flex-shrink-0 mx-sm-0 mx-auto">
+                                        <img src="/Profile/@item.Base64ProfileImage"
+                                             alt="user image"
+                                             class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img" />
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
+                                            <div class="user-profile-info">
+                                                <h4 class="mb-2 mt-lg-6">@item.CompanyName</h4>
+                                                <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
+                                                   
+                                                    <li class="list-inline-item d-flex gap-2 align-items-center">
+                                                        <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium">@item.CityName, @item.CountryName</span>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                            <a href="/User/GetVendorById/@item.EnycUserId" class="btn btn-danger mb-1">
+                                                <i class="ti  ti-edit me-2"></i>Edit
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ Header -->
+                    <!-- Navbar pills -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="javascript:void(0);"><i class="ti-sm ti ti-user-check me-1_5"></i> Profile</a>
+                                    </li>
+                                    @* <li class="nav-item">
+                            <a class="nav-link" href="profile-teams.html"><i class="ti-sm ti ti-users me-1_5"></i> Teams</a>
+                            </li> *@
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="~/Task/TaskDetails"><i class="ti-sm ti ti-layout-grid me-1_5"></i> Tasks</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ Navbar pills -->
+                    <!-- User Profile Content -->
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-5 col-md-5">
+                            <!-- About Project -->
+                            <div class="card mb-6">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+
+                                        <h4 class="heading-form-section my-3">Basic Details</h4>
+                                        <div class="">
+                                            <div class="form-check my-0 form-switch">
+                                                <input class="form-check-input" type="checkbox" id="browserDefaultSwitch" required />
+                                                <label class="form-check-label" for="browserDefaultSwitch">Activate Account</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <ul class="list-unstyled my-2 py-1">
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Business Owner:</span>
+                                            <span>@item.BusinessOwner</span>
+                                        </li>
+                                      
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-mail ti-lg"></i><span class="fw-medium mx-2">Business Website:</span>
+                                            <span>@item.WebsiteUrl</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-gender-male ti-lg"></i><span class="fw-medium mx-2">Business Email:</span>
+                                            <span>@item.BusinessEmail</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-calendar ti-lg"></i><span class="fw-medium mx-2">Business Contact No:</span>
+                                            <span>@item.BusinessContactNumber</span>
+                                        </li>
+                                    </ul>
+
+                                    <small class="heading-form-section my-3">Business Details</small>
+                                    <ul class="list-unstyled my-2 py-1">
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Contact Person:</span>
+                                            <span>@item.ContactPerson</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Contact No:</span>
+                                            <span>@item.ContactNumber</span>
+                                        </li>
+                                       @*  <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">GSTN / VAT:</span>
+                                            <span>@item.GSTN</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Payment Term:</span>
+                                            <span>@item.PaymentTerm</span>
+                                        </li> *@
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">Country:</span>
+                                            <span>@item.CountryName</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium mx-2">State:</span>
+                                            <span>@item.StateName</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-building-skyscraper ti-lg"></i><span class="fw-medium mx-2">City:</span>
+                                            <span>@item.CityName</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-building-skyscraper ti-lg"></i><span class="fw-medium mx-2">ZipCode:</span>
+                                            <span>@item.PostalOrZipCode</span>
+                                        </li>
+                                    </ul>
+
+                                 @*    <small class="heading-form-section my-3">Bank Details</small>
+                                    <ul class="list-unstyled my-2 py-1">
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Bank:</span>
+                                            <span>@item.BankName</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Account Name:</span>
+                                            <span>@item.AccountName</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Account Number:</span>
+                                            <span>@item.AccountNumber</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">IFSC Code:</span>
+                                            <span>@item.IFSCOrShiftCode</span>
+                                        </li>
+                                        
+                                    </ul>
+ *@
+
+
+                                </div>
+                            </div>
+                            <!--/ About Project -->
+
+                        </div>
+                        <div class="col-xl-8 col-lg-7 col-md-7">
+                            <!-- Activity Timeline -->
+                            <div class="card card-action mb-6">
+                                <div class="card-header align-items-center">
+                                    <h5 class="card-action-title mb-0">
+                                        <i class="ti ti-chart-bar ti-lg text-body me-4"></i>My Activities
+                                    </h5>
+                                </div>
+                                <div class="card-body pt-3">
+                                    <ul class="timeline mb-0">
+                                        @if (Model.ActivityList != null)
+                                        {
+
+                                            @foreach (var lst in Model.ActivityList)
+                                            {
+                                                <li class="timeline-item timeline-item-transparent">
+                                                    <span class="timeline-point timeline-point-primary"></span>
+                                                    <a href="#" class="d-block timeline-event">
+                                                        <div class="timeline-header mb-3">
+                                                            <h6 class="mb-0">@lst.ProjectName</h6>
+                                                            <small class="text-muted">@lst.CreationDate</small>
+                                                        </div>
+                                                        <p class="mb-2">@lst.Comments by @lst.FullName</p>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                        }
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <!--/ User Profile Content -->
+        </div>
+        <!-- / Content -->
+
+    </div>
+    <!-- Content wrapper -->
+</div>

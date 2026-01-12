@@ -1,0 +1,214 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@inject IHttpContextAccessor Accessor
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+
+    <!-- ---tabs--  -->
+    @*
+    <div class="row mt-5">
+    <div class="col-12">
+    <div class="navbar-brand app-brand demo d-flex pt-2 me-4">
+    <h2 class="app-brand-link page-heading me-2">
+    <span class="app-brand-text demo menu-text p-0 pl-2 fw-bold">All Users</span>
+    </h2>
+    </div>
+    </div>
+    </div>
+    *@
+    <!-- / Navbar -->
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+
+        <div class=" flex-grow-1">
+            <!-- DataTable with Buttons -->
+            <div class="row">
+                <div class="col-12">
+                </div>
+
+            </div>
+            <div class="card px-2">
+                <div class="d-flex flex-wrap py-2 justify-content-between">
+
+                    <h4 class="mb-0">
+                        <span class=" p-0 pl-2 fw-bold">All Clients</span>
+                    </h4>
+                    @if (Model.AccessList.Where(x => x.IsView == true).Count() > 0)
+                    {
+                        <div class="text-end"><a href="~/User/AddNewClient" class="btn btn-primary me-sm-3 me-1addShow">Add New Client</a></div>
+                    }
+
+
+
+                </div>
+                <div class="card-datatable table-responsive border-top pt-0">
+
+                 @*    <div class="table-skeleton">
+                        <div class="skeleton-datatable-header flex-column flex-md-row">
+
+                            <div class="dataTables_length-skelton skeleton">
+                            </div>
+                            <div class="dataTables_filter-skeleton skeleton">
+                            </div>
+
+                        </div>
+                        <div class="skeleton-table-row skeleton"></div>
+                        <div class="skeleton-table-row skeleton"></div>
+                        <div class="skeleton-table-row skeleton"></div>
+                        <div class="skeleton-table-row skeleton"></div>
+                        <div class="skeleton-table-row skeleton"></div>
+                        <div class="skeleton-table-row skeleton"></div>
+
+                        <div class="skelton-datatable-footer flex-column flex-md-row">
+
+                            <div class="dataTables_info-skeleton skeleton"></div>
+
+                            <div class="pagination-skeleton">
+                                <div class="Previous-skelton skeleton"></div>
+                                <div class="number-skeleton skeleton"></div>
+                                <div class="next-skelton skeleton"></div>
+                            </div>
+
+                        </div>
+                    </div> *@
+                    <table class="master-datatable main-table table">
+                        <thead>
+                            <tr>
+
+
+                                <th>Business Name</th>
+                                <th>Contact Person</th>
+                                <th>Contact Number</th>
+                                <th>Email</th>
+                             @*    <th>GSTN/VAT</th> *@
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.UserList != null)
+                                @foreach (var item in Model.UserList)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center user-name">
+                                                <div class="avatar me-2">
+                                                    @if (!string.IsNullOrEmpty(item.ProfileName))
+                                                    {
+                                                        <img src="~/Profile/@item.ProfileName" alt="@item.CompanyName" class="rounded-circle">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/assets/image/user-default.png" alt="@item.CompanyName" class="rounded-circle">
+                                                    }
+                                                </div>
+                                                @item.CompanyName
+                                            </div>
+                                        </td>
+                                        <td>@item.ContactPerson</td>
+                                        <td>@item.ContactNumber</td>
+                                        <td>@item.BusinessEmail</td>
+                                       @*  <td>@item.GSTN</td> *@
+                                        <td>@item.CityName</td>
+                                        <td>
+                                            @if (item.IsActive == true)
+                                            {
+                                                <span class="badge bg-label-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-label-danger">InActive</span>
+                                            }
+
+
+                                        </td>
+
+                                        <td>
+                                            <a href="/User/ClientProfile/@item.EnycUserId"><i class="fa fa-eye text-success me-1"></i></a>
+
+                                            @if (Model.AccessList.Where(x => x.IsView == true).Count() > 0)
+                                            {
+                                                <a href="/User/GetClientById/@item.EnycUserId"><i class="fa fa-edit text-primary me-1"></i></a>
+                                            }
+                                            @if (Model.AccessList.Where(x => x.IsView == true).Count() > 0)
+                                            {
+                                                <a href="#" onclick="deleteUser('@item.EnycUserId')"><i class="fa fa-trash text-danger me-1"></i></a>
+                                            }
+                                            @if (Accessor.HttpContext.Session.GetInt32("UserType") == 0)
+                                            {
+                                                <a href="/User/GetClientById/@item.EnycUserId"><i class="fa fa-edit text-primary me-1"></i></a>
+                                                <a href="#" onclick="deleteUser('@item.EnycUserId')"><i class="fa fa-trash text-danger me-1"></i></a>
+                                            }
+                                           
+                                        </td>
+                                    </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal to add new record -->
+            <!--/ DataTable with Buttons -->
+
+        </div>
+        <!-- / Content -->
+        @*   <div class="content-backdrop fade"></div> *@
+    </div>
+
+</div>
+<script defer src="~/assets/js/masters-datatable.js" asp-append-version="true"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // GetUsers();
+    });
+
+    function deleteUser(id) {
+
+        //  alert(id);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/User/DeleteClient",
+                    data: { eId: id },
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+                Swal.fire(
+                    'Deleted!',
+                    'User has been deleted.',
+                    'success'
+                );
+            }
+        });
+
+    }
+
+
+
+
+</script>

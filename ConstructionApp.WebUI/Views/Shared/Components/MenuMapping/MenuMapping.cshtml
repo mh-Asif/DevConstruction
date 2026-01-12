@@ -1,0 +1,504 @@
+﻿@model Construction.Infrastructure.Models.AccessMasterDTO
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <div class="app-brand demo border-bottom">
+        <a href="~/Home/Dashboard" class="app-brand-link">
+
+
+
+            @*  @if (Accessor.HttpContext.Session.GetString("Logo") == "")
+            { *@
+
+            <img src="~/assets/image/client-logo.png" style="width:150px;height:60px;" alt="logo">
+            @* }
+            else
+            {
+            <img src="@Accessor.HttpContext.Session.GetString("Logo")" alt="logo">
+            }
+            *@
+
+
+        </a>
+
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="fa fa-bars d-none align-middle"></i>
+            <i class="fa fa-bars d-block align-middle"></i>
+        </a>
+    </div>
+
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1 over-scroller-menu">
+
+        <!-- Dashboard -->
+        <li class="menu-item @(currentController == "Home" && currentAction == "Dashboard" ? "active" : "")">
+            @if (Accessor.HttpContext.Session.GetInt32("UserType") == 0 || Accessor.HttpContext.Session.GetInt32("UserType") == 1)
+            {
+                <a href="~/Home/Dashboard" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
+                    <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+            }
+            else
+            {
+                <a href="~/Home/ClientDashboard" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
+                    <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+            }
+        </li>
+
+        <!-- Project -->
+        @if (Accessor.HttpContext.Session.GetInt32("UserType") == 0)
+        {
+            <li class="menu-item @(currentController == "Project" ? "active" : "")">
+                <a href="~/Project/ProjectDetails" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-files"></i>
+                    <div data-i18n="Projects">Projects</div>
+                </a>
+            </li>
+            <li class="menu-item @(currentController == "Task" ? "active" : "")">
+                <a href="~/Task/TaskDetails" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-files"></i>
+                    <div data-i18n="Tasks">Tasks</div>
+                </a>
+            </li>
+            <li class="menu-item @(currentController == "Document" ? "active" : "")">
+                <a href="~/Document/ProjectDirectory" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                    <div data-i18n="Plan">Documents</div>
+                </a>
+            </li>
+            <li class="menu-item @(currentController == "Drawing" ? "active" : "")">
+                <a href="~/Drawing/ProjectDirectory" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
+                    <div data-i18n="Drawing">Drawings</div>
+                </a>
+            </li>
+            <li class="menu-item @(currentController == "Photo" ? "active" : "")">
+                <a href="~/Photo/ProjectDirectory" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-message-circle"></i>
+                    <div data-i18n="Photos">Photos</div>
+                </a>
+            </li>
+            <li class="menu-item @(currentController == "Organization" && currentAction == "ViewComments" ? "active open" : "")">
+                <a href="~/Organization/ViewComments" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-id"></i>
+                    <div data-i18n="Activities">Activities</div>
+                </a>
+            </li>
+        }
+        @if (Accessor.HttpContext.Session.GetInt32("UserType") == 3)
+        {
+
+            <li class="menu-item @(currentController == "User" && (currentAction == "VendorUserManagement" || currentAction == "AddVendorUser") ? "active open" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    <div>Vendor User Dashboard</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @(currentAction == "VendorUserManagement" ? "active" : "")">
+                        <a href="~/User/VendorUserManagement" class="menu-link">
+                            <div>User Management</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentAction == "AddVendorUser" ? "active" : "")">
+                        <a href="~/User/AddVendorUser" class="menu-link">
+                            <div>Add User</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "IM" && x.IsView == true).Count() > 0)
+            {
+                <li class="menu-item @(currentController == "IMS" && (currentAction == "CreateInvoice" || currentAction == "InvoiceList") ? "active open" : "")">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div>Invoice Dashboard</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item @(currentAction == "InvoiceList" ? "active" : "")">
+                            <a href="~/IMS/InvoiceList" class="menu-link">
+                                <div>Invoice Management</div>
+                            </a>
+                        </li>
+                        <li class="menu-item @(currentAction == "CreateInvoice" ? "active" : "")">
+                            <a href="~/IMS/CreateInvoice" class="menu-link">
+                                <div>Create Invoice</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            }
+        }
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                <li class="menu-item @(currentController == "Project" ? "active" : "")">
+                    <a href="~/Project/ProjectDetails" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-files"></i>
+                        <div data-i18n="Project">Projects</div>
+                    </a>
+                </li>
+            }
+        }
+
+
+
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0)
+        {
+
+            <li class="menu-item @(currentController == "Task" ? "active" : "")">
+                <a href="~/Task/TaskDetails" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-files"></i>
+                    <div data-i18n="Tasks">Tasks</div>
+                </a>
+            </li>
+        }
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                <li class="menu-item @(currentController == "Document" ? "active" : "")">
+                    <a href="~/Document/ProjectDirectory" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                        <div data-i18n="Plan">Documents</div>
+                    </a>
+                </li>
+            }
+        }
+        <!-- Plan -->
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                <li class="menu-item @(currentController == "Drawing" ? "active" : "")">
+                    <a href="~/Drawing/ProjectDirectory" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
+                        <div data-i18n="Drawings">Drawings</div>
+                    </a>
+                </li>
+            }
+        }
+        <!-- Drawing -->
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                <li class="menu-item @(currentController == "Photo" ? "active" : "")">
+                    <a href="~/Photo/ProjectDirectory" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-message-circle"></i>
+                        <div data-i18n="Photos">Photos</div>
+                    </a>
+                </li>
+            }
+        }
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                <li class="menu-item @(currentController == "Organization" ? "active" : "")">
+                    <a href="~/Organization/ViewComments" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-id"></i>
+                        <div data-i18n="Activities">Activities</div>
+                    </a>
+                </li>
+            }
+        }
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "IM" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") == 1)
+            {
+                <li class="menu-item @(currentController == "IMS" ? "active" : "")">
+                    <a href="~/IMS/PaymentProcessing" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-id"></i>
+                        <div data-i18n="Account">Account</div>
+                    </a>
+                </li>
+            }
+        }
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "IM" && x.IsApproval == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") == 1)
+            {
+                <li class="menu-item @(currentController == "IMS" ? "active" : "")">
+                    <a href="~/IMS/InvoiceApproval" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-id"></i>
+                        <div data-i18n="Approval">Invoice Approval</div>
+                    </a>
+                </li>
+            }
+        }
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "I" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") <= 1)
+            {
+                var isClientManagementActive = currentController == "Inventory" && (currentAction == "Items" || currentAction == "StockDashboard" || currentAction == "StockOutDashboard");
+                <li class="menu-item @(isClientManagementActive ? "active open" : "")">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div data-i18n="Inventory Management">Inventory Management</div>
+                    </a>
+                    <ul class="menu-sub" style="@(isClientManagementActive ? "display:block;" : "")">
+                        <li class="menu-item @(currentController == "Inventory" && currentAction == "Items" ? "active" : "")">
+                            <a href="~/Inventory/Items" class="menu-link">
+                                <div data-i18n="Items">Items/Materials</div>
+                            </a>
+                        </li>
+
+                        <li class="menu-item @(currentController == "Inventory" && currentAction == "StockDashboard" ? "active" : "")">
+                            <a href="~/Inventory/StockDashboard" class="menu-link">
+                                <div data-i18n="Stock In">Stock In</div>
+                            </a>
+                        </li>
+                        <li class="menu-item @(currentController == "Inventory" && currentAction == "StockOutDashboard" ? "active" : "")">
+                            <a href="~/Inventory/StockOutDashboard" class="menu-link">
+                                <div data-i18n="Stock In">Stock Out</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            }
+        }
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "U" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                var isTeamManagementActive = currentController == "User" && (currentAction == "UserManagement" || currentAction == "AddNewUser");
+                <li class="menu-item @(isTeamManagementActive ? "active open" : "")">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div>Team Management</div>
+                    </a>
+                    <ul class="menu-sub" style="@(isTeamManagementActive ? "display:block;" : "")">
+                        <li class="menu-item @(currentController == "User" && currentAction == "UserManagement" ? "active" : "")">
+                            <a href="~/User/UserManagement" class="menu-link">
+                                <div>User Management</div>
+                            </a>
+                        </li>
+                        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "U" && x.IsView == true).Count() > 0)
+                        {
+                            <li class="menu-item @(currentController == "User" && currentAction == "AddNewUser" ? "active" : "")">
+                                <a href="~/User/AddNewUser" class="menu-link">
+                                    <div>Add User</div>
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+            }
+        }
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "V" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                var isVendorManagementActive = currentController == "User" && (currentAction == "VendorManagement" || currentAction == "AddNewVendor");
+                <li class="menu-item @(isVendorManagementActive ? "active open" : "")">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-truck"></i>
+                        <div data-i18n="Vendor Management">Vendor Management</div>
+                    </a>
+                    <ul class="menu-sub" style="@(isVendorManagementActive ? "display:block;" : "")">
+                        <li class="menu-item @(currentController == "User" && currentAction == "VendorManagement" ? "active" : "")">
+                            <a href="~/User/VendorManagement" class="menu-link">
+                                <div data-i18n="Vendor Dashboard">Vendor Dashboard</div>
+                            </a>
+                        </li>
+                        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "V" && x.IsView == true).Count() > 0)
+                        {
+                            <li class="menu-item @(currentController == "User" && currentAction == "AddNewVendor" ? "active" : "")">
+                                <a href="~/User/AddNewVendor" class="menu-link">
+                                    <div data-i18n="Add Vendor">Add Vendor</div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        }
+
+        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "C" && x.IsView == true).Count() > 0)
+        {
+            if (Accessor.HttpContext.Session.GetInt32("UserType") != 4)
+            {
+                var isClientManagementActive = currentController == "User" && (currentAction == "ClientManagement" || currentAction == "AddNewClient");
+                <li class="menu-item @(isClientManagementActive ? "active open" : "")">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-users"></i>
+                        <div data-i18n="Client Management">Client Management</div>
+                    </a>
+                    <ul class="menu-sub" style="@(isClientManagementActive ? "display:block;" : "")">
+                        <li class="menu-item @(currentController == "User" && currentAction == "ClientManagement" ? "active" : "")">
+                            <a href="~/User/ClientManagement" class="menu-link">
+                                <div data-i18n="Client Dashboard">Client Dashboard</div>
+                            </a>
+                        </li>
+                        @if (Model.AccessList.Where(x => x.ModuleCode.Trim() == "C" && x.IsView == true).Count() > 0)
+                        {
+                            <li class="menu-item @(currentController == "User" && currentAction == "AddNewClient" ? "active" : "")">
+                                <a href="~/User/AddNewClient" class="menu-link">
+                                    <div data-i18n="Add Client">Add Client</div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        }
+
+     
+        <!-- Team Management -->
+        @if (Accessor.HttpContext.Session.GetInt32("UnitId") == 0)
+        {
+            <li class="menu-item active">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-settings"></i>
+                    <div data-i18n="Organization Setup">Organization Setup</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="~/Organization/CompanyManagement" class="menu-link">
+                            <div data-i18n="Company Management">Company Management</div>
+                        </a>
+                    </li>
+                    <li class="menu-item active">
+                        <a href="~/Organization/AddCompany" class="menu-link">
+                            <div data-i18n="Add Company">Add Company</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="~/Organization/MasterPhases" class="menu-link">
+                            <div data-i18n="Add Phases">Add Phases</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="~/Organization/MasterStatus" class="menu-link">
+                            <div data-i18n="Add Status">Add Status</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="~/Organization/MasterPriority" class="menu-link">
+                            <div data-i18n="Add Priority">Add Priority</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+        }
+
+        @if (Accessor.HttpContext.Session.GetInt32("IsAdmin") == 1)
+        {
+
+            <li class="menu-item @(currentController == "IMS" && (currentAction == "InvoiceReport") ? "active open" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    <div>Reports</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @(currentAction == "InvoiceReport" ? "active" : "")">
+                        <a href="~/IMS/InvoiceReport" class="menu-link">
+                            <div>Invoice Report</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <!-- Masters -->
+            // var mastersControllers = new[] { "DocumentCategory", "DrawingCategory", "PhotoCategory", "Department", "Designation", "Role", "Country", "State", "City", "UnitCategory", "Priority", "UnitPhases", "UnitStatus" };
+            var isMastersActive = currentController == "Master" || (currentController == "Home" && currentAction == "AccessMaster");
+            <li class="menu-item @(isMastersActive ? "active open" : "")">
+                <a href="javascript:void(0);" class="menu-link menu-toggle @(isMastersActive ? "collapsed" : "")">
+                    <i class="menu-icon tf-icons ti ti-database"></i>
+                    <div data-i18n="Masters">Masters</div>
+                </a>
+                <ul class="menu-sub collapse @(isMastersActive ? "show" : "")">
+                    <li class="menu-item @(currentController == "Master"  && currentAction == "DocumentCategory" ? "active" : "")">
+                        <a href="~/Master/DocumentCategory" class="menu-link">
+                            <div data-i18n="Document">Document Category</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "DrawingCategory" ? "active" : "")">
+                        <a href="~/Master/DrawingCategory" class="menu-link">
+                            <div data-i18n="Drawing">Drawing Category</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "PhotoCategory" ? "active" : "")">
+                        <a href="~/Master/PhotoCategory" class="menu-link">
+                            <div data-i18n="Photo">Photo Category</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "Department" ? "active" : "")">
+                        <a href="~/Master/Department" class="menu-link">
+                            <div data-i18n="Department">Department</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item @(currentController == "Master" && currentAction == "Role" ? "active" : "")">
+                        <a href="~/Master/Role" class="menu-link">
+                            <div data-i18n="Role">Role</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Home" && currentAction == "AccessMaster" ? "active" : "")">
+                        <a href="~/Home/AccessMaster" class="menu-link">
+                            <div data-i18n="Country">User Access</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "Country" ? "active" : "")">
+                        <a href="~/Master/Country" class="menu-link">
+                            <div data-i18n="Country">Country</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "State" ? "active" : "")">
+                        <a href="~/Master/State" class="menu-link">
+                            <div data-i18n="State">State</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "City" ? "active" : "")">
+                        <a href="~/Master/City" class="menu-link">
+                            <div data-i18n="City">City</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "UnitCategory" ? "active" : "")">
+                        <a href="~/Master/UnitCategory" class="menu-link">
+                            <div data-i18n="Category">Category</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "Priority" ? "active" : "")">
+                        <a href="~/Master/Priority" class="menu-link">
+                            <div data-i18n="Priority">Priority</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "UnitPhases" ? "active" : "")">
+                        <a href="~/Master/UnitPhases" class="menu-link">
+                            <div data-i18n="Phase">Phase</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @(currentController == "Master" && currentAction == "UnitStatus" ? "active" : "")">
+                        <a href="~/Master/UnitStatus" class="menu-link">
+                            <div data-i18n="Status">Status</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+
+
+
+
+    </ul>
+</aside>

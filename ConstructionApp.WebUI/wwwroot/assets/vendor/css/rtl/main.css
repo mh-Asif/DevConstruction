@@ -1,0 +1,49 @@
+/* --data-table---  */
+div.dataTables_wrapper .card-header {
+    padding: 10px 15px;
+}
+div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper .dataTables_filter{
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+div.card-datatable.dataTable, div.card-datatable .dataTable{
+    padding: 10px 20px;
+}
+.table > :not(caption) > * > *{
+    padding: 6px 10px !important;
+}
+div.card-datatable{
+    padding: 15px;
+}
+
+/* ---sidebar-  */
+
+#layout-menu .app-brand,
+#layout-menu .menu-inner{
+    background: #011124 ;
+}
+#layout-menu.menu-vertical .menu-item .menu-link{
+    color: rgb(255, 255, 255);
+}
+#layout-menu.menu-vertical .menu-item .menu-link:hover{
+    color: #01A7F6 !important;
+}
+#layout-menu.bg-menu-theme.menu-vertical .menu-item.active > .menu-link:not(.menu-toggle){
+    color: #01A7F6 !important;
+    background: none !important;
+    box-shadow: none;
+    font-weight: bold;
+}
+.app-brand .layout-menu-toggle{
+    color: #fff !important;
+}
+
+/* --- navbar---  */
+.layout-navbar{
+    box-shadow: none !important;
+}
+
+.tab-new{
+    z-index: 999;
+    position: relative;
+}

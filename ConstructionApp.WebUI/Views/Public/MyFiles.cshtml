@@ -1,0 +1,538 @@
+﻿@model Construction.Infrastructure.Models.PublicUsersDTO
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = null;
+}
+
+
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr"
+      data-theme="theme-default" data-assets-path="@Url.Content("~/assets/")" data-template="vertical-menu-template" data-style="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Krasa Construction Project</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+          rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/flag-icons.css" />
+
+    <link rel="stylesheet" href="~/assets/css/style.css">
+
+    <!-- Core CSS -->
+
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="~/assets/vendor/libs/node-waves/node-waves.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css" />
+    <!-- Row Group CSS -->
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
+    <!-- Form Validation -->
+    <link rel="stylesheet" href="~/assets/vendor/libs/form-validation/form-validation.css" />
+
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script src="~/assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="~/assets/vendor/js/template-customizer.js"></script>
+
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="~/assets/js/config.js"></script>
+</head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class=" layout-content-navbar">
+        <div class="layout-container">
+
+            <!-- Layout container -->
+            <div class="layout-page top-reduce-gap ps-0">
+                <!-- Navbar -->
+
+                <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme new-one " style="left:0px; box-shadow: 0 0.1875rem 0.75rem 0 rgba(47, 43, 61, 0.14);"
+                     id="layout-navbar">
+                    <div class="container-fluid">
+                        <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+                            <a href="index.html" class="app-brand-link">
+                                <img src="~/assets/image/main-logo.png" alt="logo">
+                            </a>
+
+                        </div>
+                </nav>
+
+                <!-- / Navbar -->
+
+
+                <div class="page-content-section">
+
+
+                    <div class="container-fluid">
+                        <!-- Content -->
+
+                        <div class="flex-grow-1 container-p-y">
+
+                            <div class="flex-grow-1">
+                                <div class="row g-6">
+                                    <!-- Basic -->
+
+                                    <div class="col-12">
+
+                                        <div class="row">
+                                            <div class="col-md-12 mt-5 pt-5">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="all-file">All files</h5>
+                                                        <h2 class="project-name">Documents</h2>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="Documents-container Documents-container1 doc-cont mt-3">
+                                                    @if (Model.PublicFileList != null)
+                                                        @foreach (var item in Model.PublicFileList.Where(a=>a.DocType=="D"))
+                                                        {
+
+                                                            <a href="#" class="document-item doc-item-new">
+                                                                <div class="hover-buttons">
+
+                                                                    @if (item.FileExt == ".png" || item.FileExt == ".jpg" || item.FileExt == ".pdf")
+                                                                    {
+                                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal"
+                                                                        data-bs-target="#previewModal" onclick="previewDocument('@item.FilePath');">
+                                                                            <i class="fa fa-eye" data-bs-toggle="tooltip" data-bs-placement="right"
+                                                                            title="View"></i>
+                                                                        </button>
+                                                                    }
+
+                                                                    <button type="button" class="btn btn-hover" onclick="downloadDocFile('@item.FilePath')"
+                                                                    data-bs-toggle="tooltip" title="Download">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="document-icon">
+                                                                    @if (item.FileExt == ".png" || item.FileExt == ".jpg")
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                    else if (item.FileExt == ".pdf")
+                                                                    {
+                                                                        <img src="~/assets/image/pdf.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".ppt" || item.FileExt == ".pptx")
+                                                                    {
+                                                                        <img src="~/assets/image/ppt.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".xls" || item.FileExt == ".xlsx")
+                                                                    {
+                                                                        <img src="~/assets/image/excel.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".doc" || item.FileExt == ".docx")
+                                                                    {
+                                                                        <img src="~/assets/image/word.png" alt="" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                </div>
+                                                                <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.FileName">
+                                                                    <h2 class="document-title">@item.FileName</h2>
+                                                                    <ul class="list-unstyled new-unstyled users-list d-flex align-items-left avatar-group m-0 me-2">
+                                                                        <li data-bs-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
+                                                                            data-bs-placement="top"
+                                                                            title="@item.UserName"
+                                                                            class="avatar pull-up">
+                                                                            <img class="rounded-circle" src="~/Profile/@item.ProfileImage" alt="Avatar" />
+                                                                        </li>
+
+                                                                    </ul>
+                                                                    <!-- avatar  -->
+
+                                                                    <h6 class="document-project">Created on @item.CreationDate.Value.ToString("dd/MMM/yyyy") .</h6>
+
+                                                                </div>
+
+                                                            </a>
+                                                        }
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- second file  -->
+                                        <div class="row">
+                                            <div class="col-md-12 mt-5 pt-5">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="all-file">All files</h5>
+                                                        <h2 class="project-name">Drawing</h2>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="Documents-container Documents-container2 doc-cont mt-3">
+                                                    @if (Model.PublicFileList != null)
+                                                        @foreach (var item in Model.PublicFileList.Where(a => a.DocType == "Dr"))
+                                                        {
+
+                                                            <a href="#" class="document-item doc-item-new">
+                                                                <div class="hover-buttons">
+                                                                    @if (item.FileExt == ".png" || item.FileExt == ".jpg" || item.FileExt == ".pdf")
+                                                                    {
+                                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal"
+                                                                        data-bs-target="#previewModal" onclick="previewDocument('@item.FilePath');">
+                                                                        <i class="fa fa-eye" data-bs-toggle="tooltip" data-bs-placement="right"
+                                                                           title="View"></i>
+                                                                    </button>
+                                                                    }
+
+                                                                    <button type="button" class="btn btn-hover" onclick="downloadDrawingFile('@item.FilePath')"
+                                                                            data-bs-toggle="tooltip" title="Download">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="document-icon">
+                                                                    @if (item.FileExt == ".png" || item.FileExt == ".jpg")
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                    else if (item.FileExt == ".pdf")
+                                                                    {
+                                                                        <img src="~/assets/image/pdf.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".ppt" || item.FileExt == ".pptx")
+                                                                    {
+                                                                        <img src="~/assets/image/ppt.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".xls" || item.FileExt == ".xlsx")
+                                                                    {
+                                                                        <img src="~/assets/image/excel.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".doc" || item.FileExt == ".docx")
+                                                                    {
+                                                                        <img src="~/assets/image/word.png" alt="" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                </div>
+                                                                <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.FileName">
+                                                                    <h2 class="document-title">@item.FileName</h2>
+                                                                    <ul class="list-unstyled new-unstyled users-list d-flex align-items-left avatar-group m-0 me-2">
+                                                                        <li data-bs-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
+                                                                            data-bs-placement="top"
+                                                                            title="@item.UserName"
+                                                                            class="avatar pull-up">
+                                                                            <img class="rounded-circle" src="~/Profile/@item.ProfileImage" alt="Avatar" />
+                                                                        </li>
+
+                                                                    </ul>
+                                                                    <!-- avatar  -->
+
+                                                                    <h6 class="document-project">Created on @item.CreationDate.Value.ToString("dd/MMM/yyyy") .</h6>
+
+                                                                </div>
+
+                                                            </a>
+                                                        }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- second file  -->
+                                        <!-- third file  -->
+                                        <div class="row">
+                                            <div class="col-md-12 mt-5 pt-5 pb-5">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="all-file">All files</h5>
+                                                        <h2 class="project-name">Photos</h2>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="Documents-container Documents-container3  doc-cont mt-3">
+                                                    @if (Model.PublicFileList != null)
+                                                        @foreach (var item in Model.PublicFileList.Where(a => a.DocType == "PH"))
+                                                        {
+
+                                                            <a href="#" class="document-item doc-item-new">
+                                                                <div class="hover-buttons">
+
+                                                                    <button type="button" class="btn btn-hover" data-bs-toggle="modal"
+                                                                            data-bs-target="#previewModal" onclick="previewDocument('@item.FilePath');">
+                                                                        <i class="fa fa-eye" data-bs-toggle="tooltip" data-bs-placement="right"
+                                                                           title="View"></i>
+                                                                    </button>
+
+                                                                    <button type="button" class="btn btn-hover" onclick="downloadPhotoFile('@item.FilePath')"
+                                                                            data-bs-toggle="tooltip" title="Download">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="document-icon">
+                                                                    @if (item.FileExt == ".png" || item.FileExt == ".jpg")
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                    else if (item.FileExt == ".pdf")
+                                                                    {
+                                                                        <img src="~/assets/image/pdf.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".ppt" || item.FileExt == ".pptx")
+                                                                    {
+                                                                        <img src="~/assets/image/ppt.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".xls" || item.FileExt == ".xlsx")
+                                                                    {
+                                                                        <img src="~/assets/image/excel.png" alt="" />
+                                                                    }
+                                                                    else if (item.FileExt == ".doc" || item.FileExt == ".docx")
+                                                                    {
+                                                                        <img src="~/assets/image/word.png" alt="" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@item.FilePath" alt="">
+                                                                    }
+                                                                </div>
+                                                                <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.FileName">
+                                                                    <h2 class="document-title">@item.FileName</h2>
+                                                                    <ul class="list-unstyled new-unstyled users-list d-flex align-items-left avatar-group m-0 me-2">
+                                                                        <li data-bs-toggle="tooltip"
+                                                                            data-popup="tooltip-custom"
+                                                                            data-bs-placement="top"
+                                                                            title="@item.UserName"
+                                                                            class="avatar pull-up">
+                                                                            <img class="rounded-circle" src="~/Profile/@item.ProfileImage" alt="Avatar" />
+                                                                        </li>
+
+                                                                    </ul>
+                                                                    <!-- avatar  -->
+
+                                                                    <h6 class="document-project">Created on @item.CreationDate.Value.ToString("dd/MMM/yyyy") .</h6>
+
+                                                                </div>
+
+                                                            </a>
+                                                        }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- third file  -->
+
+                                    </div>
+
+                                    <!-- /Basic -->
+                                </div>
+                            </div>
+                            <!-- / Content -->
+                        </div>
+                    </div>
+
+
+                    <!-- Modal Structure for Preview -->
+                    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" style="max-width: 90vh;" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Preview</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Iframe for Preview -->
+                                    <!-- Enhanced Iframe for Preview -->
+                                    <iframe src="#" id="DocPreview"
+                                            width="100%"
+                                            height="auto"
+                                            style="min-height: 80vh;"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen
+                                            title="Background Preview"
+                                            scrolling="auto">
+                                    </iframe>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                
+
+                    <!-- Rename Project modal  -->
+                    <!-- <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Edit Project</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+
+                            <div class="mb-3">
+                              <label for="editProject" class="form-label">New Project Name</label>
+                              <input type="text" class="form-control" id="editProject">
+                            </div>
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save Changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> -->
+
+
+                </div>
+                <!-- Footer -->
+                <footer class="content-footer py-0 container-fluid footer bg-footer-theme">
+                    <div class="">
+                        <div class="footer-container d-flex align-items-center justify-content-between py-1 flex-md-row flex-column">
+                            <div class="text-body">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear());
+                                </script>
+                                , made with ❤️ by <a href="https://ahatechnocrats.com/" target="_blank" class="footer-link">
+                                    AHA
+                                    Technocats
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- / Layout page -->
+            </div>
+
+            <!-- Overlay -->
+            <div class="layout-overlay layout-menu-toggle"></div>
+
+            <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+            <div class="drag-target"></div>
+        </div>
+        <!-- / Layout wrapper -->
+        <!-- Core JS -->
+        <!-- build:js ~/assets/vendor/js/core.js -->
+        <!-- build:js ~/assets/vendor/js/core.js -->
+
+        <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+        <script src="~/assets/vendor/libs/popper/popper.js"></script>
+        <script src="~/assets/vendor/js/bootstrap.js"></script>
+        <script src="~/assets/vendor/libs/node-waves/node-waves.js"></script>
+        <script src="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+        <script src="~/assets/vendor/libs/hammer/hammer.js"></script>
+        <script src="~/assets/vendor/libs/i18n/i18n.js"></script>
+        <script src="~/assets/vendor/libs/typeahead-js/typeahead.js"></script>
+        <script src="~/assets/vendor/js/menu.js"></script>
+
+        <!-- endbuild -->
+        <!-- Vendors JS -->
+        <script src="~/assets/vendor/libs/jstree/jstree.js"></script>
+
+        <!-- Main JS -->
+        <script src="~/assets/js/main.js"></script>
+
+        <!-- Vendors JS -->
+        <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+        <!-- Page JS -->
+        <script src="~/assets/js/forms-file-upload.js"></script>
+        <!-- Vendors JS -->
+        <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+        <!-- Page JS -->
+        <script src="~/assets/js/documents.js"></script>
+
+        <script>
+            function downloadFile() {
+                const link = document.createElement("a");
+                link.href = "~/assets/image/background-auth.webp";
+                link.download = "background-auth.webp"; // Optional: rename file
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+
+            function previewDocument(url) {
+
+                var output = document.getElementById('DocPreview');
+                output.src = url;
+            }
+            function downloadDocFile(filepath) {
+                window.location.href = "/Public/DownloadDoc?fileName=" + filepath;
+            }
+               function downloadDrawingFile(filepath) {
+                window.location.href = "/Public/DownloadDrawing?fileName=" + filepath;
+            }
+            function downloadPhotoFile(filepath) {
+                window.location.href = "/Public/DownloadPhoto?fileName=" + filepath;
+            }
+        </script>
+
+
+
+        <!-- <script>
+          const inviteModal = document.getElementById('invitemember');
+
+          inviteModal.addEventListener('shown.bs.modal', function () {
+            const radios = inviteModal.querySelectorAll('input[name="shareOption"]');
+            const shareByUser = inviteModal.querySelector('#shareByUser');
+            const externalUser = inviteModal.querySelector('#externalUser');
+
+            radios.forEach(function (radio) {
+              radio.addEventListener('change', function () {
+                if (this.value === 'shareUser') {
+                  shareByUser.style.display = 'block';
+                  externalUser.style.display = 'none';
+                } else if (this.value === 'externalUser') {
+                  shareByUser.style.display = 'none';
+                  externalUser.style.display = 'block';
+                }
+              });
+            });
+          });
+        </script> -->
+
+
+</body>
+
+</html>
+

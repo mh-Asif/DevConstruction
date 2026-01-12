@@ -1,0 +1,40 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+
+<li class="menu-item active">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-settings"></i>
+        <div data-i18n="All Projects">All Projects</div>
+    </a>
+    <ul class="menu-sub">
+     @if (Model.ProjectList != null)
+    @foreach (var item in Model.ProjectList)
+    {
+        <li class="menu-item">
+            <a href="~/Project/ProjectOverview/@item.ProjectId" class="menu-link">
+                <span class="project-dot"></span>
+                <div data-i18n="@item.ProjectName">@item.ProjectName</div>
+            </a>
+        </li>
+    }
+      </ul>
+</li>
+@* <li class="menu-item active">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-settings"></i>
+        <div data-i18n="All Projects">All Projects</div>
+    </a>
+    <ul class="menu-sub">
+        <li class="menu-item">
+            <a href="~/Organization/CompanyManagement" class="menu-link">
+                <div data-i18n="Pro1">Pro1</div>
+            </a>
+        </li>
+        <li class="menu-item active">
+            <a href="~/Organization/AddCompany" class="menu-link">
+                <div data-i18n="Pro2">Pro2</div>
+            </a>
+        </li>
+
+
+    </ul>
+</li> *@

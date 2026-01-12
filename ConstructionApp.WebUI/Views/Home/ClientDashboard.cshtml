@@ -1,0 +1,357 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDashboardDTO
+@{
+    ViewData["Title"] = "Dashboard";
+    //Layout = null;
+}
+<style>
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        text-align: center;
+        width: 100%;
+    }
+
+    .loader_inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -50px;
+    }
+</style>
+<div class="container-fluid">
+    <!-- Content -->
+
+
+    <div class="flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-12">
+                <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                    <h2 class="app-brand-link page-heading me-2">
+                        <span class="app-brand-text demo menu-text p-0 fw-bold">Dashboard</span>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-6">
+
+            <div class="col-12">
+
+                <div class="row gy-4">
+                    @if (Model.TaskList != null)
+                    {
+                        if (Model.TaskList.Count > 0)
+                        {
+                            <!-- Total Projects -->
+                            <div class="col-md-6 col-sm-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start gap-5">
+                                            <div class="badge p-2 bg-label-primary mb-0 rounded flex-shrink-0">
+                                                <i style="font-size: 36px;" class="ti ti-building"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="card-title mb-1">Total Projects</h5>
+                                                <p class="text-heading mb-0 mt-1">@Model.TaskList[0].TotalProject</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Tasks -->
+                         @*    <div class="col-md-3 col-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start gap-5">
+                                            <div class="badge p-2 bg-label-success mb-0 rounded flex-shrink-0">
+                                                <i style="font-size: 36px;" class="ti ti-checklist"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="card-title mb-1">Total Tasks</h5>
+                                                <p class="text-heading mb-0 mt-1">@Model.TaskList[0].TotalTask</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+
+                            <!-- Total Clients -->
+                            <div class="col-md-6 col-sm-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start gap-5">
+                                            <div class="badge p-2 bg-label-info mb-0 rounded flex-shrink-0">
+                                                <i style="font-size: 36px;" class="ti ti-users"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="card-title mb-1">Total Tasks</h5>
+                                                <p class="text-heading mb-0 mt-1">@Model.TaskList[0].TotalTask</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Vendors -->
+                           @*  <div class="col-md-3 col-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start gap-5">
+                                            <div class="badge p-2 bg-label-warning mb-0 rounded flex-shrink-0">
+                                                <i style="font-size: 36px;" class="ti ti-truck"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="card-title mb-1">Total Vendors</h5>
+                                                <p class="text-heading mb-0 mt-1">@Model.TaskList[0].TotalVendor</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> *@
+                        }
+                    }
+                </div>
+
+            </div>
+            <!-- Doughnut Chart -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="card-title mb-0">
+                            <h5 class="mb-1">Project Report</h5>
+                            @*   <p class="card-subtitle">Last i month</p> *@
+                        </div>
+                        @* <div class="dropdown">
+                        <button class="btn btn-text-secondary rounded-pill text-muted border-0 p-2 me-n1"
+                        type="button"
+                        id="supportTrackerMenu"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="ti ti-dots-vertical ti-md text-muted"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="supportTrackerMenu">
+                        <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                        </div>
+                        </div> *@
+                    </div>
+                    <div class="card-body row">
+                        @if (Model.DashboardList != null)
+                        {
+                            if (Model.DashboardList.Count > 0)
+                            {
+
+                                <div class="col-12 col-sm-4 col-md-12 col-lg-4">
+                                    <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
+                                        <h2 class="mb-0">@Model.DashboardList[0].TotalP</h2>
+                                        @*   <h2 class="mb-0"><label id="TotalP"></label></h2> *@
+                                        <p class="mb-0">Total Projects</p>
+                                    </div>
+                                    <ul class="p-0 m-0">
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgba(0, 139, 163, 0.129); color: #008ba3;">
+                                                <i class="ti ti-circle-check ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">To Be Started</h6>
+                                                <small class="text-muted">@Model.DashboardList[0].ToBeStarted</small>
+                                                @*  <small class="text-muted"><label id="ToBeStarted"></label></small> *@
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex gap-4 align-items-center pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(211, 158, 0, 0.129); color: #d39e00;">
+                                                <i class="ti ti-refresh ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">In Progress</h6>
+                                                <small class="text-muted">@Model.DashboardList[0].InProgress</small>
+                                                @* <small class="text-muted"><label id="InProgress"></label></small> *@
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex gap-4 align-items-center pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(30, 126, 52, 0.129); color: #1e7e34">
+                                                <i class="ti ti-clock ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Completed</h6>
+                                                <small class="text-muted">@Model.DashboardList[0].Completed</small>
+                                                @*  <small class="text-muted"><label id="Completed"></label></small> *@
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(0, 86, 179, 0.129); color: #0056b3;">
+                                                <i class="ti ti-ticket ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Overdue</h6>
+                                                <small class="text-muted">@Model.DashboardList[0].Overdue</small>
+                                                @*   <small class="text-muted"><label id="Overdue"></label></small> *@
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex gap-4 align-items-center pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(81, 45, 168, 0.129); color: #512da8;">
+                                                <i class="ti ti-check ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Approved</h6>
+                                                <small class="text-muted">@Model.DashboardList[0].Approved</small>
+                                                @*  <small class="text-muted"><label id="Approved"></label></small> *@
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <input type="hidden" id="OpenPrc" name="OpenPrc" class="form-control" value=@Model.DashboardList[0].OpenPrc />
+                                    <input type="hidden" id="InProgressPrc" name="InProgressPrc" class="form-control" value=@Model.DashboardList[0].InProgressPrc />
+                                    <input type="hidden" id="CompletePrc" name="CompletePrc" class="form-control" value=@Model.DashboardList[0].CompletePrc />
+                                    <input type="hidden" id="OverduePrc" name="OverduePrc" class="form-control" value=@Model.DashboardList[0].OverduePrc />
+                                    <input type="hidden" id="ApprovedPrc" name="ApprovedPrc" class="form-control" value=@Model.DashboardList[0].ApprovedPrc />
+
+                                </div>
+                                <div class="col-12 col-sm-8 col-md-12 col-lg-5">
+                                    <!-- <div id="ProejctTracker"></div> -->
+                                    <canvas id="doughnutChart" class="chartjs mb-6" data-height="150"></canvas>
+
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- /Doughnut Chart -->
+
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="card-title mb-0">
+                            <h5 class="mb-1">Task Report</h5>
+                            @*  <p class="card-subtitle">Last 1 month</p> *@
+                        </div>
+                        @*  <div class="dropdown">
+                        <button class="btn btn-text-secondary rounded-pill text-muted border-0 p-2 me-n1"
+                        type="button"
+                        id="supportTrackerMenu"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="ti ti-dots-vertical ti-md text-muted"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="supportTrackerMenu">
+                        <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                        </div>
+                        </div> *@
+                    </div>
+                    <div class="card-body row">
+                        @if (Model.TaskList != null)
+                        {
+                            if (Model.TaskList.Count > 0)
+                            {
+                                <div class="col-12 col-sm-4 col-md-12 col-lg-4">
+                                    <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
+                                        <h2 class="mb-0">@Model.TaskList[0].TotalTask</h2>
+                                        <p class="mb-0">Total Tasks</p>
+                                    </div>
+                                    <ul class="p-0 m-0">
+                                        <li class="d-flex gap-4 align-items-center pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgba(0, 139, 163, 0.129); color: #008ba3;">
+                                                <i class="ti ti-circle-check ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Open</h6>
+                                                <small class="text-muted">@Model.TaskList[0].OpenTask</small>
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(211, 158, 0, 0.129); color: #d39e00;">
+                                                <i class="ti ti-refresh ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">In Progress</h6>
+                                                <small class="text-muted">@Model.TaskList[0].InProgressTask</small>
+                                            </div>
+                                        </li>
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(30, 126, 52, 0.129); color: #1e7e34">
+                                                <i class="ti ti-clock ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Complete</h6>
+                                                <small class="text-muted">@Model.TaskList[0].CompletedTask</small>
+                                            </div>
+                                        </li>
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(0, 86, 179, 0.129); color: #0056b3;">
+                                                <i class="ti ti-ticket ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Overdue</h6>
+                                                <small class="text-muted">@Model.TaskList[0].OverdueTask</small>
+                                            </div>
+                                        </li>
+                                        <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                            <div class="badge rounded p-1_5" style="background-color: rgb(81, 45, 168, 0.129); color: #512da8;">
+                                                <i class="ti ti-check ti-md"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 text-nowrap">Approved</h6>
+                                                <small class="text-muted">@Model.TaskList[0].ApprovedTask</small>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <input type="hidden" id="OpenTPrc" name="OpenTPrc" class="form-control" value=@Model.TaskList[0].OpenPrc />
+                                    <input type="hidden" id="InProgressTPrc" name="InProgressTPrc" class="form-control" value=@Model.TaskList[0].InProgressPrc />
+                                    <input type="hidden" id="CompleteTPrc" name="CompleteTPrc" class="form-control" value=@Model.TaskList[0].CompletePrc />
+                                    <input type="hidden" id="OverdueTPrc" name="OverdueTPrc" class="form-control" value=@Model.TaskList[0].OverduePrc />
+                                    <input type="hidden" id="ApprovedTPrc" name="ApprovedTPrc" class="form-control" value=@Model.TaskList[0].ApprovedPrc />
+                                </div>
+                                <div class="col-12 col-sm-8 col-md-12 col-lg-8">
+                                    <canvas id="polarChart" class="chartjs mb-6" data-height="150"></canvas>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+    <div class="loader"><div class="loader_inner"><span class="loader-spinner"></span></div></div>
+
+</div>
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+    <script defer src="~/assets/js/charts-chartjs.js" asp-append-version="true"></script>
+    @*    <script src="~/assets/js/dashboards-analytics.js"></script> *@
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+
+            $('.loader').css("display", "none");
+
+        });
+
+
+
+
+
+    </script>
+}

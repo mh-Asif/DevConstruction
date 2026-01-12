@@ -1,0 +1,859 @@
+﻿@inject IHttpContextAccessor Accessor
+@{
+}
+
+
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+
+        <div class="page-content-section">
+            <!-- Content wrapper -->
+            <div class="container-fluid">
+                <!-- Content -->
+
+
+                <div class="flex-grow-1 container-p-y">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                                <h2 class="app-brand-link page-heading me-2">
+                                    <span class="app-brand-text demo menu-text p-0 fw-bold" id="pageHeading">Create Invoice</span>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- add-user Wizard -->
+                            <div id="add-client" class="bs-stepper stepper-custom wizard-icons wizard-icons-example">
+                              
+
+                                <div class="bs-stepper-content border-top">
+                                    <form id="add-client-form">                                   
+                                     
+
+                                        <!-- Job Information -->
+                                        <div id="client-bussines-details" class="content">
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <h5 class="heading-form-section">Invoice information</h5>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row g-6">
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <label class="form-label" for="amount">Invoice Amount <span class="text-danger">*</span></label>
+                                                            <input type="number" id="amount" name="amount" class="form-control" placeholder="Invoice Amount" step="0.01" min="0" />
+                                                            <small class="text-muted" id="amountHelp">Auto-calculated from item quantity × unit price (editable)</small>
+                                                        </div>
+                                                      
+                                                        <!-- Contact Person -->
+                                                    <div class="col-md-6 col-xl-6">
+                                                            <label class="form-label" for="contact-person">Invoice Date <span class="text-danger">*</span></label>
+                                                            <input type="date" id="Invoice_date" name="Invoice_date" class="form-control date-picker" placeholder="YYYY-MM-DD" />
+                                                        </div>
+
+                                                        <!-- Tax Type Selection -->
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <label class="form-label d-block">Tax Type (GSTN) <span class="text-danger">*</span></label>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" name="taxType" id="taxTypePercentage" value="1" checked>
+                                                                <label class="form-check-label" for="taxTypePercentage">
+                                                                    Percentage (%)
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" name="taxType" id="taxTypeAmount" value="2">
+                                                                <label class="form-check-label" for="taxTypeAmount">
+                                                                    Amount (₹)
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Tax Value -->
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <label class="form-label" for="taxValue">Tax Value (GSTN) <span class="text-danger">*</span></label>
+                                                            <input type="number" id="taxValue" name="taxValue" class="form-control" placeholder="Enter tax value" step="0.01" />
+                                                            <small class="text-muted" id="taxValueHelp">Enter tax as percentage (%)</small>
+                                                        </div>
+
+                                                    <hr class="my-6 mx-n4" />
+                                                      
+                                                        <!-- Items Selection Section -->
+                                                        <div class="col-12">
+                                                            <h5 class="heading-form-section mb-4">Invoice Items</h5>
+                                                        </div>
+
+                                                        <!-- Add Item Form -->
+                                                        <div class="col-md-12 mb-4 p-3 border rounded">
+                                                            <div class="row g-3">
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label" for="itemSelection">Select Item</label>
+                                                                    <select id="itemSelection" name="itemSelection" class="form-select">
+                                                                        <option value="">Select Item</option>
+                                                                        <option value="others">Others</option>
+                                                                        <!-- Items will be populated via JavaScript -->
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label" for="itemQuantity">Quantity <span class="text-danger">*</span></label>
+                                                                    <input type="number" id="itemQuantity" name="itemQuantity" class="form-control" placeholder="Qty" step="0.01" min="0.01" />
+                                                                    <small class="text-muted" id="availableQuantityHelp"></small>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label" for="itemUnitPrice">Unit Price (₹) <span class="text-danger">*</span></label>
+                                                                    <input type="number" id="itemUnitPrice" name="itemUnitPrice" class="form-control" placeholder="Price" step="0.01" min="0" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">&nbsp;</label>
+                                                                    <div>
+                                                                        <strong id="itemSubtotal">₹0.00</strong>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">&nbsp;</label>
+                                                                    <button type="button" id="btnAddItem" class="btn btn-primary w-100">Add Item</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Others/Description Section (shown when Others is selected) -->
+                                                        <div class="col-md-12 mb-4" id="othersDescriptionSection" style="display: none;">
+                                                            <label class="form-label" for="othersDescription">Description <span class="text-danger">*</span></label>
+                                                            <textarea id="othersDescription" class="form-control" placeholder="Enter description for Others" rows="3"></textarea>
+                                                        </div>
+
+                                                        <!-- Additional Description Section (for existing items) -->
+                                                        <div class="col-md-12 mb-4">
+                                                            <label class="form-label" for="description">Additional Description/Notes</label>
+                                                            <textarea id="description" class="form-control" placeholder="Enter additional description or notes (optional)" rows="2"></textarea>
+                                                        </div>
+
+                                                        <!-- Items List Table -->
+                                                        <div class="col-md-12 mb-4">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered" id="itemsTable">
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th>Item Name</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Unit Price (₹)</th>
+                                                                            <th>Subtotal (₹)</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="itemsTableBody">
+                                                                        <!-- Items will be added here dynamically -->
+                                                                    </tbody>
+                                                                    <tfoot>
+                                                                        <tr>
+                                                                            <th colspan="3" class="text-end">Total Amount:</th>
+                                                                            <th id="totalAmount">₹0.00</th>
+                                                                            <th></th>
+                                                                        </tr>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
+                                                            <div id="noItemsMessage" class="text-muted text-center py-4" style="display: none;">
+                                                                No items added yet. Please add items using the form above.
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    </div>
+                                                                                                
+
+
+
+
+                                                    <div class="pt-6 d-flex justify-content-between flex-wrap">
+                                                       
+                                                     
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary me-4 btn-next">Submit</button>
+                                                    </div>
+                                                    <input type="hidden" id="invoiceId" value="0" />
+                                                </div>
+                                            </div>
+                                        
+
+                                    </form>
+                                </div>
+                            </div>
+                            <!--/ add=user Wizard -->
+                        </div>
+                    </div>
+                </div>
+                <!-- / Content -->
+                <div class="content-backdrop fade"></div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var environmentUrl = '@ViewBag.EnvironmentUrl';
+    
+    $(document).ready(function () {
+        console.log('Document ready');
+        
+        // Store available stock items and invoice items
+        var availableStockItems = [];
+        var invoiceItems = []; // Array to store all items added to invoice
+        var currentVendorId = @Accessor.HttpContext.Session.GetInt32("UserId");
+        var itemCounter = 0; // Counter for unique item IDs
+        
+        // Load available stock items
+        function loadStockItems() {
+            $.ajax({
+                url: environmentUrl + '/InventoryAPI/GetAllStockTransactions',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.stockTransactionsList) {
+                        // Filter stock items for current vendor
+                        availableStockItems = response.stockTransactionsList.filter(function(item) {
+                            return item.vendorId == currentVendorId && item.quantity > 0;
+                        });
+                        
+                        // Populate dropdown with items
+                        var $itemSelect = $('#itemSelection');
+                        // Keep the "Select" and "Others" options
+                        var existingOptions = $itemSelect.find('option[value=""], option[value="others"]');
+                        $itemSelect.empty();
+                        $itemSelect.append(existingOptions);
+                        
+                        // Load all items to get names
+                        $.ajax({
+                            url: environmentUrl + '/InventoryAPI/GetActiveItems',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(itemsResponse) {
+                                if (itemsResponse && itemsResponse.itemsList) {
+                                    var itemsMap = {};
+                                    $.each(itemsResponse.itemsList, function(i, item) {
+                                        itemsMap[item.itemId] = item.item_Name;
+                                    });
+                                    
+                                    // Now populate dropdown with item names
+                                    $.each(availableStockItems, function(index, stockItem) {
+                                        var itemName = itemsMap[stockItem.itemId] || 'Item #' + stockItem.itemId;
+                                        var displayText = itemName + ' (Qty: ' + stockItem.quantity + ', Price: ₹' + (stockItem.unitCost || 0).toFixed(2) + ')';
+                                        $itemSelect.append($('<option></option>')
+                                            .val('item_' + stockItem.itemId)
+                                            .attr('data-item-id', stockItem.itemId)
+                                            .attr('data-vendor-id', stockItem.vendorId)
+                                            .attr('data-quantity', stockItem.quantity)
+                                            .attr('data-unit-cost', stockItem.unitCost || 0)
+                                            .text(displayText));
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error loading items:', error);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading stock items:', error);
+                }
+            });
+        }
+        
+        // Store current selected item data
+        var selectedItemData = null;
+        
+        // Handle item selection change - auto-fill quantity and price
+        $('#itemSelection').on('change', function() {
+            var selectedValue = $(this).val();
+            
+            if (selectedValue === 'others') {
+                // Others option selected - disable fields and show description
+                $('#othersDescriptionSection').show();
+                $('#itemQuantity').prop('disabled', true).val('');
+                $('#itemUnitPrice').prop('disabled', true).val('');
+                $('#btnAddItem').prop('disabled', true);
+                $('#itemSubtotal').text('₹0.00');
+                $('#availableQuantityHelp').text('');
+                selectedItemData = null;
+            } else if (selectedValue && selectedValue.startsWith('item_')) {
+                // Item selected - enable fields and hide description
+                $('#othersDescriptionSection').hide();
+                $('#itemQuantity').prop('disabled', false);
+                $('#itemUnitPrice').prop('disabled', false);
+                $('#btnAddItem').prop('disabled', false);
+                
+                // Get selected option data
+                var $selectedOption = $(this).find('option:selected');
+                var itemId = $selectedOption.data('item-id');
+                var vendorId = $selectedOption.data('vendor-id');
+                var availableQty = parseFloat($selectedOption.data('quantity')) || 0;
+                var unitCost = parseFloat($selectedOption.data('unit-cost')) || 0;
+                
+                selectedItemData = {
+                    itemId: itemId,
+                    vendorId: vendorId,
+                    availableQuantity: availableQty,
+                    unitCost: unitCost,
+                    itemName: $selectedOption.text().split(' (')[0] // Get item name without quantity/price info
+                };
+                
+                // Auto-fill available quantity and unit price (editable)
+                $('#itemQuantity').val(availableQty);
+                $('#itemUnitPrice').val(unitCost);
+                $('#availableQuantityHelp').text('Available: ' + availableQty);
+                
+                // Calculate subtotal
+                calculateCurrentItemSubtotal();
+            } else {
+                // No selection - clear fields and hide description
+                $('#othersDescriptionSection').hide();
+                $('#itemQuantity').prop('disabled', false).val('');
+                $('#itemUnitPrice').prop('disabled', false).val('');
+                $('#btnAddItem').prop('disabled', false);
+                $('#itemSubtotal').text('₹0.00');
+                $('#availableQuantityHelp').text('');
+                selectedItemData = null;
+            }
+        });
+        
+        // Calculate subtotal for current item when quantity or unit price changes
+        $('#itemQuantity, #itemUnitPrice').on('input change', function() {
+            calculateCurrentItemSubtotal();
+            validateQuantity();
+        });
+        
+        function calculateCurrentItemSubtotal() {
+            var quantity = parseFloat($('#itemQuantity').val()) || 0;
+            var unitPrice = parseFloat($('#itemUnitPrice').val()) || 0;
+            var subtotal = quantity * unitPrice;
+            $('#itemSubtotal').text('₹' + subtotal.toFixed(2));
+        }
+        
+        function validateQuantity() {
+            var quantity = parseFloat($('#itemQuantity').val()) || 0;
+            if (selectedItemData && quantity > selectedItemData.availableQuantity) {
+                $('#availableQuantityHelp').html('<span class="text-danger">Exceeds available (' + selectedItemData.availableQuantity + ')</span>');
+                return false;
+            } else if (selectedItemData) {
+                $('#availableQuantityHelp').text('Available: ' + selectedItemData.availableQuantity);
+            }
+            return true;
+        }
+        
+        // Add item to invoice
+        $('#btnAddItem').on('click', function() {
+            var selectedValue = $('#itemSelection').val();
+            
+            if (!selectedValue || !selectedValue.startsWith('item_')) {
+                alert('Please select an item');
+                return;
+            }
+            
+            var quantity = parseFloat($('#itemQuantity').val()) || 0;
+            var unitPrice = parseFloat($('#itemUnitPrice').val()) || 0;
+            
+            if (quantity <= 0) {
+                alert('Please enter a valid quantity');
+                $('#itemQuantity').focus();
+                return;
+            }
+            
+            if (unitPrice <= 0) {
+                alert('Please enter a valid unit price');
+                $('#itemUnitPrice').focus();
+                return;
+            }
+            
+            // Validate quantity
+            if (!validateQuantity()) {
+                alert('Quantity cannot exceed available stock');
+                return;
+            }
+            
+            // Check if item already exists in invoice
+            var existingItemIndex = invoiceItems.findIndex(function(item) {
+                return item.itemId === selectedItemData.itemId;
+            });
+            
+            if (existingItemIndex !== -1) {
+                // Update existing item
+                invoiceItems[existingItemIndex].quantity += quantity;
+                invoiceItems[existingItemIndex].subtotal = invoiceItems[existingItemIndex].quantity * invoiceItems[existingItemIndex].unitPrice;
+            } else {
+                // Add new item
+                itemCounter++;
+                var item = {
+                    id: itemCounter,
+                    itemId: selectedItemData.itemId,
+                    vendorId: selectedItemData.vendorId,
+                    itemName: selectedItemData.itemName,
+                    quantity: quantity,
+                    unitPrice: unitPrice,
+                    subtotal: quantity * unitPrice
+                };
+                invoiceItems.push(item);
+            }
+            
+            // Update table and totals
+            updateItemsTable();
+            calculateTotal();
+            
+            // Clear form and reset to "Select Item"
+            $('#itemSelection').val('').trigger('change');
+            $('#itemQuantity').val('');
+            $('#itemUnitPrice').val('');
+            $('#itemSubtotal').text('₹0.00');
+            $('#availableQuantityHelp').text('');
+            selectedItemData = null;
+        });
+        
+        // Remove item from invoice
+        function removeItem(itemId) {
+            invoiceItems = invoiceItems.filter(function(item) {
+                return item.id !== itemId;
+            });
+            updateItemsTable();
+            calculateTotal();
+        }
+        
+        // Update items table
+        function updateItemsTable() {
+            var $tbody = $('#itemsTableBody');
+            $tbody.empty();
+            
+            if (invoiceItems.length === 0) {
+                $('#itemsTable').hide();
+                $('#noItemsMessage').show();
+                return;
+            }
+            
+            $('#itemsTable').show();
+            $('#noItemsMessage').hide();
+            
+            $.each(invoiceItems, function(index, item) {
+                var row = $('<tr></tr>');
+                row.append($('<td></td>').text(item.itemName));
+                row.append($('<td></td>').text(item.quantity.toFixed(2)));
+                row.append($('<td></td>').text('₹' + item.unitPrice.toFixed(2)));
+                row.append($('<td></td>').text('₹' + item.subtotal.toFixed(2)));
+                var removeBtn = $('<button></button>')
+                    .attr('type', 'button')
+                    .addClass('btn btn-sm btn-danger')
+                    .text('Remove')
+                    .on('click', function() {
+                        removeItem(item.id);
+                    });
+                row.append($('<td></td>').append(removeBtn));
+                $tbody.append(row);
+            });
+        }
+        
+        // Calculate total amount from all items
+        function calculateTotal() {
+            var total = 0;
+            $.each(invoiceItems, function(index, item) {
+                total += item.subtotal;
+            });
+            $('#totalAmount').text('₹' + total.toFixed(2));
+            $('#amount').val(total.toFixed(2));
+        }
+        
+        // Initialize: Load stock items and hide table initially
+        loadStockItems();
+        $('#itemsTable').hide();
+        $('#noItemsMessage').show();
+        
+        // Ensure "Select Item" is selected by default
+        $('#itemSelection').val('').trigger('change');
+        
+        // Get invoice ID from query parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        var invoiceId = urlParams.get('invoiceId');
+        
+        // If invoiceId exists, load invoice data for editing
+        if (invoiceId) {
+            $('#invoiceId').val(invoiceId);
+            $('#pageHeading').text('Edit Invoice');
+            $('#btnSubmit').text('Update');
+            loadInvoiceData(invoiceId);
+        }
+        
+        // Initialize date picker
+        // if ($('.date-picker').length) {
+        //     $('.date-picker').datepicker({
+        //         format: 'yyyy-mm-dd',
+        //         autoclose: true
+        //     });
+        // }
+
+        // Check if button exists
+        console.log('Button exists:', $('#btnSubmit').length);
+        
+        // Function to load invoice data for editing
+        function loadInvoiceData(invoiceId) {
+            $.ajax({
+                url: environmentUrl + '/IMSAPI/GetInvoiceById?invoiceId=' + invoiceId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                  
+                    if (response && response.invoice_id) {
+                        // Populate form fields
+                        $('#amount').val(response.amount || '');
+                        
+                        // Format and set invoice date
+                        // Check for both possible property names (Invoice_date or invoice_date)
+                        var dateValue = response.Invoice_date || response.invoice_date;
+                        if (dateValue) {
+                            console.log('Date value received:', dateValue);
+                            
+                            // Find the input element
+                            var $invoiceDateInput = $('#Invoice_date');
+                            console.log('Invoice_date element found:', $invoiceDateInput.length);
+                            
+                            if ($invoiceDateInput.length === 0) {
+                                console.error('Invoice_date input element not found!');
+                                return;
+                            }
+                            
+                            var invoiceDate;
+                            var dateToSet = null;
+                            
+                            // Handle date string parsing more robustly
+                            if (typeof dateValue === 'string') {
+                                // Parse ISO date string (e.g., "2024-01-15T00:00:00" or "2024-01-15")
+                                // Split on 'T' to get just the date part and avoid timezone issues
+                                var datePart = dateValue.split('T')[0];
+                                if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                                    // Already in YYYY-MM-DD format
+                                    dateToSet = datePart;
+                                    console.log('Date set directly:', datePart);
+                                } else {
+                                    invoiceDate = new Date(dateValue);
+                                }
+                            } else {
+                                invoiceDate = new Date(dateValue);
+                            }
+                            
+                            // If we need to format the date
+                            if (invoiceDate && !isNaN(invoiceDate.getTime())) {
+                                var year = invoiceDate.getFullYear();
+                                var month = ("0" + (invoiceDate.getMonth() + 1)).slice(-2);
+                                var day = ("0" + invoiceDate.getDate()).slice(-2);
+                                dateToSet = year + '-' + month + '-' + day;
+                                console.log('Formatted date:', dateToSet);
+                            }
+                            
+                            // Set the value using Flatpickr API (since the input is initialized as flatpickr)
+                            if (dateToSet) {
+                                var nativeInput = $invoiceDateInput[0];
+                                
+                                // Check if flatpickr is initialized on this element
+                                var flatpickrInstance = null;
+                                if (nativeInput && typeof flatpickr !== 'undefined') {
+                                    // Try to get existing flatpickr instance
+                                    if (nativeInput._flatpickr) {
+                                        flatpickrInstance = nativeInput._flatpickr;
+                                    } else if ($invoiceDateInput.data('flatpickr')) {
+                                        flatpickrInstance = $invoiceDateInput.data('flatpickr');
+                                    } else {
+                                        // Check if flatpickr is available as a method
+                                        try {
+                                            if (typeof nativeInput.flatpickr === 'function') {
+                                                // Flatpickr might not be initialized yet, wait a bit
+                                                setTimeout(function() {
+                                                    if (nativeInput._flatpickr) {
+                                                        nativeInput._flatpickr.setDate(dateToSet, false);
+                                                        console.log('Set date via flatpickr (delayed):', dateToSet);
+                                                    }
+                                                }, 300);
+                                            }
+                                        } catch (e) {
+                                            console.log('Flatpickr check error:', e);
+                                        }
+                                    }
+                                    
+                                    // If we have a flatpickr instance, use it to set the date
+                                    if (flatpickrInstance) {
+                                        try {
+                                            flatpickrInstance.setDate(dateToSet, false);
+                                            console.log('Set date via flatpickr instance:', dateToSet);
+                                        } catch (e) {
+                                            console.log('Error setting date via flatpickr:', e);
+                                        }
+                                    }
+                                }
+                                
+                                // Also set the native value as backup
+                                if (nativeInput) {
+                                    nativeInput.value = dateToSet;
+                                    $invoiceDateInput.val(dateToSet).attr('value', dateToSet);
+                                    console.log('Set date via native/jQuery:', dateToSet);
+                                }
+                                
+                                // Wait a bit and try again in case flatpickr wasn't initialized yet
+                                setTimeout(function() {
+                                    // Check again if flatpickr is now available
+                                    if (nativeInput && nativeInput._flatpickr) {
+                                        try {
+                                            nativeInput._flatpickr.setDate(dateToSet, false);
+                                            console.log('Set date via flatpickr (retry):', dateToSet);
+                                        } catch (e) {
+                                            console.log('Error on retry:', e);
+                                        }
+                                    }
+                                    
+                                    // Verify the value
+                                    console.log('Final value check - jQuery val():', $invoiceDateInput.val());
+                                    console.log('Final value check - Native value:', nativeInput ? nativeInput.value : 'N/A');
+                                }, 500);
+                            }
+                        } else {
+                            console.log('No invoice_date found in response');
+                        }
+                        
+                        // Set tax type
+                        var taxType = response.tax_type || 1;
+                        $('input[name="taxType"][value="' + taxType + '"]').prop('checked', true);
+                        
+                        // Set tax value
+                        $('#taxValue').val(response.tax_value || '');
+                        
+                        // Handle description - parse items if present
+                        var description = response.description || '';
+                        if (description) {
+                            // Check if description contains item details pattern
+                            var lines = description.split('\n');
+                            var itemsFound = false;
+                            
+                            $.each(lines, function(index, line) {
+                                // Pattern: "Item Name - Qty: X, Unit Price: ₹Y, Subtotal: ₹Z"
+                                if (line.indexOf(' - Qty:') !== -1) {
+                                    itemsFound = true;
+                                    // Try to parse item (simplified parsing)
+                                    var parts = line.split(' - ');
+                                    if (parts.length >= 2) {
+                                        var itemName = parts[0];
+                                        var details = parts[1];
+                                        var qtyMatch = details.match(/Qty:\s*([\d.]+)/);
+                                        var priceMatch = details.match(/Unit Price:\s*₹([\d.]+)/);
+                                        var subtotalMatch = details.match(/Subtotal:\s*₹([\d.]+)/);
+                                        
+                                        if (qtyMatch && priceMatch && subtotalMatch) {
+                                            itemCounter++;
+                                            var item = {
+                                                id: itemCounter,
+                                                itemId: 0, // Will be 0 for loaded items
+                                                vendorId: currentVendorId,
+                                                itemName: itemName,
+                                                quantity: parseFloat(qtyMatch[1]),
+                                                unitPrice: parseFloat(priceMatch[1]),
+                                                subtotal: parseFloat(subtotalMatch[1])
+                                            };
+                                            invoiceItems.push(item);
+                                        }
+                                    }
+                                } else if (line.indexOf('Others:') === 0) {
+                                    // Extract Others description
+                                    var othersDesc = line.replace('Others: ', '');
+                                    $('#othersDescription').val(othersDesc);
+                                    $('#itemSelection').val('others').trigger('change');
+                                } else if (line.indexOf('Additional Notes:') !== -1) {
+                                    // Extract additional notes
+                                    var notes = line.replace('Additional Notes: ', '');
+                                    $('#description').val(notes);
+                                } else if (line.trim() && !itemsFound) {
+                                    // Regular description text (fallback)
+                                    $('#description').val($('#description').val() + (index > 0 ? '\n' : '') + line);
+                                }
+                            });
+                            
+                            // Update table if items were found
+                            if (invoiceItems.length > 0) {
+                                updateItemsTable();
+                                calculateTotal();
+                            }
+                        }
+                        
+                        // Trigger tax type change to update help text
+                        $('input[name="taxType"]:checked').trigger('change');
+                    } else {
+                        alert('Invoice not found');
+                        window.location.href = '/IMS/InvoiceList';
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading invoice:', error);
+                    alert('An error occurred while loading invoice data. Please try again.');
+                    window.location.href = '/IMS/InvoiceList';
+                }
+            });
+        }
+        
+        // Handle tax type radio button change
+        $('input[name="taxType"]').on('change', function () {
+            var taxType = $('input[name="taxType"]:checked').val();
+            var taxValueInput = $('#taxValue');
+            var taxValueHelp = $('#taxValueHelp');
+            
+            if (taxType === '1') {
+                // Percentage mode
+                taxValueInput.attr('placeholder', 'Enter tax percentage (e.g., 18)');
+                taxValueHelp.text('Enter tax as percentage (%)');
+            } else {
+                // Amount mode
+                taxValueInput.attr('placeholder', 'Enter tax amount (e.g., 1000)');
+                taxValueHelp.text('Enter tax as amount (₹)');
+            }
+        });
+        
+        // Form submit handler
+        $(document).on('click', '#btnSubmit', function (e) {
+            console.log('Button clicked');
+            e.preventDefault();
+            e.stopPropagation();          
+
+            // Check if Others is selected
+            var itemSelection = $('#itemSelection').val();
+            var othersDescription = $('#othersDescription').val().trim();
+            
+            // Validate based on selection
+            if (itemSelection === 'others') {
+                // If Others is selected, description is required
+                if (!othersDescription) {
+                    alert('Please enter a description for Others');
+                    $('#othersDescription').focus();
+                    return;
+                }
+                // If Others is selected with description, validation passes (no items needed)
+            } else {
+                // If not Others, at least one item must be added
+                if (invoiceItems.length === 0) {
+                    alert('Please add at least one item to the invoice');
+                    return;
+                }
+            }
+
+            // Validate required fields
+            var amount = $('#amount').val();
+            var invoiceDate = $('#Invoice_date').val();
+            var taxType = $('input[name="taxType"]:checked').val();
+            var taxValue = $('#taxValue').val();
+
+            if (!amount || parseFloat(amount) <= 0) {
+                alert('Please enter a valid invoice amount');
+                return;
+            }
+
+            if (!invoiceDate) {
+                alert('Please select an invoice date');
+                return;
+            }
+
+            if (!taxType) {
+                alert('Please select a tax type');
+                return;
+            }
+
+            if (!taxValue || parseFloat(taxValue) < 0) {
+                alert('Please enter a valid tax value');
+                return;
+            }
+
+            // Validate tax percentage should not exceed 100
+            if (taxType === '1' && parseFloat(taxValue) > 100) {
+                alert('Tax percentage cannot exceed 100%');
+                return;
+            }
+
+            // Get invoice ID (0 for new invoice, actual ID for update)
+            var invoiceIdValue = parseInt($('#invoiceId').val()) || 0;
+            
+            // Prepare description with all invoice items
+            var descriptionParts = [];
+            
+            // Add all items to description
+            $.each(invoiceItems, function(index, item) {
+                var itemDesc = item.itemName + ' - Qty: ' + item.quantity.toFixed(2) + 
+                             ', Unit Price: ₹' + item.unitPrice.toFixed(2) + 
+                             ', Subtotal: ₹' + item.subtotal.toFixed(2);
+                descriptionParts.push(itemDesc);
+            });
+            
+            // Add Others description if provided
+            var othersDesc = $('#othersDescription').val().trim();
+            if (othersDesc) {
+                descriptionParts.push('Others: ' + othersDesc);
+            }
+            
+            // Add additional description if provided
+            var additionalDesc = $('#description').val().trim();
+            if (additionalDesc) {
+                descriptionParts.push('Additional Notes: ' + additionalDesc);
+            }
+            
+            var descriptionText = descriptionParts.join('\n');
+            
+            // Prepare the invoice data
+            var invoiceData = {
+                invoice_id: invoiceIdValue, // 0 means create new invoice, > 0 means update
+                vendor_id: currentVendorId,
+                amount: parseFloat(amount),
+                Invoice_date: invoiceDate,
+                Description: descriptionText,
+                status: 1, // Active status, adjust as needed
+                created_at: currentVendorId,
+                created_date: new Date().toISOString(),
+                tax_type: parseInt(taxType),
+                tax_value: parseFloat(taxValue)
+            };
+            
+            // Include all items data (for potential future use)
+            invoiceData.items = invoiceItems;
+
+            // Show loading state
+            var submitBtn = $('#btnSubmit');
+            submitBtn.prop('disabled', true).text('Submitting...');
+
+            // Call the API
+            $.ajax({
+                url: environmentUrl + '/IMSAPI/SaveInvoice',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(invoiceData),
+                success: function (response) {
+                    console.log(response);
+                    if (response.httpStatusCode === 200) {
+                        var message = invoiceIdValue > 0 ? 'Invoice updated successfully!' : 'Invoice saved successfully!';
+                        alert(message);                        
+                        window.location.href = "/IMS/InvoiceList";
+                      
+                    } else {
+                        var errorMessage = invoiceIdValue > 0 ? 'Error updating invoice' : 'Error saving invoice';
+                        alert(errorMessage);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the invoice. Please try again.');
+                },
+                complete: function () {
+                    // Re-enable button
+                    submitBtn.prop('disabled', false).text('Submit');
+                }
+            });
+        });
+    });
+</script>

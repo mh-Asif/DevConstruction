@@ -1,0 +1,35 @@
+{
+  "pages": [
+    {
+      "name": "Dashboard",
+      "icon": "ti-smart-home",
+      "url": "index.html"
+    },
+    {
+      "name": "Dashboard CRM",
+      "icon": "ti-smart-home",
+      "url": "dashboards-crm.html"
+    },
+    {
+      "name": "Project",
+      "icon": "ti-layout-sidebar",
+      "url": "project.html"
+    },
+    {
+      "name": "Plan",
+      "icon": "ti-layout-sidebar",
+      "url": "Plan.html"
+    },
+    {
+      "name": "task",
+      "icon": "ti-layout-sidebar",
+      "url": "tasks-kanban.html"
+    },
+    {
+      "name": "profile",
+      "icon": "ti-layout-sidebar",
+      "url": "user-profile.html"
+    }
+    
+  ]
+}

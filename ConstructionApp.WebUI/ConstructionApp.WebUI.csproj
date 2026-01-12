@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="MailTemplates\1.png" />
+    <Content Include="MailTemplates\2.png" />
+    <Content Include="MailTemplates\calender.png" />
+    <Content Include="MailTemplates\check.png" />
+    <Content Include="MailTemplates\comment.html" />
+    <Content Include="MailTemplates\like.png" />
+    <Content Include="MailTemplates\main-logo.png" />
+    <Content Include="MailTemplates\project.html" />
+    <Content Include="MailTemplates\task.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dropzone" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
+    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Net.Windows" Version="29.2.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Construction.Infrastructure\Construction.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\TasksFile\" />
+    <Folder Include="wwwroot\Profile\" />
+  </ItemGroup>
+
+</Project>

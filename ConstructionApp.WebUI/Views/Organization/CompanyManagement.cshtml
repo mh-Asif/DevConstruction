@@ -1,0 +1,118 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "User Management";
+   // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+
+    <!-- ---tabs--  -->
+    @*
+    <div class="row mt-5">
+    <div class="col-12">
+    <div class="navbar-brand app-brand demo d-flex pt-2 me-4">
+    <h2 class="app-brand-link page-heading me-2">
+    <span class="app-brand-text demo menu-text p-0 pl-2 fw-bold">All Users</span>
+    </h2>
+    </div>
+    </div>
+    </div>
+    *@
+    <!-- / Navbar -->
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+
+        <div class=" flex-grow-1">
+            <!-- DataTable with Buttons -->
+            <div class="row">
+                <div class="col-12">
+                </div>
+
+            </div>
+            <div class="card px-2">
+                <div class="d-flex flex-wrap py-2 justify-content-between">
+
+                    <h4 class="mb-0">
+                        <span class=" p-0 pl-2 fw-bold">All Company</span>
+                    </h4>
+                    <div class="text-end"><a href="~/Organization/AddCompany" class="btn btn-primary me-sm-3 me-1addShow">Add New Company</a></div>
+                    @*                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" onclick="~/User/AddClient">Add New Client</button></div> *@
+
+
+
+                </div>
+                <div class="card-datatable table-responsive border-top pt-0">
+                    <table class="users-datatable main-table table">
+                        <thead>
+                            <tr>
+
+
+                                <th>Business Name</th>
+                                <th>Contact Person</th>
+                                <th>Contact Number</th>
+                                <th>PanCard</th>
+                                <th>GSTN/VAT</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.UserList != null)
+                                @foreach (var item in Model.UserList)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center user-name">
+                                                <div class="avatar me-2">
+                                                    <img src="~/Profile/@item.ProfileName" alt="Avatar" class="rounded-circle">
+                                                </div>
+                                                @item.CompanyName
+                                            </div>
+                                        </td>
+                                        <td>@item.ContactPerson</td>
+                                        <td>@item.ContactNumber</td>
+                                        <td>@item.PanCard</td>
+                                        <td>@item.GSTN</td>
+                                        <td>@item.CityName</td>
+                                        <td>
+                                         
+                                            @if (item.IsActive == true)
+                                            {
+                                                <span class="badge bg-label-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-label-danger">InActive</span>
+                                            }
+
+
+                                        </td>
+
+                                        <td>
+                                            <a href="/Master/GetCountryId"><i class="fa fa-eye text-success me-1"></i></a>
+                                            <a href="/Master/GetCountryId"><i class="fa fa-edit text-primary me-1"></i></a>
+                                            <a href="#" onclick="#"><i class="fa fa-trash text-danger me-1"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal to add new record -->
+            <!--/ DataTable with Buttons -->
+
+        </div>
+        <!-- / Content -->
+        @*   <div class="content-backdrop fade"></div> *@
+    </div>
+
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="~/assets/js/users-datatable.js"></script>

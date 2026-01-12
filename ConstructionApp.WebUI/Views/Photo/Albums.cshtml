@@ -1,0 +1,968 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Project File";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        text-align: center;
+        width: 100%;
+    }
+
+    .loader_inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -50px;
+    }
+</style>
+<div class="page-content-section">
+
+    <div class="container-fluid over-flow-auto px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+
+                            <li class="nav-item">
+                                <a href="~/Project/ProjectOverview/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Task/TaskDetails/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Tasks
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Document/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Documents
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Drawing/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Drawing
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Photo/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link active">
+                                    Photos
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments/@Model.EncProjectId"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <!-- Content -->
+        <h3 class="app-brand-link page-heading">
+            <span class="demo menu-text ">@Model.ProjectName > @Model.CategoryName > @Model.FileDetails</span>
+        </h3>
+        <div class="flex-grow-1 container-p-y">
+
+            <div class="flex-grow-1">
+                <div class="row g-6">
+                    <!-- Basic -->
+
+                    <div class="col-12">
+
+                        <div class="row">
+
+                            <div class="col-md-12 mb-5 ">
+                                <div class="row">
+
+                                    <div class="col-sm-8 mb-2 mb-md-0">
+
+                                        <div class="d-flex flex-wrap gap-5">
+                                            <div>
+                                                <h5 class="all-file">All files</h5>
+                                                <h2 class="project-name"><a href="~/Photo/ProjectPhoto">@Model.CategoryName</a></h2>
+                                            </div>
+
+                                            <div class="pt-5 min-width-select mt-1">
+                                                <select name="FolderId" id="selFolderId" class="form-select  select2" onchange="javascript:FolderDDL(this.value)">
+                                                    <option value="">Folders</option>
+                                                    @if (Model.PhotoFolderList != null)
+                                                    {
+                                                        @foreach (var item in Model.PhotoFolderList)
+                                                        {
+
+                                                            if (item.Id == Model.FolderId)
+                                                            {
+                                                                <option value="@item.Id" selected>@item.FolderName </option>
+
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id">@item.FolderName </option>
+                                                            }
+                                                        }
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="d-flex justify-content-sm-end">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-md-end align-items-center flex-wrap border-top-0 p-0">
+                                                    <div class="d-flex flex-wrap align-items-center">
+                                                        <ul class="list-unstyled users-list d-flex align-items-center avatar-group m-0 me-2">
+                                                            @if (Model.PhotoFolderFileList.Count > 0)
+                                                                @foreach (var item in Model.ProjectRoleSummeryList)
+                                                                {
+                                                                    <li data-bs-toggle="tooltip"
+                                                                        data-popup="tooltip-custom"
+                                                                        data-bs-placement="top"
+                                                                        title=" @item.UserName"
+                                                                        class="avatar pull-up">
+                                                                        <img class="rounded-circle" src="~/Profile/@item.Base64ProfileImage" alt="Avatar" />
+                                                                    </li>
+                                                                }
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                            @*  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invitemember">
+                                            <i class="fa fa-plus"></i> &nbsp; Invite Member
+                                            </button> *@
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+
+                                <div class="d-flex button-project-page">
+                                    <!-- Button to open Upload Photoss Modal -->
+                                    <button type="button" class="btn btn-project btn-upload" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                        <i class="fa fa-upload"></i> &nbsp; Upload photos
+                                    </button>
+
+
+                                    <!-- Trigger for Preview Modal -->
+                                    <!-- <button type="button" class="btn btn-project btn-preview" data-bs-toggle="modal" data-bs-target="#previewModal">
+                                        Open Preview
+                                    </button> -->
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="col-md-12 mt-5 pt-5">
+                                @*  <div>
+                                <h2 class="all-file">All Files</h2>
+
+                                </div> *@
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="all-file">All files</h5>
+
+
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-primary" id="selectAllBtn">
+                                            &nbsp; Select All
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="shareBtn">
+                                            &nbsp; <i class="fas fa-share-alt"></i>
+                                        </button>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="Documents-container mt-3">
+                                    @if (Model.PhotoFolderFileList != null)
+                                        @foreach (var item in Model.PhotoFolderFileList)
+                                        {
+                                            <div class="document-item">
+                                                <div class="hover-buttons">
+                                                    @*  <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="ShareFile(@item.Id)" data-bs-target="#inviteFolderMember">
+                                            <i class="fa fa-share" data-bs-toggle="tooltip" data-bs-placement="right" title="Share"></i>
+                                            </button> *@
+                                                    <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="previewDocument('@item.FilePath');" data-bs-target="#previewModal">
+                                                        <i class="fa fa-eye" data-bs-toggle="tooltip" data-bs-placement="right" title="View"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="deleteFile(@item.Id)" data-bs-target="#deleteModal">
+                                                        <i class="fa fa-trash" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"></i>
+                                                    </button>
+                                                    @*  <button type="button" class="btn btn-hover">
+                                            <i class="fab fa-whatsapp" data-bs-toggle="tooltip" data-bs-placement="right" title="Whats'App"></i>
+                                            </button> *@
+                                                    <button type="button" class="btn btn-hover" onclick="downloadFile('@item.FilePath')" data-bs-toggle="tooltip" title="Download">
+                                                        <i class="fa fa-download"></i>
+                                                    </button>
+
+                                                </div>
+                                                <a href="#" data-lightbox="image-1" data-title="My caption">
+                                                    <div class="document-icon">
+                                                        @if (item.FileExt == ".png" || item.FileExt == ".jpg" || item.FileExt == ".svg" || item.FileExt == ".gif" || item.FileExt == ".jpeg" || item.FileExt == ".webp")
+                                                        {
+                                                            <img src="@item.FilePath" alt="">
+                                                        }
+                                                        else if (item.FileExt == ".pdf")
+                                                        {
+                                                            <img src="~/assets/image/pdf.png" alt="" />
+                                                        }
+                                                        else if (item.FileExt == ".doc" || item.FileExt == ".docs")
+                                                        {
+                                                            <img src="~/assets/image/Doc.svg" alt="" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@item.FilePath" alt="">
+                                                        }
+                                                    </div>
+                                                    <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.FileName">
+                                                        <h2 class="document-title">@item.FileName</h2>
+                                                        <ul class="list-unstyled new-unstyled users-list d-flex align-items-left avatar-group m-0 me-2">
+                                                            <li data-bs-toggle="tooltip"
+                                                                data-popup="tooltip-custom"
+                                                                data-bs-placement="top"
+                                                                title="@item.UserName"
+                                                                class="avatar pull-up">
+                                                                <img class="rounded-circle" src="~/Profile/@item.Base64ProfileImage" alt="Avatar" />
+                                                            </li>
+
+                                                        </ul>
+                                                        <!-- avatar  -->
+
+                                                        <h6 class="document-project new-document-pro">
+                                                            <span>
+                                                                Created on @item.CreationDate.Value.ToString("dd/MMM/yyyy")
+                                                            </span>
+                                                            @if (item.AccessIds == null || item.AccessIds.Length == 0)
+                                                            {
+                                                                <input type="checkbox" name="subscribe" value="@item.Id"
+                                                                       class="ms-2 document-checkbox" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="subscribe" value="@item.Id"
+                                                                       class="ms-2 document-checkbox" checked />
+                                                            }
+
+                                                        </h6>
+
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                        }
+
+
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <!-- /Basic -->
+
+                </div>
+
+            </div>
+            <!-- / Content -->
+
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="max-width: 90vh;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Iframe for Preview -->
+                    <!-- Enhanced Iframe for Preview -->
+                    <iframe src="#" id="DocPreview"
+                            width="100%"
+                            height="auto"
+                            style="min-height: 80vh;"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            title="Background Preview"
+                            scrolling="auto">
+                    </iframe>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Would you like to delete this photo?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancel" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnDelete" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Upload Photoss Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form class="dropzone" id="my-dropzone">
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="mb-4">
+                        <label for="file-name" class="form-label">file Name</label>
+                        <input type="text" id="filename" required name="fileName" class="form-control" placeholder="Enter file name" />
+                        <input type="hidden" value="1" name="Fid" id="Fid" />
+                    </div>
+
+
+                </form>
+
+                <div class="modal-footer">
+                    @*   <input type="hidden" value="1" name="Cid" /> *@
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="uploadBtn" class="btn btn-primary">Upload</button>
+                </div>
+                @* </form> *@
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ----invite-member--modal--------  -->
+    <!-- Modal -->
+    <div class="modal fade" id="inviteFolderMember" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invite/share People to Your Team/ External Users</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="InviteOptions" id="myTeam" checked value="T">
+                        <label class="form-check-label" for="myTeam">Team</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="InviteOptions" id="External" value="E">
+                        <label class="form-check-label" for="External">External</label>
+                    </div>
+
+                    <p id="pTeam">They get access to file shared with the team. Manage access now or later.</p>
+                    <p id="pExternal" style="display:none;">They get access to file sent with the external user for view.</p>
+                    <div class="mb-3" id="divUser">
+                        <label for="emailBasic" class="form-label">Add Users</label>
+                        <select id="selFileUser" name="selFileUser" onchange="javascript:GetFileCollaboration()" class="select2 form-select" multiple>
+                            @{
+
+                                if (Model.UserList != null)
+                                {
+
+                                    foreach (var item in Model.UserList)
+                                    {
+                                        <option value="@item.UserId">
+                                            @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                        </option>
+
+                                    }
+                                }
+                            }
+                        </select>
+
+                    </div>
+                    <div class="mb-3" id="divEmail" style="display:none">
+                        <label for="emailBasic" class="form-label">Add Emails</label>
+
+                        <input type="email" id="emailUser" class="form-control" placeholder="Enter email addresses" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="messageFileBasic" class="form-label">Add an Optional Message</label>
+                        <textarea id="messageFileBasic" class="form-control" placeholder="Write a message..."></textarea>
+                    </div>
+
+                    <div class="mb-3" id="divAccess">
+                        <label class="form-label">Modify File Access</label>
+                        <select class="form-control" id="selFileAccessType">
+                            <option value="1">View Only</option>
+                            <option value="2">Edit Access</option>
+                            <option value="3">Full Access</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="FileCollaborators" name="FileCollaborators" class="form-control" />
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnFileShare" class="btn btn-primary">Invite/Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="selectedmember" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share Album Photo's</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Radio Buttons -->
+                    <div class="mb-3 d-flex ">
+                        <div class="">
+                            <label class="btn btn-primary" for="shareUser">
+                                <input type="radio" class="me-2" name="shareOption" id="shareUser" value="shareUser" checked>
+                                Team
+                            </label>
+                        </div>
+                        &nbsp;&nbsp;
+                        <div class="">
+                            <label class="btn btn-primary" for="externalUserOption">
+                                <input type="radio" class="me-2" name="shareOption" id="externalUserOption" value="externalUser">
+                                External
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Share By User Section -->
+                    <div id="shareByUser">
+                        <div class="mb-3">
+                            <label for="UserBasic" class="form-label">Select User</label>
+                            @*  <input type="text" id="UserBasic" class="form-control" placeholder="Select User" /> *@
+
+                            <select id="selUser" name="selUser" onchange="javascript:GetCollaboration()" class="select2 form-select" multiple>
+                                @{
+
+                                    if (Model.UserList != null)
+                                    {
+
+                                        foreach (var item in Model.UserList)
+                                        {
+                                            <option value="@item.UserId">
+                                                @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                            </option>
+
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="messageBasic" class="form-label">Message</label>
+                            <textarea id="messageBasic" class="form-control" placeholder="Write a message..."></textarea>
+                        </div>
+
+                       @*  <div class="mb-3">
+                            <label class="form-label">Access Type</label>
+                            <select class="form-control" id="selAccessType">
+                                <option value="1">View Only</option>
+                                <option value="2">Edit Access</option>
+                                <option value="3">Full Access</option>
+                            </select>
+                        </div> *@
+
+                        <div class="mb-3" style="display: none;">
+                            <label class="form-label">Selected Documents</label>
+                            <ul id="selectedDocumentsList" class="list-group mb-2"></ul>
+                        </div>
+                    </div>
+
+
+
+                    <!-- External User Section -->
+                    <div id="externalUser" style="display: none;">
+                        <div class="mb-3">
+                            <label for="emailExternal" class="form-label">Email</label>
+                            <input type="email" id="emailExternal" class="form-control" placeholder="Enter email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="messageExternal" class="form-label">Message</label>
+                            <textarea id="messageExternal" class="form-control" placeholder="Write a message..."></textarea>
+                        </div>
+                        @* <div class="mb-3">
+                        <label class="form-label">Selected Documents</label>
+                        <ul id="selectedFileList" class="list-group mb-2"></ul>
+                        </div> *@
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="hidden" id="Collaborators" name="Collaborators" class="form-control" />
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnShare" class="btn btn-primary">Invite/Share</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="loader" style="display:none"><div class="loader_inner"><span class="loader-spinner"></span></div></div>
+@section scripts {
+  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    @*    <script src="~/assets/js/documents.js"></script> *@
+    <script>
+        $(document).ready(function ($) {
+          
+            $("#Fid").val($("#selFolderId").val());
+
+        });
+
+        function FolderDDL(fId) {
+            // alert(categoryId);
+            $("#Fid").val(fId);
+            window.location.href = "/Photo/AlbumsById?FolderId=" + fId;
+        }
+        function GetUserList() {
+            jQuery.ajax({
+                type: "GET",
+                url: "/Photo/GetAllPhotoFile",
+
+                success: function (data) {
+
+                    if (data.length > 0) {
+                        if (data[0].accessIds && data[0].accessIds !== 'null' && data[0].accessIds !== '') {
+                            var myArray = data[0].accessIds.split(',');
+                            myArray = myArray.map(function (v) { return v.trim(); });
+                            $('#selUser').val(myArray).change();
+                           // $('#selAccessType').val(data[0].accessType).change();
+                            $('#messageBasic').val(data[0].optMessage);
+                        }
+                        $('#emailExternal').val(data[0].emailIds);
+                        $('#messageExternal').val(data[0].optMessage);
+
+
+
+                    }
+
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+        }
+        function ShareFile(id) {
+
+
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/Photo/GetFileUsers",
+                data: { Id: id },
+                success: function (data) {
+
+                    if (data.accessIds && data.accessIds !== 'null' && data.accessIds !== '') {
+                        var myArray = data.accessIds.split(',');
+                        myArray = myArray.map(function (v) { return v.trim(); });
+                        $('#selFileUser').val(myArray).change();
+                       // $('#selFileAccessType').val(data.accessType).change();
+                    }
+                    $('#messageFileBasic').val(data.optMessage);
+                    $('#emailUser').val(data.emailIds);
+
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+
+            document.querySelector("#btnFileShare").addEventListener("click", function () {
+
+                var selectedValue = $('input[name="InviteOptions"]:checked').val();
+                if (selectedValue == "T") {
+
+                    jQuery("#emailUser").val("");
+                }
+                else {
+                    jQuery("#FileCollaborators").val("");
+
+                }
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Photo/PhotoFileShareForDownload",
+                    data: { accessId: jQuery("#FileCollaborators").val(), accessType:1, Id: id, OptMessage: jQuery("#messageFileBasic").val(), emailIds: jQuery("#emailUser").val() },
+                    success: function (data) {
+                        alert(data.displayMessage);
+                        // location.reload();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            });
+
+            // document.querySelector("#btnFCancel").addEventListener("click", function () {
+
+            //     location.reload();
+            // });
+
+
+        }
+
+
+
+        function GetFileCollaboration() {
+
+            var selFile = document.getElementById('selFileUser');
+
+            var mySelected = [...selFile.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            jQuery("#FileCollaborators").val(mySelected);
+
+        }
+
+        function GetCollaboration() {
+
+            var selFile = document.getElementById('selUser');
+
+            var mySelected = [...selFile.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            jQuery("#Collaborators").val(mySelected);
+
+
+        }
+
+        $('input[name="InviteOptions"]').on('change', function () {
+
+            var selectedValue = $(this).val();
+
+            if (selectedValue == "T") {
+              //  jQuery("#divAccess").show();
+                jQuery("#divUser").show();
+                jQuery("#pTeam").show();
+                jQuery("#pExternal").hide();
+                jQuery("#divEmail").hide();
+            }
+            else {
+              //  jQuery("#divAccess").hide();
+                jQuery("#divUser").hide();
+                jQuery("#pTeam").hide();
+                jQuery("#divEmail").show();
+                jQuery("#pExternal").show();
+            }
+            // console.log("Selected:", selectedValue);
+
+
+        });
+    </script>
+
+    <script>
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone("#my-dropzone", {
+            url: "/Photo/CreateFolderFile",
+            autoProcessQueue: false,
+            paramName: "files",
+            maxFilesize: 100,
+            uploadMultiple: true,
+            parallelUploads: 10,
+            addRemoveLinks: true,
+            acceptedFiles: "image/*",
+            accept: function (file, done) {
+                done();
+            }
+        });
+
+        myDropzone.on("sending", function (file, xhr, formData) {
+            formData.append("Fid", $("#Fid").val());
+            formData.append("fileName", $("#filename").val());
+        });
+        document.querySelector("#uploadBtn").addEventListener("click", function () {
+            myDropzone.processQueue(); // <-- This triggers upload manually
+
+        });
+        myDropzone.on("queuecomplete", function () {
+            location.reload();
+            // window.location.href = "/success-page";
+        });
+    </script>
+
+    <script>
+        function previewDocument(url) {
+
+            var output = document.getElementById('DocPreview');
+            output.src = encodeURI(url).replace(/#/g, "%23");
+        }
+
+        function downloadFile(filepath) {
+            window.location.href = "/Photo/Download?fileName=" + filepath;
+        }
+
+        function deleteFile(id) {
+
+
+            document.querySelector("#btnDelete").addEventListener("click", function () {
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Photo/DeleteFolderFiles",
+                    data: { FileId: id },
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            });
+
+            document.querySelector("#btnCancel").addEventListener("click", function () {
+
+                location.reload();
+            });
+
+
+        }
+    </script>
+
+    <script>
+        document.getElementById('selectAllBtn').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.document-checkbox');
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked; // toggle based on current state
+            });
+
+            this.textContent = allChecked ? 'Select All' : 'Deselect All';
+        });
+    </script>
+
+    <script>
+        document.getElementById('shareBtn').addEventListener('click', function () {
+            const selectedItems = Array.from(document.querySelectorAll('.document-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+
+            if (selectedItems.length === 0) {
+                alert("Please select at least one item to share.");
+                return;
+            }
+
+
+            // Populate the list inside the modal
+            const listContainer = document.getElementById('selectedDocumentsList');
+            // const listFile = document.getElementById('selectedFileList');
+            listContainer.innerHTML = ''; // Clear previous list
+            // listFile.innerHTML = '';
+
+            selectedItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = item;
+                listContainer.appendChild(li);
+
+            });
+
+            const invitedModal = new bootstrap.Modal(document.getElementById('selectedmember'));
+            invitedModal.show();
+        });
+    </script>
+
+    <script>
+
+        const invitedModal = document.getElementById('selectedmember');
+
+        invitedModal.addEventListener('shown.bs.modal', function () {
+            const radios = invitedModal.querySelectorAll('input[name="shareOption"]');
+            const shareByUser = invitedModal.querySelector('#shareByUser');
+            const externalUser = invitedModal.querySelector('#externalUser');
+
+            radios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    if (this.value === 'shareUser') {
+                        shareByUser.style.display = 'block';
+                        externalUser.style.display = 'none';
+                    } else if (this.value === 'externalUser') {
+                        shareByUser.style.display = 'none';
+                        externalUser.style.display = 'block';
+                    }
+                });
+            });
+
+            GetUserList();
+
+            document.querySelector("#btnShare").addEventListener("click", function () {
+
+                const listContainer = document.getElementById('selectedDocumentsList');
+                const selectedItems = Array.from(listContainer.querySelectorAll('li'))
+                    .map(li => li.textContent.trim());
+
+                if (selectedItems.length === 0) {
+                    alert("Please select at least one item to share.");
+                    return;
+                }
+
+
+                if (selectedItems !== 'null' && selectedItems !== '') {
+                    var ids = selectedItems.join(',');
+                }
+                // Assuming you want to share all selected items
+
+                var accesTypes = '', emailIds = '', message = '';
+                var selectedValue = $('input[name="shareOption"]:checked').val();
+
+                if (selectedValue === 'shareUser') {
+
+                    jQuery("#emailExternal").val("");
+                   // accesTypes = jQuery("#selAccessType").val();
+                    message = jQuery("#messageBasic").val();
+                }
+                else {
+                    jQuery("#Collaborators").val("");
+                    emailIds = jQuery("#emailExternal").val();
+                    message = jQuery("#messageExternal").val();
+
+                }
+                $(".loader").show();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Photo/PhotoFilesShareForDownload",
+                    data: { accessId: jQuery("#Collaborators").val(), accessType: accesTypes, Ids: ids, OptMessage: message, emailIds: emailIds },
+                    success: function (data) {
+                        $(".loader").hide();
+                        // Swal.fire({
+                        //     title: 'Status',
+                        //     text: data.displayMessage,
+                        //     icon: 'success',
+                        //     confirmButtonText: 'OK!'
+                        // }).then((result) => {
+                        //     if (result.isConfirmed) {                            
+                        //         location.reload();
+                        //     }
+                        // });
+
+                       alert(data.displayMessage);
+                        location.reload();
+                       
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            });
+            // alert("Please select at least one item to share.");
+
+        });
+    </script>
+}

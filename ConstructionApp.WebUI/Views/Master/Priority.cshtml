@@ -1,0 +1,301 @@
+﻿@model Construction.Infrastructure.Models.CompanyPriorityMasterDTO
+@{
+    ViewData["Title"] = "Priority Management";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+                <div class="row">
+                    <div class="col-12">
+
+
+                        <div class="addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between flex-wrap gap-5">
+                                    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Priority </h4>
+                                    <div>
+                                       @*  <button type="button"
+                                                class="btn btn-primary mb-2"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                           
+                                            Priority Master
+                                        </button> *@
+                                        <button type="button"
+                                                class="btn btn-primary mb-2 ms-2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4"
+                                                data-bs-placement="right"
+                                                data-bs-html="true"
+                                                onclick="AddView()">
+                                            @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                            Add Record
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Master List</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-datatable table-responsive border-top pt-0 " id="MasterList">
+                                                    <table class="datatable1 table ">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th>Priority</th>
+                                                                @*  <th>Select</th> *@
+                                                                <th><input type="checkbox" class="form-check-input me-2" onclick="CheckAll(this)">Select</th>
+                                                            </tr>
+                                                        </thead>
+                                                        @*  <tbody id="mycountrytbl">
+                                                        </tbody> *@
+
+                                                        <tbody>
+                                                            @if (Model.PriorityMasterList != null)
+                                                            {
+                                                                int iCtr = 1;
+                                                                var ctrlId = string.Empty;
+                                                                @foreach (var item in Model.PriorityMasterList)
+                                                                {
+                                                                    <tr>
+
+                                                                        <td><label id="Phase_@iCtr"> @item.Priority</label></td>
+
+                                                                        <td>
+                                                                            @if (@item.IsActive == true)
+                                                                            {
+                                                                                <input type="checkbox" id="PriorityId_@iCtr" checked value="@item.PriorityId" class="form-check-input">
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="checkbox" id="PriorityId_@iCtr" value="@item.PriorityId" class="form-check-input">
+                                                                            }
+
+                                                                        </td>
+                                                                    </tr>
+                                                                    iCtr++;
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="col-md-12 mt-3">
+
+                                                        <div style="width: 200px; margin: 0 auto;">
+                                                            <button class="btn py-1 px-5 btn-primary" type="button" onclick="RegulerizeSelected()" style="width: 100%;">
+                                                                <span>Submit</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card-datatable table-responsive border-top pt-0">
+                                    <table class="master-datatable table" id="List">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Priority</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.CompanyPriorityList != null)
+                                                @foreach (var item in Model.CompanyPriorityList)
+                                                {
+                                                    <tr>
+                                                        <td>@item.CompanyPriority</td>
+
+                                                        <td>
+                                                            <a href="/Master/GetUnitPriorityById/@item.EncCompanyPriorityId"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.CompanyPriority','@item.EncCompanyPriorityId')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                            <div class="card-body">
+                                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                <div style="clear:both"></div>
+                                <form method="post" action="/Master/UnitPriorityMaster">
+                                    <div class="row g-3">
+
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">Priority  Name</label>
+                                            <input type="text" id="CompanyPriority" name="CompanyPriority" required maxlength="100" value="@Model.CompanyPriority" class="form-control" placeholder="Status Name">
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <input type="hidden" id="CompanyPriorityId" value="@Model.CompanyPriorityId" name="CompanyPriorityId">
+                                        <input type="hidden" id="UnitPriorityId" value="0" name="UnitPriorityId">
+
+
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+            </div>
+            <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+                                                @* <script src="~/assets/js/masters-datatable.js"></script> *@
+    <script type="text/javascript">
+        $(document).ready(function () {
+        if (@Model.CompanyPriorityId != 0 || @Model.HttpStatusCode!= 200) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+        });
+        //  new DataTable('#List');
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+          $("#MasterList").hide();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+            $("#MasterList").hide();
+        }
+        function AddMasterView() {
+         // $("#List").hide();
+          $("#MasterList").show();
+        $("#btnsubmit").show();
+        
+
+        }
+
+        function DeleteRecord(countryName, countryId) {
+      
+            if (confirm("Sure want to delete priority '" + countryName + "'?")) {
+            window.location.href = "/Master/DeleteUnitPriority/" + countryId;
+            }
+            return false;
+        }
+
+
+    function CheckAll(regularizeAll) {
+
+        isAllChecked = regularizeAll.checked;
+      
+        for (iCtr = 1; iCtr <= @Model.PriorityMasterList.Count; iCtr = iCtr + 1) {
+            chkBox = jQuery("#PriorityId_" + iCtr)
+           
+            if (chkBox != undefined) {
+                isChecked = chkBox.is(":checked")
+
+              //  alert(isAllChecked);
+               // alert(isChecked);
+
+                if (isAllChecked && !isChecked) {
+                    chkBox.attr('checked', true).change();
+                }
+                else if (!isAllChecked && isChecked) {
+                    chkBox.attr('checked', false).change();
+                }
+
+               // alert(chkBox);
+            }
+        }
+    }
+
+    function RegulerizeSelected() {
+        //alert('Regularize')
+        var rowData = {};
+        var formData = {};
+        var isData = false;
+        var dataCollection = new Array();
+        var results = new Array();
+        //var formData = new FormData();
+        var iCtr = 0;
+        var sValidMsg = "";
+        // var isData = true;
+
+        if (@Model.PriorityMasterList.Count> 0) {
+            for (iCtr = 1; iCtr <= @Model.PriorityMasterList.Count; iCtr = iCtr + 1) {
+                isChecked = jQuery("#PriorityId_" + iCtr).is(":checked")
+               // alert(isChecked);
+                if (isChecked) {
+
+                   // alert($("#Priority_" + iCtr).html())
+                    rowData.Priority = rowData.Priority != undefined ? rowData.Priority + "," + jQuery("#Priority_" + iCtr).html() : jQuery("#Priority_" + iCtr).html();
+                    rowData.PriorityIds = rowData.PriorityIds != undefined ? rowData.PriorityIds + "," + jQuery("#PriorityId_" + iCtr).val() : jQuery("#PriorityId_" + iCtr).val();
+
+                   isData = true;
+                 }
+            }
+        }
+
+        if (isData) {
+
+          //  return;
+            // console.log(rowData);
+            jQuery.ajax({
+                type: "POST",
+                url: "/Master/MasterPriority",
+                data: { userAction: rowData },
+                success: function (data) {
+
+                    window.location.href = "/Master/Priority" ;
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+                  
+                }
+            });
+
+        }
+        else {
+            alert("Please select at least an priority");
+        }
+
+    }
+
+
+
+
+
+    </script>

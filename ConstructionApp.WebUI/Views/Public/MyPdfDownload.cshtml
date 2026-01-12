@@ -1,0 +1,223 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr"
+      data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" data-style="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Krasa PDF</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <style>
+
+        import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+        .pdf-generator-container {
+            font-family: "Ubuntu", sans-serif;
+        }
+
+        .project-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            color: #000;
+            margin: 0;
+            font-size: 26px;
+            line-height: 30px;
+        }
+
+        .beadcrumb {
+            margin-top: 10px;
+            color: #444050;
+        }
+
+            .beadcrumb a {
+                text-decoration: none;
+                font-size: 16px;
+                color: #444050;
+                ;
+            }
+
+        .file-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .file-title .all-file {
+                font-size: 20px;
+                color: #444050;
+            }
+
+        .project-files-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            grid-gap: 10px;
+        }
+
+            .project-files-container .project-file-item {
+                border-radius: 8px;
+                overflow: hidden;
+                width: 100%;
+                position: relative;
+                max-width: 240px;
+                box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            }
+
+        .project-file-item .file-icon {
+            background-color: #F6F4F1;
+            padding: 4px;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+        }
+
+            .project-file-item .file-icon img {
+                max-width: 100%;
+                border-radius: 8px;
+                height: 100%;
+            }
+
+        .file-name {
+            padding: 8px 10px 10px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- PDF Genarator container -->
+    <div class="pdf-generator-container">
+
+        <div class="project-info">
+            <!-- Content -->
+            <h3 class="project-title">
+                Healthy and Safety Files
+            </h3>
+
+            <div class="beadcrumb">
+                <a href="#"> Haldiram's</a> > <a href="#">Health and Sefety files</a>
+            </div>
+
+
+        </div>
+
+        <div class="file-title">
+            <h5 class="all-file">All files</h5>
+        </div>
+
+        <div class="project-files-container">
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&auto=format&fit=crop&q=60" alt="Construction Site">
+                </div>
+                <h2 class="file-name">Construction Site</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=500&auto=format&fit=crop&q=60" alt="Architectural Design">
+                </div>
+                <h2 class="file-name">Architectural Design</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&auto=format&fit=crop&q=60" alt="Construction Equipment">
+                </div>
+                <h2 class="file-name">Construction Equipment</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&auto=format&fit=crop&q=60" alt="Building Materials">
+                </div>
+                <h2 class="file-name">Building Materials</h2>
+            </div>
+
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&auto=format&fit=crop&q=60" alt="Safety Equipment">
+                </div>
+                <h2 class="file-name">Safety Equipment</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&auto=format&fit=crop&q=60" alt="Site Survey">
+                </div>
+                <h2 class="file-name">Site Survey</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&auto=format&fit=crop&q=60" alt="Project Documentation">
+                </div>
+                <h2 class="file-name">Project Documentation</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=500&auto=format&fit=crop&q=60" alt="Construction Progress">
+                </div>
+                <h2 class="file-name">Construction Progress</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&auto=format&fit=crop&q=60" alt="Site Inspection">
+                </div>
+                <h2 class="file-name">Site Inspection</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?w=500&auto=format&fit=crop&q=60" alt="Project Timeline">
+                </div>
+                <h2 class="file-name">Project Timeline</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60" alt="Quality Control">
+                </div>
+                <h2 class="file-name">Quality Control</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=500&auto=format&fit=crop&q=60" alt="Blueprints">
+                </div>
+                <h2 class="file-name">Blueprints</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=500&auto=format&fit=crop&q=60" alt="Construction Workers">
+                </div>
+                <h2 class="file-name">Construction Workers</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=500&auto=format&fit=crop&q=60" alt="Project Planning">
+                </div>
+                <h2 class="file-name">Project Planning</h2>
+            </div>
+            <div class="project-file-item">
+                <div class="file-icon">
+                    <img src="https://images.unsplash.com/photo-1469122312224-c5846569feb1?w=500&auto=format&fit=crop&q=60" alt="Safety Equipment">
+                </div>
+                <h2 class="file-name">Safety Equipment</h2>
+            </div>
+        </div>
+
+    </div>
+    <!-- / PDF Genarator container -->
+</body>
+
+</html>

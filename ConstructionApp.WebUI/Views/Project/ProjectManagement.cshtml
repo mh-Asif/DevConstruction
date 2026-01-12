@@ -1,0 +1,391 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/assets/editor/css/editor-main.css" media="all">
+<!-- aha editor-->
+<link href="~/assets/editor/css/suneditor.min.css" rel="stylesheet">
+<!-- codeMirror -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.css">
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css">
+
+
+<div class="page-content-section">
+
+    <!-- ---tabs--  -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="navbar-brand app-brand demo d-flex d-md-none pt-2 me-4">
+                <h2 class="app-brand-link page-heading me-2">
+                    <span class="app-brand-text demo menu-text p-0 fw-bold">All Projects</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid tab-new mb-6 nav-tabs-shadow">
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a href="#"
+                               type="button"
+                               class="nav-link active">
+                                Active Projects
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#"
+                               type="button"
+                               class="nav-link">
+                                Closed Project
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- / Navbar -->
+    <!-- Content wrapper -->
+    <div class="container-fluid content-wrapper">
+        <!-- Content -->
+
+
+
+        <div class=" flex-grow-1">
+            <!-- DataTable with Buttons -->
+            <div class="row">
+                <div class="col-12">
+                </div>
+
+            </div>
+            <div class="card">
+                <div class="card-datatable table-responsive pt-0">
+                    <table class="project-datatable table">
+                        <thead>
+                            <tr>
+                              
+                                <th>Project Name</th>
+                                <th>Owner</th>
+                                <th>Tasks</th>
+                                <th>Phases</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Created By</th>
+                                <th>Created On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ProjectDashboardList != null)
+                                @foreach (var item in Model.ProjectDashboardList)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @item.ProjectName
+                                        </td>
+                                        <td>
+                                            @(item.ProjectOwner == null ? "NA" : item.ProjectOwner) </td>
+                                        <td>@item.TaskCount</td>
+                                        <td>@item.Phases</td>
+                                        <td>@item.StartDate</td>
+                                        <td>@item.EndDate</td>
+                                        <td>@item.Duration</td>
+                                        <td>@item.Status</td>
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.CreatedOn</td>
+
+                                        <td>
+                                            <a href="#"><i class="fa fa-eye text-success me-1"></i></a>
+                                            <a href="/Project/GetProjectId/@item.EncProjectId"><i class="fa fa-edit text-primary me-1"></i></a>
+                                            <a href="#" onclick="#"><i class="fa fa-trash text-danger me-1"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal to add new record -->
+            <div class="offcanvas offcanvas-end" id="add-new-record">
+                <div class="offcanvas-header border-bottom">
+                    <h5 class="offcanvas-title" id="exampleModalLabel">Add New Project</h5>
+                    <button type="button" class="btn-close text-reset text-danger" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body flex-grow-1">
+                    <form class="add-new-record pt-0 row g-2" id="form-add-new-record" method="post" action="/Project/SaveProject">
+
+                        <!-- Project Name -->
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basicFullname">Project Name<span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" id="ProjectName" required class="form-control dt-full-name" name="ProjectName" value="@Model.ProjectName"
+                                       placeholder="Commercial Complex" aria-label="Project Name" aria-describedby="basicFullname2" />
+                            </div>
+                        </div>
+
+                        <!-- Project Category -->
+                        <div class="col-md-6">
+                            <label class="form-label" for="basicEmail">Project Category</label>
+                            <select name="CategoryId" required id="CategoryId" class="form-select select2 dt-email"
+                                    aria-describedby="basicDate2">
+                                @if (Model.CategoryList != null)
+                                {
+                                    <option value=""> Select</option>
+                                    @foreach (var item in Model.CategoryList)
+                                    {
+                                        if (item.UnitCategoryId == Model.CategoryId)
+                                        {
+                                            <option value="@item.UnitCategoryId" selected>@item.UnitCategory </option>
+
+
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.UnitCategoryId">@item.UnitCategory </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <!-- Priority -->
+                        <div class="col-md-6">
+                            <label class="form-label" for="priority">Priority</label>
+                            <select name="PriorityId" id="PriorityId" required class="form-select select2">
+                                @if (Model.PriorityList != null)
+                                {
+                                    <option value=""> Select</option>
+                                    @foreach (var item in Model.PriorityList)
+                                    {
+                                        if (item.CompanyPriorityId == Model.PriorityId)
+                                        {
+                                            <option value="@item.CompanyPriorityId" selected>@item.CompanyPriority </option>
+
+
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CompanyPriorityId">@item.CompanyPriority </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 ">
+                            <label for="TagifyUserList" class="form-label">Project Owner</label>
+                            <select name="UserId" id="UserId" required class="form-select select2">
+                                @if (Model.UserList != null)
+                                {
+                                    <option value=""> Select</option>
+                                    @foreach (var item in Model.UserList)
+                                    {
+                                        if (item.UserId == Model.UserId)
+                                        {
+                                            <option value="@item.UserId" selected>
+                                                @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.UserId">
+                                                @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                            </option>
+                                        }
+                                    }
+                                    <option value="0"> NA</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="TagifyUserList" class="form-label">Status</label>
+                            <select name="StatusId" id="selStatus" class="form-select select2">
+                                @if (Model.StatusList != null)
+                                {
+                                    <option value=""> Select</option>
+                                    @foreach (var item in Model.StatusList)
+                                    {
+                                        if (item.ID == Model.StatusId)
+                                        {
+                                            <option value="@item.ID" selected>@item.Status </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ID">@item.Status </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="start-date">Start Date</label>
+                            <input type="date" id="start-date" class="form-control" required placeholder="6, March 2025" name="StartDate" value="@Model.StartDate" />
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label" for="due-date">End Date</label>
+                            <input type="date" id="due-date" class="form-control" required placeholder="20, March 2025" name="EndDate" value="@Model.EndDate" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="new-input-box">
+
+                                <label for="TagifyUserList" class="form-label">Collaborators </label>
+                                <select id="selCollaborators" name="SelCollaborators" onchange="javascript:GetCollaboration()" class="select2 form-select" multiple>
+                                  @{
+                                        string[] collaborators = Model.Collaborators == null ? null : Model.Collaborators.Split(",");
+                                    if (Model.UserList != null)
+                                    {
+                                     
+                                        foreach (var item in Model.UserList)
+                                        {
+                                                if (collaborators != null)
+                                                {
+                                                    if (collaborators.Contains(item.UserId.ToString()))
+                                                    {
+                                                        <option value="@item.UserId" selected >
+                                                            @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.UserId">
+                                                            @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                           
+                                                        </option>
+                                                    }
+                                                }
+                                            else
+                                            {
+                                                <option value="@item.UserId">
+                                                    @(item.FirstName != null ? item.FirstName + " " + item.LastName : item.BusinessOwner)
+                                                       
+                                                </option>
+                                            }
+                                        }
+                                    }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Project Description -->
+                        <div class="col-md-12">
+                            <label class="form-label" for="project-description">Project Description</label>
+                            <textarea id="editor_classic" name="Description" class="aha_editor">
+                          </textarea>
+                          @*   <textarea id="project-description" name="Description" class="form-control"
+                            placeholder="Enter project details">style="display:none;"</textarea> *@
+                        </div>
+
+                        <!-- Assign Users -->
+                  
+
+
+                        <div class="col-md-12">
+                            <label class="form-label" for="fileUpload">File Upload</label>
+                            <input type="file" id="formFile" name="formFile" class="form-control" />
+                        </div>
+
+                        <div class="col-sm-12">
+                            <input type="hidden" id="Collaborators" name="Collaborators" class="form-control" value="@Model.Collaborators" />
+                            <input type="hidden" id="ProjectId" name="ProjectId" class="form-control" value="@Model.ProjectId" />
+                            <button type="submit" id="btnSave" class="btn btn-primary data-submit me-sm-4 me-1">Add Project</button>
+                            <button type="submit" id="btnUpdate" class="btn btn-primary data-submit me-sm-4 me-1" style="display:none;" >Update Project</button>
+                            <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+
+            <!--/ DataTable with Buttons -->
+
+        </div>
+        <!-- / Content -->
+
+
+
+        <div class="content-backdrop fade"></div>
+    </div>
+
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="~/assets/js/project-datatable.js"></script>
+<script src="~/assets/editor/js/suneditor.min.js"></script>
+<!-- codeMirror -->
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/htmlmixed/htmlmixed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/xml/xml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/css/css.js"></script>
+<!-- KaTeX -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+<!-- -editor----  -->
+<script src="~/assets/editor/js/editor.js"></script>
+@* <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+<script src="~/assets/js/forms-tagify.js"></script> *@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function ($) {
+
+        if (@Model.ProjectId != 0 || @Model.HttpStatusCode!= 200) {
+            $("#btnSave").hide();
+           // $("#btnUpdate").show();
+            offCanvasElement = document.querySelector('#add-new-record');
+            offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
+            offCanvasEl.show();
+           
+        }
+        
+
+         $.each($("#Collaborators").val().split(","), function (i, e) {
+                $("#selCollaborators option[value='" + e + "']").prop("selected", true);
+            });
+    });
+    // $(document).ready(function () {
+
+    //    // alert('test1');
+    //    //  $.each($("#Collaborators").val().split(","), function (i, e) {
+    //    //      $("#selCollaborators option[value='" + e + "']").prop("selected", true);
+    //    //  });
+    // });
+    function GetCollaboration() {
+        var select = document.getElementById('selCollaborators');
+        var selected = [...select.options]
+            .filter(option => option.selected)
+            .map(option => option.value);
+
+        jQuery("#Collaborators").val(selected);
+    }
+   
+
+   
+
+
+
+
+
+
+
+
+
+
+   
+
+</script>

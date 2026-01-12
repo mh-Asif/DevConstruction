@@ -1,0 +1,339 @@
+﻿@model Construction.Infrastructure.Models.UnitPhasesMasterDTO
+@{
+    ViewData["Title"] = "Priority Management";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+                <div class="row">
+                    <div class="col-12">
+
+                       
+                        <div class="addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between flex-wrap gap-5">
+                                    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Phases </h4>
+                                    <div>
+                                       @*  <button type="button"
+                                                class="btn btn-primary mb-2"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">                                         
+                                            Phases Master
+                                        </button> *@
+                                        <button type="button"
+                                                class="btn btn-primary mb-2 ms-2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4"
+                                                data-bs-placement="right"
+                                                data-bs-html="true"
+                                                onclick="AddView()">
+                                            @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                            Add Record
+                                        </button>
+                                    </div>
+                                </div>
+
+                              
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">MasterList</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-datatable table-responsive border-top pt-0 "  id="MasterList">
+                                                    <table class="datatable1 table ">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th>Phase</th>
+                                                                @*  <th>Select</th> *@
+                                                                <th><input type="checkbox" class="form-check-input me-2" onclick="CheckAll(this)">Select</th>
+                                                            </tr>
+                                                        </thead>
+                                                        @*  <tbody id="mycountrytbl">
+                                                        </tbody> *@
+
+                                                        <tbody>
+                                                            @if (Model.MasterPhasesList != null)
+                                                            {
+                                                                int iCtr = 1;
+                                                                var ctrlId = string.Empty;
+                                                                @foreach (var item in Model.MasterPhasesList)
+                                                                {
+                                                                    <tr>
+
+                                                                        <td><label id="Phase_@iCtr"> @item.Phases</label></td>
+
+                                                                        <td>
+                                                                            @if (@item.IsActive == true)
+                                                                            {
+                                                                                <input type="checkbox" id="PhaseId_@iCtr" checked value="@item.PhaseID" class="form-check-input">
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input type="checkbox" id="PhaseId_@iCtr" value="@item.PhaseID" class="form-check-input">
+                                                                            }
+
+                                                                        </td>
+                                                                    </tr>
+                                                                    iCtr++;
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="col-md-12 mt-3">
+
+                                                        <div style="width: 200px; margin: 0 auto;">
+                                                            <button class="btn py-1 px-5 btn-primary" type="button" onclick="RegulerizeSelected()" style="width: 100%;">
+                                                                <span>Submit</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+            
+                              
+                                <div class="card-datatable table-responsive border-top pt-0">
+                                    <table class="master-datatable table" id="List">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Phase</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.UnitPhasesList != null)
+                                                @foreach (var item in Model.UnitPhasesList)
+                                                {
+                                                    <tr>
+                                                        <td>@item.Phase</td>
+
+                                                        <td>
+                                                            <a href="/Master/GetUnitPhasesById/@item.EncryptedId"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.Phase','@item.EncryptedId')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                            <div class="card-body">
+                                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                <div style="clear:both"></div>
+                                <form method="post" action="/Master/UnitPhaseMaster">
+                                    <div class="row g-3">
+
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">Phase Name</label>
+                                            <input type="text" id="Phase" name="Phase" required maxlength="100" class="form-control" value="@Model.Phase" placeholder="Priority Name">
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <input type="hidden" id="ID" value="@Model.ID" name="ID">
+                                        <input type="hidden" id="MasterPhaseId" value="0" name="MasterPhaseId">
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+            </div>
+            <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+@* <script src="~/assets/js/masters-datatable.js"></script> *@
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (@Model.ID != 0 || @Model.HttpStatusCode!= 200) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+            else {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+        }
+    });
+    //  new DataTable('#List');
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+      //  $("#MasterList").hide();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+       // $("#MasterList").hide();
+    }
+    function AddMasterView() {
+        // $("#List").hide();
+       // $("#MasterList").show();
+       // $("#btnsubmit").show();
+
+
+    }
+
+    function DeleteRecord(countryName, countryId) {
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/Master/DeleteUnitPhases/" + countryId;
+                Swal.fire(
+                    'Deleted!',
+                    'Phase has been deleted.',
+                    'success'
+                );
+
+            }
+        });
+       
+        return false;
+    }
+
+    function ShowServerMessage(sMsg) {
+
+        Swal.fire({
+            title: 'Message',
+            text: sMsg,
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        });
+    }
+
+    function CheckAll(regularizeAll) {
+
+        isAllChecked = regularizeAll.checked;
+
+        for (iCtr = 1; iCtr <= @Model.MasterPhasesList.Count; iCtr = iCtr + 1) {
+            chkBox = jQuery("#PhaseId_" + iCtr)
+
+         
+
+            if (chkBox != undefined) {
+                isChecked = chkBox.is(":checked")
+
+               //  alert(isAllChecked);
+               
+
+                if (isAllChecked && !isChecked) {
+                    chkBox.attr('checked', true).change();
+                }
+                else if (!isAllChecked && isChecked) {
+                    chkBox.attr('checked', false).change();
+                }
+
+                // alert(chkBox);
+            }
+        }
+    }
+
+    function RegulerizeSelected() {
+        //alert('Regularize')
+        var rowData = {};
+        var formData = {};
+        var isData = false;
+        var dataCollection = new Array();
+        var results = new Array();
+        //var formData = new FormData();
+        var iCtr = 0;
+        var sValidMsg = "";
+        // var isData = true;
+
+        if (@Model.MasterPhasesList.Count> 0) {
+            for (iCtr = 1; iCtr <= @Model.MasterPhasesList.Count; iCtr = iCtr + 1) {
+                isChecked = jQuery("#PhaseId_" + iCtr).is(":checked")
+                // alert(isChecked);
+                if (isChecked) {
+
+                    // alert($("#Priority_" + iCtr).html())
+                    rowData.Priority = rowData.Priority != undefined ? rowData.Priority + "," + jQuery("#Phase_" + iCtr).html() : jQuery("#Phase_" + iCtr).html();
+                    rowData.PriorityIds = rowData.PriorityIds != undefined ? rowData.PriorityIds + "," + jQuery("#PhaseId_" + iCtr).val() : jQuery("#PhaseId_" + iCtr).val();
+
+                    isData = true;
+                }
+            }
+        }
+
+        if (isData) {
+
+            //  return;
+            // console.log(rowData);
+            jQuery.ajax({
+                type: "POST",
+                url: "/Master/MasterPhases",
+                data: { userAction: rowData },
+                success: function (data) {
+
+                    window.location.href = "/Master/UnitPhases";
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+
+        }
+        else {
+            alert("Please select at least an phase");
+        }
+
+    }
+
+
+
+
+
+</script>

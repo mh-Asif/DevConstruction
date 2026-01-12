@@ -1,0 +1,749 @@
+﻿@model Construction.Infrastructure.Models.AccessMasterDTO
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <!-- Content -->
+
+
+    <div class="flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-12">
+                <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                    <h2 class="app-brand-link page-heading me-2">
+                        <span class="app-brand-text demo menu-text p-0 fw-bold">Add Vender</span>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+
+               
+                <!--/ Navbar pills -->
+                <!-- Tab Content -->
+                <div class="tab-content" id="profileTabContent">
+                    <!-- Navbar pills -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0" id="profileTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1-content" role="tab" aria-controls="tab1-content" aria-selected="true"><i class="ti-sm ti ti-user-check me-1_5"></i>User Access Mapping</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2-content" role="tab" aria-controls="tab2-content" aria-selected="false"><i class="ti-sm ti ti-users me-1_5"></i> Vendor Access Mapping</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="tab3-tab" data-bs-toggle="pill" href="#tab3-content" role="tab" aria-controls="tab3-content" aria-selected="false"><i class="ti-sm ti ti-users me-1_5"></i> Client Access Mapping</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Profile Tab -->
+                    <div class="tab-pane fade show active" id="tab1-content" role="tabpanel" aria-labelledby="tab1-tab">
+                        <div class="card mb-6 border-right">
+                            <div class="card-body">
+                                <!-- Add role form -->
+                                <form id="addRoleForm" class="row g-6">
+                                    <div class="col-4">
+                                        <label class="form-label" for="DepartmentId">Department</label>
+                                        <select id="selDepartmentId" name="DepartmentId" onchange="javascript:GetAccess()" class="select2 form-select">
+                                            @if (Model.DepartmentMasterList != null)
+                                            {
+                                                <option value=""> Select</option>
+                                                @foreach (var item in Model.DepartmentMasterList)
+                                                {
+                                                    if (item.DepartmentId == Model.DepartmentId)
+                                                    {
+                                                        <option value="@item.DepartmentId" selected>@item.DepartmentName </option>
+
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.DepartmentId">@item.DepartmentName </option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    @*  <div class="col-4">
+                                    <label class="form-label" for="DesignationId">Designation</label>
+                                    <select id="selDesignationId" name="DesignationId" onchange="javascript:GetAccess()" class="select2 form-select">
+                                    @if (Model.JobTitleMasterList != null)
+                                    {
+                                    <option value=""> Select</option>
+                                    @foreach (var item in Model.JobTitleMasterList)
+                                    {
+                                    if (item.JobTitleId == Model.DesignationId)
+                                    {
+                                    <option value="@item.JobTitleId" selected>@item.JobTitle </option>
+
+
+                                    }
+                                    else
+                                    {
+                                    <option value="@item.JobTitleId">@item.JobTitle </option>
+                                    }
+                                    }
+                                    }
+                                    </select>
+                                    </div> *@
+                                    <div class="col-4">
+                                        <label class="form-label" for="RoleId">Role</label>
+                                        <select id="selRoleId" name="RoleId" onchange="javascript:GetAccess()" class="select2 form-select">
+                                            @if (Model.RoleMasterList != null)
+                                            {
+                                                <option value=""> Select</option>
+                                                @foreach (var item in Model.RoleMasterList)
+                                                {
+                                                    if (item.RoleId == Model.RoleId)
+                                                    {
+                                                        <option value="@item.RoleId" selected>@item.RoleName </option>
+
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.RoleId">@item.RoleName </option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <h4 class="mb-6">Role Permissions</h4>
+                                        <!-- Permission table -->
+                                        <div class="table-responsive">
+                                            <table class="table table-flush-spacing">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-nowrap fw-medium text-heading">
+                                                            Administrator Access
+                                                            <i class="ti ti-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Allows full access to the system"></i>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex justify-content-end">
+                                                                <div class="form-check mb-0">
+                                                                    <input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleAll(this)" />
+                                                                    <label class="form-check-label" for="selectAll"> Select All </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    @if (Model.AccessList != null)
+                                                    {
+                                                        int iCtr = 1;
+
+                                                        @foreach (var item in Model.AccessList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap fw-medium text-heading">@item.ModuleName</td>
+                                                                <td>
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsView == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" type="checkbox" checked id="View_@iCtr" name="IsView" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" type="checkbox" id="View_@iCtr" name="IsView" />
+                                                                            }
+                                                                            @if (item.ModuleCode.Trim() == "IM")
+                                                                            {
+                                                                                <label class="form-check-label" for="projectManagementView">Account </label>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                            <label class="form-check-label" for="projectManagementView"> Access </label>
+                                                                            }
+                                                                        </div>
+                                                                     @*    <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsEdit == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" checked type="checkbox" id="Edit_@iCtr" name="IsEdit" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" type="checkbox" id="Edit_@iCtr" name="IsEdit" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementEdit"> Edit </label>
+                                                                        </div>
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsAdd == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" checked type="checkbox" id="Add_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" type="checkbox" id="Add_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            <label class="form-check-label" for="projectManagementCreate"> Create </label>
+                                                                        </div>
+                                                                        <div class="form-check me-4 me-lg-12 mb-0">
+                                                                            @if (item.IsDelete == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" checked type="checkbox" id="Delete_@iCtr" name="IsDelete" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox" type="checkbox" id="Delete_@iCtr" name="IsDelete" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementDelete"> Delete </label>
+                                                                        </div> *@
+                                                                        <div class="form-check mb-0">
+                                                                            @if (item.ModuleCode.Trim() == "P" || item.ModuleCode.Trim() == "T" || item.ModuleCode.Trim() == "IM")
+                                                                            {
+                                                                                @if (item.IsApproval == true)
+                                                                                {
+                                                                                    <input class="form-check-input permission-checkbox" checked type="checkbox" id="Approval_@iCtr" name="IsApproval" />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input class="form-check-input permission-checkbox" type="checkbox" id="Approval_@iCtr" name="IsApproval" />
+                                                                                }
+                                                                                <label class="form-check-label" for="projectManagementDelete"> Approval </label>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <label class="form-check-label approval-blank" for="projectManagementDelete">  </label>
+                                                                            }
+
+
+
+                                                                        </div>
+                                                                        <input type="hidden" id="ModuleId_@iCtr" name="ModuleId" value="@item.ModuleId">
+                                                                        <input type="hidden" id="AccessId_@iCtr" name="AccessId" value="@item.AccessId">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            iCtr++;
+                                                        }
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- Permission table -->
+                                    </div>
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-primary me-3" onclick="RegulerizeSelected()">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                    </div>
+                                </form>
+                                <!--/ Add role form -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3 -->
+                    <div class="tab-pane fade" id="tab3-content" role="tabpanel" aria-labelledby="tab3-tab">
+                        <div class="card mb-6 border-right">
+                            <div class="card-body">
+                                <!-- Add role form -->
+                                <form id="addRoleFormClient" class="row g-6">
+                                    
+                                    <div class="col-12">
+                                        <h4 class="mb-6">Role Permissions</h4>
+                                        <!-- Permission table -->
+                                        <div class="table-responsive">
+                                            <table class="table table-flush-spacing">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-nowrap fw-medium text-heading">
+                                                           @*  Administrator Access
+                                                            <i class="ti ti-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Allows full access to the system"></i> *@
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex justify-content-end">
+                                                                <div class="form-check mb-0">
+                                                                    <input class="form-check-input" type="checkbox" id="selectAllClient" onclick="toggleAllClient(this)" />
+                                                                    <label class="form-check-label" for="selectAllClient"> Select All </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    @if (Model.AccessClientList != null)
+                                                    {
+                                                        int iCtr = 1;
+
+                                                        @foreach (var item in Model.AccessClientList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap fw-medium text-heading">@item.ModuleName</td>
+                                                                <td>
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsView == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" type="checkbox" checked id="ViewC_@iCtr" name="IsView" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" type="checkbox" id="ViewC_@iCtr" name="IsView" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementView"> Access </label>
+                                                                        </div>
+                                                                       @*  <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsEdit == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" checked type="checkbox" id="EditC_@iCtr" name="IsEdit" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" type="checkbox" id="EditC_@iCtr" name="IsEdit" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementEdit"> Edit </label>
+                                                                        </div>
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsAdd == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" checked type="checkbox" id="AddC_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" type="checkbox" id="AddC_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            <label class="form-check-label" for="projectManagementCreate"> Create </label>
+                                                                        </div>
+                                                                        <div class="form-check me-4 me-lg-12 mb-0">
+                                                                            @if (item.IsDelete == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" checked type="checkbox" id="DeleteC_@iCtr" name="IsDelete" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-client" type="checkbox" id="DeleteC_@iCtr" name="IsDelete" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementDelete"> Delete </label>
+                                                                        </div> *@
+                                                                        <div class="form-check mb-0">
+                                                                            @if (item.ModuleCode.Trim() == "P" || item.ModuleCode.Trim() == "T" || item.ModuleCode.Trim() == "IM")
+                                                                            {
+                                                                                @if (item.IsApproval == true)
+                                                                                {
+                                                                                    <input class="form-check-input permission-checkbox-client" checked type="checkbox" id="ApprovalC_@iCtr" name="IsApproval" />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <input class="form-check-input permission-checkbox-client" type="checkbox" id="ApprovalC_@iCtr" name="IsApproval" />
+                                                                                }
+                                                                                <label class="form-check-label" for="projectManagementDelete"> Approval </label>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <label class="form-check-label approval-blank" for="projectManagementDelete">  </label>
+                                                                            }
+
+
+
+                                                                        </div>
+                                                                        <input type="hidden" id="ModuleIdC_@iCtr" name="ModuleId" value="@item.ModuleId">
+                                                                        <input type="hidden" id="AccessIdC_@iCtr" name="AccessId" value="@item.AccessId">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            iCtr++;
+                                                        }
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- Permission table -->
+                                    </div>
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-primary me-3" onclick="RegulerizeSelectedClient()">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                    </div>
+                                </form>
+                                <!--/ Add role form -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2 -->
+                    <div class="tab-pane fade" id="tab2-content" role="tabpanel" aria-labelledby="tab2-tab">
+                        <div class="card mb-6 border-right">
+                            <div class="card-body">
+                                <!-- Add role form -->
+                                <form id="addRoleFormVendor" class="row g-6">
+                             
+                                    <div class="col-12">
+                                        <h4 class="mb-6">Role Permissions</h4>
+                                        <!-- Permission table -->
+                                        <div class="table-responsive">
+                                            <table class="table table-flush-spacing">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-nowrap fw-medium text-heading">
+                                                            @* Administrator Access
+                                                            <i class="ti ti-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Allows full access to the system"></i> *@
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex justify-content-end">
+                                                                <div class="form-check mb-0">
+                                                                    <input class="form-check-input" type="checkbox" id="selectAllVendor" onclick="toggleAllVendor(this)" />
+                                                                    <label class="form-check-label" for="selectAllVendor"> Select All </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    @if (Model.AccessVendorList != null)
+                                                    {
+                                                        int iCtr = 1;
+
+                                                        @foreach (var item in Model.AccessVendorList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap fw-medium text-heading">@item.ModuleName</td>
+                                                                <td>
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsView == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" type="checkbox" checked id="ViewV_@iCtr" name="IsView" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" type="checkbox" id="ViewV_@iCtr" name="IsView" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementView"> Access </label>
+                                                                        </div>
+                                                                      @*   <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsEdit == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" checked type="checkbox" id="EditV_@iCtr" name="IsEdit" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" type="checkbox" id="EditV_@iCtr" name="IsEdit" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementEdit"> Edit </label>
+                                                                        </div>
+                                                                        <div class="form-check mb-0 me-4 me-lg-12">
+                                                                            @if (item.IsAdd == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" checked type="checkbox" id="AddV_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" type="checkbox" id="AddV_@iCtr" name="IsAdd" />
+                                                                            }
+                                                                            <label class="form-check-label" for="projectManagementCreate"> Create </label>
+                                                                        </div>
+                                                                        <div class="form-check me-4 me-lg-12 mb-0">
+                                                                            @if (item.IsDelete == true)
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" checked type="checkbox" id="DeleteV_@iCtr" name="IsDelete" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <input class="form-check-input permission-checkbox-vendor" type="checkbox" id="DeleteV_@iCtr" name="IsDelete" />
+                                                                            }
+
+                                                                            <label class="form-check-label" for="projectManagementDelete"> Delete </label>
+                                                                        </div> *@
+                                                                      
+                                                                        <input type="hidden" id="ModuleIdV_@iCtr" name="ModuleId" value="@item.ModuleId">
+                                                                        <input type="hidden" id="AccessIdV_@iCtr" name="AccessId" value="@item.AccessId">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            iCtr++;
+                                                        }
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- Permission table -->
+                                    </div>
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-primary me-3" onclick="RegulerizeSelectedVendor()">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                    </div>
+                                </form>
+                                <!--/ Add role form -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+              
+            </div>
+        </div>
+        <!--/ Header -->
+
+    </div>
+    <!-- / Content -->
+
+
+</div>
+
+@* <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> *@
+@section scripts {
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+    });
+
+   
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('profileImageInput');
+        const imgPreview = document.getElementById('profileImagePreview');
+
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result; // Set the selected image as the source
+                };
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        });
+    });
+
+    function toggleAll(source) {
+        $('.permission-checkbox').prop('checked', source.checked).trigger('change');
+    }
+     function toggleAllClient(source) {
+        $('.permission-checkbox-client').prop('checked', source.checked).trigger('change');
+    }
+
+        function toggleAllVendor(source) {
+            $('.permission-checkbox-vendor').prop('checked', source.checked).trigger('change');
+        }
+
+
+
+    function RegulerizeSelected() {
+        //alert('Regularize')
+        var rowData = {};
+        var formData = {};
+        var isData = false;
+        var dataCollection = new Array();
+        var results = new Array();
+        //var formData = new FormData();
+        var iCtr = 0;
+        var sValidMsg = "";
+        // var isData = true;
+
+        if (@Model.AccessList.Count> 0) {
+            for (iCtr = 1; iCtr <= @Model.AccessList.Count; iCtr = iCtr + 1) {
+
+                    //alert("Approved " + jQuery("#Approval_" + iCtr).is(":checked"));
+                // alert("Edit " + jQuery("#Edit_" + iCtr).is(":checked"));
+                // alert("Add " + jQuery("#Add_" + iCtr).is(":checked"));
+                // alert("Delete " + jQuery("#Delete_" + iCtr).is(":checked"));
+                rowData.IsViews = rowData.IsViews != undefined ? rowData.IsViews + "," + jQuery("#View_" + iCtr).is(":checked") : jQuery("#View_" + iCtr).is(":checked");
+                rowData.IsEdits = rowData.IsEdits != undefined ? rowData.IsEdits + "," + jQuery("#Edit_" + iCtr).is(":checked") : jQuery("#Edit_" + iCtr).is(":checked");
+                rowData.IsAdds = rowData.IsAdds != undefined ? rowData.IsAdds + "," + jQuery("#Add_" + iCtr).is(":checked") : jQuery("#Add_" + iCtr).is(":checked");
+                rowData.IsDeletes = rowData.IsDeletes != undefined ? rowData.IsDeletes + "," + jQuery("#Delete_" + iCtr).is(":checked") : jQuery("#Delete_" + iCtr).is(":checked");
+               rowData.IsApprovals = rowData.IsApprovals != undefined ? rowData.IsApprovals + "," + jQuery("#Approval_" + iCtr).is(":checked") : jQuery("#Approval_" + iCtr).is(":checked");
+                rowData.ModuleIds = rowData.ModuleIds != undefined ? rowData.ModuleIds + "," + jQuery("#ModuleId_" + iCtr).val() : jQuery("#ModuleId_" + iCtr).val();
+                rowData.AccessIds = rowData.AccessIds != undefined ? rowData.AccessIds + "," + jQuery("#AccessId_" + iCtr).val() : jQuery("#AccessId_" + iCtr).val();
+
+                //  isData = true;
+                // }
+            }
+            rowData.RoleId = jQuery("#selRoleId").val();
+           rowData.DepartmentId = jQuery("#selDepartmentId").val();
+           // rowData.DesignationId = jQuery("#selDesignationId").val();
+
+        }
+
+        jQuery.ajax({
+            type: "POST",
+            url: "/Home/UserAccessMapping",
+            data: { userAction: rowData },
+            success: function (data) {
+               
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Access rights have been given successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK!'
+                    });
+               
+                 //   window.
+
+               // window.location.href = "/Home/AccessMaster"
+            },
+            error: function (result) {
+                var x = 1;
+                Alert("errror<br>" + result.responseText);
+
+            }
+          //  alert('test78');
+        });
+
+
+
+    }
+
+   function RegulerizeSelectedClient() {
+            // alert('In Progress');
+            // return;
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.AccessList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.AccessList.Count; iCtr = iCtr + 1) {
+
+                    //alert("Approved " + jQuery("#Approval_" + iCtr).is(":checked"));
+                    // alert("Edit " + jQuery("#Edit_" + iCtr).is(":checked"));
+                    // alert("Add " + jQuery("#Add_" + iCtr).is(":checked"));
+                    // alert("Delete " + jQuery("#Delete_" + iCtr).is(":checked"));
+                    rowData.IsViews = rowData.IsViews != undefined ? rowData.IsViews + "," + jQuery("#ViewC_" + iCtr).is(":checked") : jQuery("#ViewC_" + iCtr).is(":checked");
+                    rowData.IsEdits = rowData.IsEdits != undefined ? rowData.IsEdits + "," + jQuery("#EditC_" + iCtr).is(":checked") : jQuery("#EditC_" + iCtr).is(":checked");
+                    rowData.IsAdds = rowData.IsAdds != undefined ? rowData.IsAdds + "," + jQuery("#AddC_" + iCtr).is(":checked") : jQuery("#AddC_" + iCtr).is(":checked");
+                    rowData.IsDeletes = rowData.IsDeletes != undefined ? rowData.IsDeletes + "," + jQuery("#DeleteC_" + iCtr).is(":checked") : jQuery("#DeleteC_" + iCtr).is(":checked");
+                    rowData.IsApprovals = rowData.IsApprovals != undefined ? rowData.IsApprovals + "," + jQuery("#ApprovalC_" + iCtr).is(":checked") : jQuery("#ApprovalC_" + iCtr).is(":checked");
+                    rowData.ModuleIds = rowData.ModuleIds != undefined ? rowData.ModuleIds + "," + jQuery("#ModuleIdC_" + iCtr).val() : jQuery("#ModuleIdC_" + iCtr).val();
+                    rowData.AccessIds = rowData.AccessIds != undefined ? rowData.AccessIds + "," + jQuery("#AccessIdC_" + iCtr).val() : jQuery("#AccessIdC_" + iCtr).val();
+
+                    //  isData = true;
+                    // }
+                }
+                rowData.IsClient = true;
+              
+
+            }
+
+            jQuery.ajax({
+                type: "POST",
+                url: "/Home/ClientAccessMapping",
+                data: { userAction: rowData },
+                success: function (data) {
+
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Access rights have been given successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK!'
+                    });
+
+                    //   window.
+
+                    // window.location.href = "/Home/AccessMaster"
+                },
+                error: function (result) {
+                    var x = 1;
+                    Alert("errror<br>" + result.responseText);
+
+                }
+                //  alert('test78');
+            });
+
+
+
+        }
+
+   function RegulerizeSelectedVendor() {
+         // alert('In Progress');
+         // return;
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.AccessList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.AccessList.Count; iCtr = iCtr + 1) {
+
+                    //alert("Approved " + jQuery("#Approval_" + iCtr).is(":checked"));
+                    // alert("Edit " + jQuery("#Edit_" + iCtr).is(":checked"));
+                    // alert("Add " + jQuery("#Add_" + iCtr).is(":checked"));
+                    // alert("Delete " + jQuery("#Delete_" + iCtr).is(":checked"));
+                    rowData.IsViews = rowData.IsViews != undefined ? rowData.IsViews + "," + jQuery("#ViewV_" + iCtr).is(":checked") : jQuery("#ViewV_" + iCtr).is(":checked");
+                    rowData.IsEdits = rowData.IsEdits != undefined ? rowData.IsEdits + "," + jQuery("#EditV_" + iCtr).is(":checked") : jQuery("#EditV_" + iCtr).is(":checked");
+                    rowData.IsAdds = rowData.IsAdds != undefined ? rowData.IsAdds + "," + jQuery("#AddV_" + iCtr).is(":checked") : jQuery("#AddV_" + iCtr).is(":checked");
+                    rowData.IsDeletes = rowData.IsDeletes != undefined ? rowData.IsDeletes + "," + jQuery("#DeleteV_" + iCtr).is(":checked") : jQuery("#DeleteV_" + iCtr).is(":checked");
+                    rowData.IsApprovals = rowData.IsApprovals != undefined ? rowData.IsApprovals + "," + jQuery("#ApprovalV_" + iCtr).is(":checked") : jQuery("#ApprovalV_" + iCtr).is(":checked");
+                    rowData.ModuleIds = rowData.ModuleIds != undefined ? rowData.ModuleIds + "," + jQuery("#ModuleIdV_" + iCtr).val() : jQuery("#ModuleIdV_" + iCtr).val();
+                    rowData.AccessIds = rowData.AccessIds != undefined ? rowData.AccessIds + "," + jQuery("#AccessIdV_" + iCtr).val() : jQuery("#AccessIdV_" + iCtr).val();
+
+                    //  isData = true;
+                    // }
+                }
+                rowData.IsClient = false;
+
+            }
+
+            jQuery.ajax({
+                type: "POST",
+                url: "/Home/ClientAccessMapping",
+                data: { userAction: rowData },
+                success: function (data) {
+
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Access rights have been given successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK!'
+                    });
+
+                    //   window.
+
+                    // window.location.href = "/Home/AccessMaster"
+                },
+                error: function (result) {
+                    var x = 1;
+                    Alert("errror<br>" + result.responseText);
+
+                }
+                //  alert('test78');
+            });
+
+
+
+        }
+
+    function GetAccess() {   
+       
+           
+       
+          let  roleId = jQuery("#selRoleId").val();
+        let departmentId = jQuery("#selDepartmentId").val();
+       // let designationId = jQuery("#selDesignationId").val();
+       if (roleId.length > 0 && departmentId.length > 0) {
+                window.location.href = "/Home/GetUnitAccess?roleId=" + roleId + "&departmentId=" + departmentId;
+           // window.location.href = "/Home/GetUnitAccess?roleId=" + roleId + "&departmentId=" + departmentId + "&designationId=" + designationId;
+      }
+    }
+</script>
+}

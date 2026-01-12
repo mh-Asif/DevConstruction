@@ -1,0 +1,318 @@
+﻿@model Construction.Infrastructure.Models.PhotoCategoryDTO
+@{
+    ViewData["Title"] = "Add Category";
+
+}
+<style>
+    .toggle-status-container {
+        display: inline-block;
+        position: relative;
+    }
+
+        .toggle-status-container .toggle-checkbox {
+            display: none;
+        }
+
+        .toggle-status-container .toggle-label {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 25px;
+            padding: 4px 8px;
+            border: 1px solid #333;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+        }
+
+        .toggle-status-container .toggle-left, .toggle-right {
+            padding: 2px 6px;
+            font-size: 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            width: 50%;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .toggle-status-container .toggle-left {
+            background: #222;
+            color: #fff;
+            margin-right: 8px;
+        }
+
+        .toggle-status-container .toggle-right {
+            background: transparent;
+            color: #222;
+        }
+
+
+            .toggle-status-container .toggle-checkbox:checked + .toggle-label .toggle-left {
+                background: transparent;
+            color: #222;
+            }
+
+            .toggle-status-container .toggle-checkbox:checked + .toggle-label .toggle-right {
+                background: #189e31;
+                color: #fff;
+            }
+        /* Add animation styles */
+        .toggle-status-container .toggle-label::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: #333;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+
+        .toggle-status-container .toggle-checkbox:checked + .toggle-label::before {
+            transform: translateY(-50%) translateX(100%);
+            right: 4px;
+            background: #189e31;
+        }
+</style>
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+
+                <div class="row">
+                    <div class="col-12">
+
+
+                        <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between flex-wrap gap-5">
+                                    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Photo Category </h4>
+                                    <div>
+
+                                        <button type="button"
+                                                class="btn btn-primary mb-2 ms-2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4"
+                                                data-bs-placement="right"
+                                                data-bs-html="true"
+                                                onclick="AddView()">
+                                            @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                            Add Record
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-datatable table-responsive pt-0">
+                                    <table class="master-datatable table" id="List">
+                                        <thead>
+                                            <tr>
+                                                <th>Sr.No</th>
+                                                <th>Category</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        @*  <tbody id="mycountrytbl">
+                                        </tbody> *@
+
+                                        <tbody>
+                                            @if (Model.PhotoCategoryList != null)
+                                            {
+                                                int iCtr = 1;
+                                                @foreach (var item in Model.PhotoCategoryList)
+                                                {
+                                                    <tr>
+                                                        <td>@iCtr</td>
+                                                        <td>@item.Category</td>
+                                                        <td>
+                                                            <div class="toggle-status-container">
+                                                                <input type="checkbox"
+                                                                id="toggle-@item.Id"
+                                                                class="toggle-checkbox photo-category-toggle"
+                                                                data-id="@item.Id"
+                                                                data-status="@item.IsDisable.ToString().ToLower()"
+                                                                @(item.IsDisable ? "checked" : "") />
+                                                                <label for="toggle-@item.Id" class="toggle-label">
+                                                                    <span class="toggle-left">DeActive</span>
+                                                                    <span class="toggle-right">Active</span>
+                                                                </label>
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <a href="/Master/GetPhotoCategoryId/@item.Id"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.Id')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    iCtr++;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                            <div class="card-body">
+                                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                <div style="clear:both"></div>
+                                <form method="post" action="/Master/PhotoCategoryMaster">
+                                    <div class="row g-3">
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="multicol-last-name">Category</label>
+                                            <input type="text" id="Category" name="Category" required maxlength="100" value="@Model.Category" class="form-control" placeholder="Category Name">
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+            </div>
+            <!-- / Content -->
+
+
+        </div>
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    var environmentUrl = '@ViewBag.EnvironmentUrl';
+    $(document).ready(function () {
+
+        if (@Model.Id != 0) {
+
+            $("#List").hide();
+            $("#Add").show();
+        }
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+            else {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+        }
+    });
+
+    function ShowServerMessage(sMsg) {
+
+        Swal.fire({
+            title: 'Message',
+            text: sMsg,
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        });
+
+    }
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+
+    }
+
+    function DeleteRecord(eId) {
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/Master/DeletePhotoCategory/" + eId;
+                Swal.fire(
+                    'Deleted!',
+                    'Photo Category has been deleted.',
+                    'success'
+                );
+
+            }
+        });
+
+
+      
+        return false;
+    }
+
+
+    $(document).on('change', '.photo-category-toggle', function () {
+        var $checkbox = $(this);
+        var categoryId = $checkbox.data('id');
+        var newStatus = $checkbox.is(':checked');
+
+        var title = newStatus ? 'Category Activated' : 'Category Deactivated';
+      
+
+        $.ajax({
+            url: 'http://208.110.72.220:93/api/MasterAPIs/DisablePhotoCategory',
+            //url: 'https://localhost:7013/api/MasterAPIs/DisablePhotoCategory',
+            type: 'GET',
+            data: { catId: parseInt(categoryId), status: newStatus },
+            //  dataType: "json",
+            success: function (response) {
+                Swal.fire({
+                    title: title,
+                    text: 'Your action was completed successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK!'
+                });
+            },
+            error: function () {
+                // Revert checkbox if error
+                $checkbox.prop('checked', !$checkbox.is(':checked'));
+                alert('Failed to update status.');
+            },
+            complete: function () {
+                $checkbox.prop('disabled', false);
+            }
+        });
+    });
+
+
+
+</script>

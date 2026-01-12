@@ -1,0 +1,358 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "Add Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+       
+            <div class="page-content-section">
+                <!-- Content wrapper -->
+                <div class="container-fluid">
+                    <!-- Content -->
+
+
+                    <div class="flex-grow-1 container-p-y">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                                    <h2 class="app-brand-link page-heading me-2">
+                                        <span class="app-brand-text demo menu-text p-0 fw-bold">Add Client</span>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- add-user Wizard -->
+                                <div id="add-client" class="bs-stepper stepper-custom wizard-icons wizard-icons-example">
+                                    <div class="bs-stepper-header m-lg-auto border-0 px-2">
+                                        <div class="step" data-target="#client-basic-details">
+                                            <button type="button" class="step-trigger">
+                                                <span class="bs-stepper-circle">1</span>
+                                                <span class="bs-stepper-label mt-1">
+                                                    <span class="bs-stepper-label">Basic Details</span>
+                                                    <span class="bs-stepper-subtitle">Setup Basic Details</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="line"><i class="ti ti-chevron-right"></i></div>
+
+                                        <div class="step" data-target="#client-bussines-details">
+                                            <button type="button" class="step-trigger">
+                                                <span class="bs-stepper-circle">2</span>
+                                                <span class="bs-stepper-label mt-1">
+                                                    <span class="bs-stepper-label">Business Details</span>
+                                                    <span class="bs-stepper-subtitle">Setup Business Details</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="bs-stepper-content border-top">
+                                    <form id="add-client-form" method="post" action="/User/SaveClient" enctype="multipart/form-data">
+                                            <!-- Personal Information -->
+                                            <div id="client-basic-details" class="content">
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+
+                                                        <div class="row g-6">
+                                                            <div class="col-md-4">
+                                                                <label class="form-label" for="business-name">Business Name <span class="text-danger">*</span></label>
+                                                            <input type="text" id="CompanyName" name="CompanyName" value="@Model.CompanyName" class="form-control" placeholder="Enter Business Name" />
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label" for="business-owner">Business Owner <span class="text-danger">*</span></label>
+                                                            <input type="text" id="business-owner" name="BusinessOwner" value="@Model.BusinessOwner" class="form-control" placeholder="Enter Business Owner Name" />
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <label class="form-label" for="business-website">Business Website</label>
+                                                            <input type="url" id="business-website" name="WebsiteUrl" value="@Model.WebsiteUrl" placeholder="www.example.com" class="form-control" />
+                                                            </div>
+
+
+                                                            <div class="col-md-4">
+                                                                <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
+                                                            <input type="email" id="email" name="BusinessEmail" value="@Model.BusinessEmail" class="form-control" placeholder="example@example.com" />
+                                                            </div>
+
+
+
+                                                            <div class="col-md-4">
+                                                                <label class="form-label" for="contact-no">Contact No <span class="text-danger">*</span></label>
+                                                            <input type="text" id="contact-no" name="BusinessContactNumber" value="@Model.BusinessContactNumber" class="form-control" placeholder="Enter Contact Number" />
+                                                            </div>
+
+
+                                                        </div>
+
+
+
+                                                        <hr class="my-6 mx-n4" />
+
+                                                        <div class="pt-6 d-flex justify-content-between flex-wrap">
+                                                            <button type="reset" class="btn btn-label-secondary btn-prev">Previous</button>
+                                                            <button type="button" class="btn btn-primary me-4 btn-next">Next Step</button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Job Information -->
+                                            <div id="client-bussines-details" class="content">
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+
+
+
+                                                        <div class="row g-6">
+
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="logo-file">Upload Logo</label>
+                                                              @*   <input type="file" id="logo-file" class="form-control" /> *@
+                                                            <input class="form-control" type="file" accept="image/png, image/gif, image/jpeg" id="formFile" name="formFile" />
+                                                            </div>
+                                                            <!-- Contact Person -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="contact-person">Contact Person <span class="text-danger">*</span></label>
+                                                            <input type="text" id="contact-person" name="ContactPerson" value="@Model.ContactPerson" class="form-control" placeholder="Enter Contact Person" />
+                                                            </div>
+
+
+                                                            <!-- Email Display Name -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="email-display">Email Display Name <span class="text-danger">*</span></label>
+                                                            <input type="text" id="email-display" class="form-control"  placeholder="Enter Email Display Name" />
+                                                            </div>
+
+
+
+                                                            <!-- Contact Number -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="contact-number">Contact Number <span class="text-danger">*</span></label>
+                                                            <input type="text" id="contact-number" name="ContactNumber" value="@Model.ContactNumber" class="form-control" placeholder="Enter Contact Number" />
+                                                            </div>
+
+                                                            <!-- GSTN / VAT -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="gstn-vat">GSTN / VAT <span class="text-danger">*</span></label>
+                                                            <input type="text" id="gstn-vat" name="GSTN" class="form-control" value="@Model.GSTN" placeholder="Enter GSTN / VAT Number" />
+                                                            </div>
+
+                                                            <!-- Payment Term -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="payment-term">Payment Term <span class="text-danger">*</span></label>
+                                                            <input type="text" id="payment-term" name="PaymentTerm" class="form-control" value="@Model.PaymentTerm" placeholder="Enter Payment Term" />
+                                                            </div>
+
+                                                            <!-- Country -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="country">Country</label>
+                                                            <select id="selCountryId" name="CountryId" onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select">
+                                                              </select>
+                                                            </div>
+
+                                                            <!-- State -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="state">State</label>
+                                                            <select id="selStateId" name="StateId" onchange="javascript:PopulateCityDDL(this.value)" class="select2 form-select">
+                                                                    </select>
+                                                            </div>
+
+                                                            <!-- City -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="city">City</label>
+                                                            <select id="selCityId" name="CityId" class="select2 form-select">                                                             
+                                                            </select>
+                                                            </div>
+
+                                                            <!-- Pincode -->
+                                                            <div class="col-md-4 col-xl-3">
+                                                                <label class="form-label" for="zipcode">ZipCode</label>
+                                                            <input type="text" id="zipcode" name="PostalOrZipCode" value="@Model.PostalOrZipCode" class="form-control" placeholder="Enter Zipcode" />
+                                                            </div>
+
+                                                            <!-- Additional Details -->
+                                                            <div class="col-12">
+                                                                <label class="form-label" for="additional-details">Additional Details / Terms</label>
+                                                            <textarea id="additional-details" name="Description" value="@Model.Description" class="form-control" rows="4" placeholder="Enter Additional Details"></textarea>
+                                                            </div>
+
+                                                            <!-- Document Upload -->
+                                                            <div class="col-12">
+                                                                <label class="form-label">Upload Required Documents</label>
+                                                                <div action="/upload" class="dropzone needsclick" id="dropzone-multi">
+                                                                    <div class="dz-message needsclick">
+                                                                        Drop files here or click to upload
+                                                                        <span class="note needsclick">
+                                                                            (This is just a demo dropzone. Selected files are
+                                                                            <span class="fw-medium">not</span> actually uploaded.)
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="fallback">
+                                                                        <input name="file" type="file" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <hr class="my-6 mx-n4" />
+
+
+
+
+                                                        <div class="pt-6 d-flex justify-content-between flex-wrap">
+                                                        <input type="hidden" id="hdnUserType" name="UserType" value="2">
+                                                        <input type="hidden" id="hdnUserId" name="UserId" value="@Model.UserId">
+                                                        <button type="reset" class="btn btn-label-secondary btn-prev">Previous</button>
+                                                            <button type="submit" class="btn btn-primary me-4 btn-next">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--/ add=user Wizard -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Content -->
+                   
+
+                </div>
+            </div>
+        </div>
+    
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //alert('tesy asif');
+        GetCountry();
+        
+
+        // if (@Model.UserId != 0 || @Model.HttpStatusCode!= 200) {
+        //     // PopulateStateDDL(jQuery("#hdnCountryId").val());
+        //     // $("#List").hide();
+        //     // $("#Add").show();
+        // }
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                alert("@Model.DisplayMessage");
+            }
+            else {
+                alert("@Model.DisplayMessage");
+            }
+        }
+    });
+
+
+
+  
+    function GetCountry() {
+
+      
+
+        jQuery("#selCountryId").html("")
+        var optionhtml1 = '';
+        $("#selCountryId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetCountry',
+            url: '+'apiUrl+'/MasterAPIs/GetCountry',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].countryId + '">' + response[i].countryName + '</option>';
+                    $("#selCountryId").append(optionhtml);
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+    function PopulateStateDDL(countryId) {
+
+
+        jQuery("#selStateId").html("")
+        var optionhtml1 = '';
+        $("#selStateId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",
+            //  url: "/Master/GetCountryState",
+            url: '+'apiUrl+'/MasterAPIs/GetCountryState',
+            data: { countryId: countryId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].stateId + '">' + response[i].stateName + '</option>';
+                    $("#selStateId").append(optionhtml);
+                });
+
+                // if (@Model.StateId != 0) {
+                //     $('#selStateId option[value="@Model.StateId"]').attr('selected', 'selected');
+                // }
+            },
+            failure: function (response) {
+                alert("State Validation", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                alert("City", "errror<br>" + response.responseText);
+            }
+
+        });
+
+    }
+
+    function PopulateCityDDL(stateId) {
+
+
+        jQuery("#selCityId").html("")
+        var optionhtml1 = '';
+        $("#selCityId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",
+            // url: 'https://localhost:7013/api/MasterAPIs/GetStateCity',
+            url: '+'apiUrl+'/MasterAPIs/GetStateCity',
+            data: { stateId: stateId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].cityId + '">' + response[i].cityName + '</option>';
+                    $("#selCityId").append(optionhtml);
+                });
+            },
+            failure: function (response) {
+                alert("errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                alert("errror<br>" + response.responseText);
+            }
+
+        });
+
+    }
+
+   
+
+</script>

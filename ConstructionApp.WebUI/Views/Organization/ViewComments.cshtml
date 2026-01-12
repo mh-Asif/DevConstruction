@@ -1,0 +1,178 @@
+﻿@model Construction.Infrastructure.Models.UserNotificationsDTO
+@{
+    ViewData["Title"] = "Project File";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+
+    <div class="container-fluid over-flow-auto px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+
+                            <li class="nav-item">
+                                <a href="~/Project/ProjectOverview/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Task/TaskDetails/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Tasks
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Document/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Documents
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Drawing/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Drawing
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Photo/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Photos
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Organization/ViewNotifications"
+                                   type="button"
+                                   class="nav-link active">
+                                    Activities
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid " id="task-full-page">
+        <!-- Content -->
+        @if (Model.NotificationList != null)
+        {
+            <ul>
+            @foreach (var item in Model.NotificationList)
+            {
+
+                <li class="dropdown-notifications-list scrollable-container  new-notification-list">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item list-group-item-action dropdown-notifications-item notification-items" id="">
+                            <h6>@item.ProjectName</h6>
+                            <div class="d-flex">
+
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar">
+                                            @if (item.ProfileName != null)
+                                            {
+                                                <img src="~/Profile/@item.ProfileName" alt="Avatar" class="rounded-circle" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Profile/user-default.png" alt="Avatar" class="rounded-circle" />
+                                            }
+                                       @*  <img src="~/Profile/@item.ProfileName" alt class="rounded-circle" /> *@
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="small mb-1"><span><a href="#">@item.FullName</a> </span></h6>
+                                    <small class="mb-1 d-block text-body">@(item.NotifyMessage)</small>
+                                    @if (item != null && item.CreationDate != null)
+                                    {
+                                        DateTime publishDateTime = item.CreationDate ?? default(DateTime);
+
+                                        DateTime utcNow = DateTime.UtcNow;
+                                        TimeZoneInfo indianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                                        @*  TimeZoneInfo indianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time"); *@
+                                        DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, indianTimeZone);
+                                        var timeDiff = (indianTime - publishDateTime);
+                                        if (timeDiff != null)
+                                        {
+                                            if (timeDiff.Days >= 1)
+                                            {
+                                                if (timeDiff.Days > 1)
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Days) days ago</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Days) day ago</small>
+                                                }
+                                            }
+                                            else if (timeDiff.Hours >= 1)
+                                            {
+                                                if (timeDiff.Hours > 1)
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Hours) hours ago</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Hours) hour ago</small>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (timeDiff.Minutes > 1)
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Minutes) minutes ago</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">@(timeDiff.Minutes) minute ago</small>
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @*  <small class="text-muted">1h ago</small> *@
+                                </div>
+                                <div class="flex-shrink-0 dropdown-notifications-actions">
+                                  @*   <a href="javascript:void(0)" class=""><span class="fa fa-eye "></span></a> *@
+                                    <a href="#" onclick="RemoveNotification(@item.ID);" class="dropdown-notifications-archive">
+                                        <span class="ti ti-x"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            }
+            </ul>
+        }
+
+    </div>
+
+
+
+</div>

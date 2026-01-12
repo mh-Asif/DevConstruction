@@ -1,0 +1,423 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "User Profile";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid">
+        <!-- Content -->
+
+        <div class="flex-grow-1 container-p-y">
+            <!-- Header -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-6">
+                        <div class="d-flex flex-column flex-lg-row text-sm-start text-center my-2">
+                            @if (Model.UserList != null)
+                            {
+                                @foreach (var item in Model.UserList)
+                                {
+                                    <div class="flex-shrink-0 mx-sm-0 mx-auto">
+                                        @if(!string.IsNullOrEmpty(item.Base64ProfileImage))
+                                        {
+                                        <img src="/Profile/@item.Base64ProfileImage"
+                                                 alt="user image"
+                                                 class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img" />
+                                        }
+                                        else
+                                        {
+                                        <img src="~/Profile/user-default.png"
+                                                 alt="user image"
+                                                 class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img" />
+                                        }
+                                      @*   <img src="/Profile/@item.Base64ProfileImage"
+                                             alt="user image"
+                                             class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img" /> *@
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
+
+                                            <div class="user-profile-info">
+                                                <h4 class="mb-2 mt-lg-6">@item.FullName</h4>
+                                                <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2" id="top-header">
+                                                    <li class="list-inline-item d-flex gap-2 align-items-center">
+                                                        <i class="ti ti-palette ti-lg"></i><span class="fw-medium">@item.RoleName</span>
+                                                    </li>
+                                                  @*   <li class="list-inline-item d-flex gap-2 align-items-center">
+                                                        <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium">@item.CityName, @item.CountryName</span>
+                                                    </li> *@
+                                                    <li class="list-inline-item d-flex gap-2 align-items-center">
+                                                        <i class="ti ti-calendar ti-lg"></i><span class="fw-medium"> Joined @(item.DOJ != null ? item.DOJ.Value.ToString("dd-MMM-yyyy") : "")</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <a href="/User/GetUserById/@item.EnycUserId" class="btn btn-danger mb-1">
+                                                <i class="ti  ti-edit me-2"></i>Edit
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--/ Header -->
+            <!-- Navbar pills -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="nav-align-top">
+                        <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0" id="profileTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1-content" role="tab" aria-controls="tab1-content" aria-selected="true"><i class="ti-sm ti ti-user-check me-1_5"></i> Profile</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2-content" role="tab" aria-controls="tab2-content" aria-selected="false"><i class="ti-sm ti ti-layout-grid me-1_5"></i> Projects</a>
+                            </li>
+                            @* <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="tab3-tab" data-bs-toggle="pill" href="#tab3-content" role="tab" aria-controls="tab3-content" aria-selected="false"><i class="ti-sm ti ti-layout-grid me-1_5"></i> Tab 3</a>
+                            </li> *@
+                            @*  <li class="nav-item ms-auto">
+                            <button class="btn btn-primary btn-sm">
+                            <i class="ti ti-plus me-1"></i>Add
+                            </button>
+                            </li> *@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!--/ Navbar pills -->
+            <!-- Tab Content -->
+            <div class="tab-content" id="profileTabContent">
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="tab1-content" role="tabpanel" aria-labelledby="tab1-tab">
+                    <!-- User Profile Content -->
+                    @if (Model.UserList != null)
+                    {
+                        @foreach (var item in Model.UserList)
+                        {
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-5 col-md-5">
+                                    <!-- About Project -->
+                                    <div class="card mb-6">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+
+                                                <h4 class="heading-form-section my-3">Personal Details</h4>
+                                               @*  <div class="">
+                                                    <div class="form-check my-0 form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="browserDefaultSwitch" required />
+                                                        <label class="form-check-label" for="browserDefaultSwitch">Activate Account</label>
+                                                    </div>
+                                                </div> *@
+
+                                            </div>
+                                            <ul class="list-unstyled my-2 py-1">
+                                                <li class="d-flex align-items-center mb-4">
+                                                    <i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Full Name:</span>
+                                                    <span>@item.FullName</span>
+                                                </li>
+                                                @*  <li class="d-flex align-items-center mb-4">
+                                        <i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Last Name:</span>
+                                        <span>Doe</span>
+                                        </li> *@
+                                                <li class="d-flex align-items-center mb-4">
+                                                    <i class="ti ti-mail ti-lg"></i><span class="fw-medium mx-2">Email:</span>
+                                                    <span>@item.EmailAddress</span>
+                                                </li>
+                                                <li class="d-flex align-items-center mb-4">
+                                                    <i class="ti ti-gender-male ti-lg"></i><span class="fw-medium mx-2">Gender:</span>
+                                                    <span>@(item.GenderId == 1 ? "Male" : "FeMale")</span>
+                                                </li>
+                                                <li class="d-flex align-items-center mb-4">
+                                                    <i class="ti ti-calendar ti-lg"></i><span class="fw-medium mx-2">Date of Birth:</span>
+                                                    <span>@(item.DOB != null ? item.DOB.Value.ToString("dd-MMM-yyyy") : "") </span>
+                                                </li>
+                                            </ul>
+                                            @*
+                                    <small class="heading-form-section my-3">Contact Details</small>
+                                    <ul class="list-unstyled my-2 py-1">
+                                    <li class="d-flex align-items-center mb-4">
+                                    <i class="ti ti-map ti-lg"></i><span class="fw-medium mx-2">Current Address:</span>
+                                    <span>@item.Address1 @item.Address2 </span>
+                                    </li>
+                                    <li class="d-flex align-items-center mb-4">
+                                    <i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">Country:</span>
+                                    <span>@item.CountryName</span>
+                                    </li>
+                                    <li class="d-flex align-items-center mb-4">
+                                    <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium mx-2">State:</span>
+                                    <span>@item.StateName</span>
+                                    </li>
+                                    <li class="d-flex align-items-center mb-4">
+                                    <i class="ti ti-building-skyscraper ti-lg"></i><span class="fw-medium mx-2">City:</span>
+                                    <span>@item.CityName</span>
+                                    </li>
+                                    </ul>
+
+                                    *@
+
+                                            <small class="heading-form-section my-3">Job Information</small>
+                                            <ul class="list-unstyled mb-0 mt-3 pt-1">
+                                                <li class="d-flex flex-wrap mb-4">
+                                                    <span class="fw-medium me-2">Employee Code:</span><span>@item.EmpCode</span>
+                                                </li>
+                                               @*  <li class="d-flex flex-wrap mb-4">
+                                                    <span class="fw-medium me-2">Designation:</span><span>@item.Designation</span>
+                                                </li> *@
+                                                <li class="d-flex flex-wrap mb-4">
+                                                    <span class="fw-medium me-2">Department:</span><span>@item.Department</span>
+                                                </li>
+                                                <li class="d-flex flex-wrap mb-4">
+                                                    <span class="fw-medium me-2">Role:</span><span>@item.RoleName</span>
+                                                </li>
+                                                <li class="d-flex flex-wrap mb-4">
+                                                    <span class="fw-medium me-2">Date of Joining:</span><span>@(item.DOJ != null ? item.DOJ.Value.ToString("dd-MMM-yyyy") : "")</span>
+                                                </li>
+                                                <li class="d-flex flex-wrap">
+                                                    <span class="fw-medium me-2">Work Email:</span><span>@item.BusinessEmail</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!--/ About Project -->
+
+                                </div>
+                                <div class="col-xl-8 col-lg-7 col-md-7">
+                                    <!-- Activity Timeline -->
+                                    <div class="card card-action mb-6">
+                                        <div class="card-header align-items-center">
+                                            <h5 class="card-action-title mb-0">
+                                                <i class="ti ti-chart-bar ti-lg text-body me-4"></i>My Activities
+                                            </h5>
+                                        </div>
+                                        <div class="card-body pt-3">
+                                            <ul class="timeline mb-0">
+                                                @if (Model.ActivityList != null)
+                                                {
+
+                                                    @foreach (var lst in Model.ActivityList)
+                                                    {
+                                                        <li class="timeline-item timeline-item-transparent">
+                                                            <span class="timeline-point timeline-point-primary"></span>
+                                                            <a href="#" class="d-block timeline-event">
+                                                                <div class="timeline-header mb-3">
+                                                                    <h6 class="mb-0">@lst.ProjectName</h6>
+                                                                    <small class="text-muted">@lst.CreationDate</small>
+                                                                </div>
+                                                                <p class="mb-2">@lst.Comments by @lst.FullName</p>
+                                                            </a>
+                                                        </li>
+                                                    }
+
+                                                }
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Tab 2 -->
+                <div class="tab-pane fade" id="tab2-content" role="tabpanel" aria-labelledby="tab2-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">My Projects</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center py-5">
+                                       @*  <i class="ti ti-users ti-3x text-muted mb-3"></i>
+                                        <h4 class="text-muted">Tab 2</h4>
+                                        <p class="text-muted">This is the Tab 2 content</p> *@
+
+                                        @* --datatable--project--- *@
+
+                                        <table id="projectTable" class="project-datatable table" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr.No</th>
+                                                    <th>Project Name</th>
+                                                    <th>Client</th>
+                                                    <th>Project Manager</th>
+                                                    <th>Tasks</th>
+                                                    <th>Priority</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Duration</th>
+                                                    <th>Status</th>
+                                                    <th>Created By</th>
+                                                    <th>Created On</th>
+                                                    @*  <th>Action</th> *@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.ProjectDashboardList?.Any() == true)
+                                                {
+                                                    int iCtr = 1;
+                                                    @foreach (var item in Model.ProjectDashboardList)
+                                                    {
+                                                        // var item = Model.ProjectDashboardList[i];
+                                                        var statusUpper = (item.Status ?? "").ToUpperInvariant();
+                                                        string badgeClass = statusUpper switch
+                                                        {
+                                                            "TO BE STARTED" => "bg-label-danger",
+                                                            "OVERDUE" => "bg-label-danger",
+                                                            "IN PROGRESS" => "bg-label-warning",
+                                                            _ => "bg-label-success"
+                                                        };
+                                                        <tr class="data-row">
+                                                            <td>@iCtr</td>
+                                                            <td>
+                                                                <div class="d-flex flex-wrap flex-md-nowrap gap-2 ">
+                                                                    <span>@item.ProjectName</span>
+                                                                    <div class="action-button hover-action-button ms-auto">
+                                                                        <a href="~/Project/ProjectOverview/@item.ProjectId" class="btn btn-outline-primary waves-effect" aria-label="View Project"><i class="fa fa-eye me-1"></i>view</a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>@item.ClientName</td>
+                                                            <td>@(item.ProjectOwner ?? "NA")</td>
+                                                            <td>
+                                                                @(item.TaskCount != null ? item.TaskCount : 0)
+                                                            </td>
+                                                            <td>
+                                                                @if (item.Priority.Trim().ToUpper() == "LOW")
+                                                                {
+                                                                    <span class="badge bg-label-green">@item.Priority</span>
+                                                                }
+                                                                else if (item.Priority.Trim().ToUpper() == "NORMAL")
+                                                                {
+                                                                    <span class="badge bg-label-blue">@item.Priority</span>
+                                                                }
+                                                                else if (item.Priority.Trim().ToUpper() == "HIGH")
+                                                                {
+                                                                    <span class="badge bg-label-orange">@item.Priority</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge bg-label-red">@item.Priority</span>
+                                                                }
+                                                            </td>
+                                                            <td>@item.StartDate</td>
+                                                            <td>@item.EndDate</td>
+                                                            <td>@item.Duration Days</td>
+                                                            <td>
+                                                                <span class="badge @badgeClass">@item.Status</span>
+                                                            </td>
+                                                            <td>@item.CreatedBy</td>
+                                                            <td>@item.CreatedOn</td>
+
+                                                        </tr>
+                                                        iCtr++;
+                                                    }
+                                                }
+                                                @* else
+                                                {
+                                                <tr class="data-row">
+                                                <td colspan="12" class="text-center">No projects found.</td>
+                                                </tr>
+                                                } *@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3 -->
+                <div class="tab-pane fade" id="tab3-content" role="tabpanel" aria-labelledby="tab3-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Tab 3</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center py-5">
+                                        <i class="ti ti-layout-grid ti-3x text-muted mb-3"></i>
+                                        <h4 class="text-muted">Tab 3</h4>
+                                        <p class="text-muted">This is the Tab 3 content</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- / Content -->
+
+    </div>
+    <!-- Content wrapper -->
+</div>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            function initDataTable() {
+                const isMobile = window.innerWidth <= 768;
+
+                $('#projectTable').DataTable({
+                    responsive: isMobile,
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    lengthMenu: [10, 25, 50, 100],
+                    language: {
+                        search: "Search:",
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "Prev",
+                            next: "Next"
+                        }
+                    }
+                });
+            }
+
+            // If the table is in a visible tab on page load, init directly
+            if ($('#projectTable').is(':visible')) {
+                setTimeout(() => {
+                    initDataTable();
+                }, 500);
+            }
+
+            // Recalculate when the "Projects" tab is shown
+            $('a[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+                const targetTab = $(e.target).attr('href');
+
+                if (targetTab === '#tab2-content') {
+                    if (!$.fn.DataTable.isDataTable('#projectTable')) {
+                        setTimeout(() => {
+                            initDataTable();
+                        }, 100);
+                    } else {
+                        $('#projectTable').DataTable().columns.adjust().responsive.recalc();
+                    }
+                }
+            });
+
+        });
+    </script>
+
+}

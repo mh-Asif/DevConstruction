@@ -1,0 +1,2291 @@
+﻿@model Tuple< Construction.Infrastructure.Models.ProjectTasksDTO, Construction.Infrastructure.Models.ProjectSubTasksDTO>
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+<style>
+    button {
+        background-color: cadetblue;
+        color: whitesmoke;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        font-size: 18px;
+        font-weight: 500;
+        border-radius: 7px;
+        padding: 15px 35px;
+        cursor: pointer;
+        white-space: nowrap;
+        margin: 10px;
+    }
+
+    img {
+        width: 200px;
+    }
+
+    input[type="text"] {
+        padding: 12px 20px;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        border-bottom: solid 2px grey;
+    }
+
+    #success {
+        background: green;
+    }
+
+    #error {
+        background: red;
+    }
+
+    #warning {
+        background: coral;
+    }
+
+    #info {
+        background: cornflowerblue;
+    }
+
+    #question {
+        background: grey;
+    }
+
+    .bg-label-green {
+        background-color: #ddf6e8 !important;
+        color: #28c76f !important;
+    }
+
+    .bg-label-blue {
+        background-color: #d9f2ff !important;
+        color: #00cfe8 !important;
+    }
+
+    .bg-label-orange {
+        background-color: #ffeeda !important;
+        color: #ff9f43 !important;
+    }
+
+    .bg-label-red {
+        background-color: #fce5e6 !important;
+        color: #ea5455 !important;
+    }
+</style>
+
+<style>
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        text-align: center;
+        width: 100%;
+    }
+
+    .loader_inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -50px;
+    }
+</style>
+<link href="~/assets/summernote-editor/css/summernote-lite.min.css" rel="stylesheet">
+<div class="page-content-section">
+
+    <div class="container-fluid over-flow-auto px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+        @*   <div class="row">
+        <div class="col-12">
+        <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+        <h2 class="app-brand-link page-heading me-2">
+        <span class="app-brand-text demo menu-text fw-bold">McDonald's</span>
+        </h2>
+
+
+        </div>
+        </div>
+        </div> *@
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+
+                            <li class="nav-item">
+                                <a href="~/Project/ProjectOverview/@Model.Item1.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Task/TaskDetails/@Model.Item1.objTask.ProjectId"
+                                   type="button"
+                                   class="nav-link active">
+                                    Tasks
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Document/ProjectDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Documents
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Drawing/ProjectDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Drawing
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Photo/ProjectDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Photos
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.Item1.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.Item1.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Organization/ViewComments"
+                                   type="button"
+                                   class="nav-link">
+                                    Activities
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content wrapper -->
+
+
+    <div class="container-fluid pb-4">
+        <!-- Content -->
+
+
+
+        <div class=" flex-grow-1">
+            <!-- DataTable with Buttons -->
+            <div class="row">
+
+
+
+                <div class="col-lg-12 col-md-12 mb-lg-0 mb-3">
+
+                    <!-- <div class="content-right"> -->
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="content-body">
+                                <!-- overlay container -->
+
+
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <div class="file-manager-content-body">
+                                            <!-- drives area starts-->
+                                            <div class="drives">
+                                                <div class="row">
+                                                    <div class="flex-grow-1">
+                                                        <form class="add-new-record pt-0 new-forms row g-2" method="post" action="/Task/SaveTask">
+
+                                                            <!-- Task Name -->
+                                                            <div class="col-sm-12 mt-0">
+                                                                <div class="new-input-box">
+                                                                    <div class="main-input input-group-merge">
+                                                                        <input type="text" id="TaskName" class="form-control" name="TaskName"
+                                                                               placeholder="Enter Task Name" aria-label="Task Name" aria-describedby="basicFullname2"
+                                                                               value="@Model.Item1.objTask.TaskName" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Start Date -->
+                                                            <div class="col-sm-4">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label mb-0" for="start-date">Start Date</label>
+                                                                    <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                                                    <input type="date" id="start-date" class="form-control" value="@Model.Item1.objTask.StartDate.Value.ToString("yyyy-MM-dd")" name="StartDate" onchange="StDate(event);" placeholder="20, March 2025" />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Duration -->
+                                                            <div class="col-sm-4">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label" for="duration">Duration (Days)</label>
+                                                                    <input type="text" id="duration" class="form-control" value="@Model.Item1.objTask.Duration" name="duration" readonly />
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- End Date -->
+                                                            <div class="col-sm-4">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label mb-0" for="due-date">End Date</label>
+                                                                    <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                                                    <input type="date" id="due-date" class="form-control" name="EndDate" placeholder="20, March 2025" value="@Model.Item1.objTask.EndDate.Value.ToString("yyyy-MM-dd")" onchange="EDate(event);" />
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="progress mt-2">
+                                                                <div id="progress-bar" class="progress-bar bg-success" role="progressbar"
+                                                                     style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                </div>
+                                                            </div>
+
+
+
+                                                            <!-- Priority -->
+                                                            <div class="col-md-12">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label" for="priority">Priority</label>
+                                                                    <select name="PriorityId" id="priority" required class="form-select select2">
+                                                                        @if (Model.Item1.PriorityList != null)
+                                                                        {
+                                                                            <option value=""> Select</option>
+                                                                            @foreach (var item in Model.Item1.PriorityList)
+                                                                            {
+                                                                                if (item.CompanyPriorityId == Model.Item1.objTask.PriorityId)
+                                                                                {
+                                                                                    <option value="@item.CompanyPriorityId" selected>@item.CompanyPriority </option>
+
+
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@item.CompanyPriorityId">@item.CompanyPriority </option>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Status -->
+                                                            <div class="col-md-12">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label" for="StatusId">Status</label>
+                                                                    <select name="StatusId" id="selStatus" onchange="javascript:PopulateStatus()" required class="form-select select2">
+                                                                        @if (Model.Item1.StatusList != null)
+                                                                        {
+                                                                            <option value=""> Select</option>
+                                                                            @foreach (var item in Model.Item1.StatusList)
+                                                                            {
+                                                                                if (item.ID == Model.Item1.objTask.StatusId)
+                                                                                {
+                                                                                    <option value="@item.ID" selected>@item.Status </option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@item.ID">@item.Status </option>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Phase -->
+                                                            <div class="col-md-12">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label" for="projectPhase">Phase</label>
+                                                                    <select name="PhaseId" id="projectPhase" required class="form-select select2 dt-email">
+                                                                        @if (Model.Item1.PhaseList != null)
+                                                                        {
+                                                                            <option value=""> Select</option>
+                                                                            @foreach (var item in Model.Item1.PhaseList)
+                                                                            {
+                                                                                if (item.ID == Model.Item1.objTask.PhaseId)
+                                                                                {
+                                                                                    <option value="@item.ID" selected>@item.Phase </option>
+
+
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@item.ID">@item.Phase </option>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <!-- Vendor List -->
+                                                            <!-- Assigned To -->
+                                                            <div class="col-md-12">
+                                                                <div class="new-input-box">
+                                                                    <label for="TagifyUserList" class="form-label">Task Owner</label>
+                                                                    <select name="TaskOwnerId" id="TaskOwnerId" onchange="javascript:PopulateUser()" required class="form-select select2">
+                                                                        @if (Model.Item1.UserList != null)
+                                                                        {
+                                                                            <option value=""> Select</option>
+                                                                            @foreach (var item in Model.Item1.UserList)
+                                                                            {
+                                                                                if (item.UserId == Model.Item1.objTask.TaskOwnerId)
+                                                                                {
+                                                                                    <option value="@item.UserId" selected>@item.FullName </option>
+
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@item.UserId">@item.FullName </option>
+                                                                                }
+                                                                            }
+                                                                            <option value="0"> NA</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Assign To -->
+                                                            <div class="col-md-12 py-1">
+                                                                <div class="new-input-box align-items-start">
+                                                                    <label class="form-label" for="">Assign to</label>
+                                                                    <div class="d-flex gx-4 flex-wrap">
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input name="assign-to" class="form-check-input" type="radio" value="inhouse" id="assign-to-inhouse" checked />
+                                                                            <label class="form-check-label font-14" for="assign-to-inhouse">In House team</label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input name="assign-to" class="form-check-input" type="radio" value="vendor" id="assign-to-vendor" />
+                                                                            <label class="form-check-label font-14" for="assign-to-vendor">Vendor / Contractor</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Vendor List -->
+                                                            <div class="col-md-12" id="vendor-list">
+                                                                <div class="new-input-box">
+                                                                    <label class="form-label" for="vendorList">Vendor List</label>
+                                                                    <select name="VendorId" id="vendorList" readonly="readonly" class="form-select select2 dt-email">
+                                                                        @if (Model.Item1.VendorList != null)
+                                                                        {
+                                                                            <option value=""> Select</option>
+                                                                            @foreach (var item in Model.Item1.VendorList)
+                                                                            {
+                                                                                if (item.UserId == Model.Item1.objTask.VendorId)
+                                                                                {
+                                                                                    <option value="@item.UserId" selected>@item.FullName </option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@item.UserId">@item.FullName </option>
+                                                                                }
+                                                                            }
+                                                                            <option value="0"> NA</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Assigned To -->
+                                                            <div class="col-md-6 mb-4">
+                                                                <div class="new-input-box">
+                                                                    <label for="TagifyUserList" class="form-label">Collaborators</label>
+                                                                    <select id="selCollaborators" name="SelCollaborators" onchange="javascript:GetCollaboration()" class="select2 form-select" multiple>
+                                                                        @{
+                                                                            string[] collaborators = Model.Item1.objTask.Collaborators == null ? null : Model.Item1.objTask.Collaborators.Split(",");
+                                                                            if (Model.Item1.UserList != null)
+                                                                            {
+
+                                                                                foreach (var item in Model.Item1.UserList)
+                                                                                {
+                                                                                    if (collaborators != null)
+                                                                                    {
+                                                                                        if (collaborators.Contains(item.UserId.ToString()))
+                                                                                        {
+                                                                                            <option value="@item.UserId" selected>@item.FullName </option>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <option value="@item.UserId">@item.FullName </option>
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <option value="@item.UserId">@item.FullName </option>
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Task Description -->
+                                                            <div class="col-md-12 mb-2">
+                                                                <label class="form-label fw-bold mt-2" for="project-description">Description</label>
+                                                                <textarea id="aTask" class="summernote-editor" name="Description">@Model.Item1.objTask.Description
+                            </textarea>
+                                                            </div>
+
+
+                                                            <!-- File Upload Section -->
+                                                            @*    <div class="col-md-12">
+                                                            <label class="form-label">Upload Project Photos</label>
+                                                            <div class="Documents-container mt-2">
+                                                            <div class="document-item">
+                                                            <div class="hover-buttons">
+                                                            <button type="button" class="btn btn-hover" data-bs-toggle="modal" data-bs-target="#invitemember">
+                                                            <i class="fa fa-share" data-bs-toggle="tooltip" title="Share"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-hover">
+                                                            <i class="fa fa-eye" data-bs-toggle="tooltip" title="View"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-hover" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fa fa-trash" data-bs-toggle="tooltip" title="Delete"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-hover">
+                                                            <i class="fab fa-whatsapp" data-bs-toggle="tooltip" title="WhatsApp"></i>
+                                                            </button>
+                                                            </div>
+                                                            <div class="document-icon">
+                                                            <img id="uploaded-image" src="https://plus.unsplash.com/premium_photo-1681989486976-9ec9d2eac57a?w=500&auto=format&fit=crop&q=60" alt="Project Image">
+                                                            </div>
+                                                            <div class="document-content">
+                                                            <h2 class="document-title">Construction Agreement</h2>
+                                                            </div>
+                                                            <input type="file" id="fileUpload" class="form-control border mt-2" name="fileUpload" accept="image/*" onchange="previewImage(event)" />
+                                                            </div>
+
+
+                                                            </div>
+
+                                                            </div> *@
+
+                                                            <!-- Submit & Cancel Buttons -->
+                                                            <div class="col-sm-12 text-end">
+                                                                <input type="hidden" id="Collaborators" name="Collaborators" class="form-control" value="@Model.Item1.objTask.Collaborators" />
+                                                                <input type="hidden" id="TaskProjectId" name="ProjectId" class="form-control" value="@Model.Item1.objTask.ProjectId" />
+                                                                <input type="hidden" id="TaskId" name="TaskId" class="form-control" value="@Model.Item1.objTask.TaskId" />
+
+                                                                <button type="submit" class="btn btn-primary data-submit me-sm-4 me-1" onclick="SaveUserActivities(@Model.Item1.objTask.TaskId);">Submit</button>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <!-- Start Date -->
+
+
+
+                                            </div>
+                                        </div>
+
+
+                                        <!-- drives area ends-->
+                                        <!-- tabs -->
+
+
+
+                                        <div class="row mt-5">
+                                            <div class="col-12 mt-2">
+
+                                                <ul class="nav nav-tabs tabs px-3 bg-light-theme" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link new-link active" id="home-tab" data-bs-toggle="tab" href="#divComments"
+                                                           aria-controls="home" role="tab" aria-selected="true">Comments</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link new-link " id="profile-tab" data-bs-toggle="tab" href="#subtasks"
+                                                           aria-controls="profile" role="tab" aria-selected="false">Sub Tasks</a>
+                                                    </li>
+
+                                                    <li class="nav-item">
+                                                        <a class="nav-link new-link " id="about-tab" data-bs-toggle="tab" href="#documents"
+                                                           aria-controls="about" role="tab" aria-selected="false">Documents</a>
+                                                    </li>
+
+                                                   @*  <li class="nav-item">
+                                                        <a class="nav-link new-link " id="about-tab" data-bs-toggle="tab" href="#issues"
+                                                           aria-controls="about" role="tab" aria-selected="false">Issues</a>
+                                                    </li> *@
+
+                                                    <li class="nav-item">
+                                                        <a class="nav-link new-link " id="about-tab" data-bs-toggle="tab" href="#activities"
+                                                           aria-controls="about" role="tab" aria-selected="false">Activities</a>
+                                                    </li>
+
+                                                </ul>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-content task-tabs rounded-3">
+
+                                            <div class="tab-pane active" id="divComments" aria-labelledby="home-tab" role="tabpanel">
+                                                <!-- Task Description -->
+                                                <div class="col-md-12">
+                                                    <textarea name="comments" placeholder="Type something..." id="comments" rows="4" class="w-100 p-2 border"></textarea>
+
+                                                    <div class="text-end">
+                                                        <button type="button" class="btn mt-2 btn-secondary create-new btn-primary waves-effect waves-light" tabindex="0" aria-controls="DataTables_Table_0" onclick="SaveComments()">
+                                                            <span>
+                                                                <span class="d-none d-sm-inline-block">Submit</span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- <textarea id="editor_classic-two" class="aha_editor" style="display:none;"></textarea> -->
+                                                </div>
+
+                                                <div class="col-md-12 mt-5" id="divChat">
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane" id="subtasks" aria-labelledby="profile-tab" role="tabpanel">
+                                                <div class=" flex-grow-1">
+                                                    <div class="card">
+                                                        <div class="card-datatable table-responsive pt-0">
+                                                            <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+                                                                <div>
+                                                                    <h5 class="card-title mb-0">Sub Task</h5>
+                                                                </div>
+                                                                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#add-new-subtask">
+                                                                    <i class="fa fa-plus me-1"></i> Add Sub Task
+                                                                </button>
+                                                            </div>
+                                                            <table id="subtaskTable" class="task-datatable table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Sr.No</th>
+                                                                        <th>Subtask Name</th>
+                                                                        <th>Owner</th>
+                                                                        <th>Priority</th>
+                                                                        <th>Status</th>
+                                                                        <th>Start Date</th>
+                                                                        <th>End Date</th>
+                                                                        <th>Duration</th>
+                                                                        <th>Created By</th>
+                                                                        <th>Created On</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="mycountrytbl">
+                                                                </tbody>
+                                                                @*   <tbody>
+                                                                @if (Model.Item2.SubTaskDashboard != null)
+                                                                {
+                                                                int iCtr = 1;
+                                                                @foreach (var item in Model.Item2.SubTaskDashboard)
+                                                                {
+                                                                <tr>
+                                                                <td>@iCtr</td>
+                                                                <td>
+                                                                <div class="d-flex gap-2">
+                                                                <span>@item.SubTaskName</span>
+                                                                <div class="action-button hover-action-button ms-auto" style="visibility:initial;">
+                                                                <a href="#" onclick="GetSubTask('@item.eSubTaskId')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas"
+                                                                data-bs-target="#view-data">
+                                                                <i class="fa fa-eye me-1"></i> View
+                                                                </a>
+                                                                </div>
+                                                                </div>
+                                                                </td>
+                                                                <td>@item.TaskOwner</td>
+                                                                <td>@item.Priority</td>
+                                                                <td>@item.Status</td>
+                                                                <td>@item.StartDate</td>
+                                                                <td>@item.EndDate</td>
+                                                                <td>@item.Duration</td>
+                                                                <td>@item.CreatedBy</td>
+                                                                <td>@item.CreatedOn</td>
+                                                                <td>
+                                                                <a href="task-new.html"><i class="fa fa-eye text-success me-1"></i></a>
+                                                                <a href="#" data-bs-toggle="offcanvas" data-bs-target="#view-data">
+                                                                <i class="fa fa-edit text-primary me-1"></i>
+                                                                </a>
+                                                                <a href="#" onclick="#"><i class="fa fa-trash text-danger me-1"></i></a>
+                                                                </td>
+                                                                </tr>
+                                                                }
+                                                                }
+
+                                                                </tbody> *@
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <!--/ DataTable with Buttons -->
+
+                                                    <div class="offcanvas offcanvas-end" id="add-new-subtask">
+                                                        <div class="offcanvas-header border-bottom">
+                                                            <h5 class="offcanvas-title" id="exampleModalLabel">Add Sub Task</h5>
+                                                            <button type="button" class="btn-close text-reset text-danger" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="offcanvas-body flex-grow-1">
+                                                            <form class="add-new-record pt-0 new-forms row g-2" id="form-add-sub-task" method="post" action="/Task/SaveSubTask">
+
+                                                                <div class="col-sm-12 mt-0">
+                                                                    <div class="new-input-box">
+                                                                        <div class="main-input input-group-merge">
+                                                                            <input type="text" id="ASubName" class="form-control" name="SubTaskName"
+                                                                                   placeholder="Enter Sub Task Name" aria-label="Sub Task Name"
+                                                                                   aria-describedby="basicFullname2" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <!-- Start Date -->
+                                                                <div class="col-sm-4">
+                                                                    <div class="new-input-box upper-box">
+                                                                        <label class="form-label mb-0" for="start-date">Start Date</label><br>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="fas fa-calendar-alt me-2"></i>
+                                                                            <input type="date" id="Astart-date" class="form-control date-picker" name="SubTaskStartDate"
+                                                                                   value="2025-03-20" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Duration -->
+                                                                <span class="col-sm-4">
+                                                                    <div class="new-input-box upper-box">
+                                                                        <label class="form-label" for="duration">Duration (Days)</label>
+                                                                        <input type="text" id="Aduration" class="form-control" name="duration"
+                                                                               placeholder="3 days" readonly />
+                                                                    </div>
+                                                                </span>
+
+                                                                <!-- End Date -->
+                                                                <div class="col-sm-4">
+                                                                    <div class="new-input-box upper-box">
+                                                                        <label class="form-label mb-0" for="due-date">End Date</label><br>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="fas fa-calendar-alt me-2"></i>
+                                                                            <input type="date" id="Adue-date" class="form-control date-picker" name="SubTaskEndDate"
+                                                                                   value="2025-03-23" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="progress mt-2">
+                                                                    <div id="Aprogress-bar" class="progress-bar bg-success" role="progressbar"
+                                                                         style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                                <!-- Priority -->
+                                                                <div class="col-md-12">
+                                                                    <div class="new-input-box">
+                                                                        <label class="form-label" for="priority">Priority</label>
+                                                                        <select name="PriorityId" id="APriority" required class="form-select select2">
+                                                                            @if (Model.Item1.PriorityList != null)
+                                                                            {
+                                                                                <option value=""> Select</option>
+                                                                                @foreach (var item in Model.Item1.PriorityList)
+                                                                                {
+                                                                                    <option value="@item.CompanyPriorityId">@item.CompanyPriority </option>
+
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Status -->
+                                                                <div class="col-md-12">
+                                                                    <div class="new-input-box">
+                                                                        <label class="form-label" for="basicEmail">Status</label>
+                                                                        <select name="StatusId" id="ASubStatus" class="form-select select2">
+                                                                            @if (Model.Item1.StatusList != null)
+                                                                            {
+                                                                                <option value=""> Select</option>
+                                                                                @foreach (var item in Model.Item1.StatusList)
+                                                                                {
+
+                                                                                    <option value="@item.ID">@item.Status </option>
+
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <!-- Assigned To -->
+                                                                <div class="col-md-12">
+                                                                    <div class="new-input-box">
+                                                                        <label for="TagifyUserList" class="form-label">Project Owner</label>
+                                                                        <select name="OwnerId" id="ASubOwnerId" class="form-select select2">
+                                                                            @if (Model.Item1.UserListForSubTask != null)
+                                                                            {
+                                                                                <option value=""> Select</option>
+                                                                                @foreach (var item in Model.Item1.UserListForSubTask)
+                                                                                {
+                                                                                    <option value="@item.UserId">@item.UserName </option>
+
+                                                                                }
+                                                                                <option value="0"> NA</option>
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <!-- Assigned To -->
+                                                                <div class="col-md-12 mb-4">
+                                                                    <div class="new-input-box">
+                                                                        <label for="TagifyUserList" class="form-label">Collaborators</label>
+                                                                        <select id="ASubCollaborators" name="SubCollaborators" class="select2 form-select" multiple>
+                                                                            @{
+
+                                                                                if (Model.Item1.UserListForSubTask != null)
+                                                                                {
+
+                                                                                    foreach (var item in Model.Item1.UserListForSubTask)
+                                                                                    {
+
+                                                                                        <option value="@item.UserId">@item.UserName </option>
+
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Task Description -->
+                                                                <div class="col-md-12 mb-2">
+                                                                    <label class="form-label fw-bold mt-2" for="project-description">Description</label>
+                                                                    @*   <div id="summernote"></div> *@
+                                                                    <textarea id="addST" class="summernote-editor" name="Description">
+                            </textarea>
+                                                                    <!-- <textarea id="editor_classic-one" class="aha_editor" style="display:none;">
+                                                                    </textarea> -->
+                                                                </div>
+
+                                                                <!-- Attachment -->
+                                                                @*  <div class="col-md-6 mt-2 mb-6">
+                                                                <label class="form-label" for="fileUpload">File Upload</label>
+                                                                <input type="file" id="fileUpload" class="form-control border" name="fileUpload" />
+                                                                </div> *@
+
+                                                                <!-- Submit & Cancel Buttons -->
+                                                                <div class="col-sm-12">
+                                                                    <input type="hidden" id="SubCollaborators" name="SubCollaborators" class="form-control" value="@Model.Item2.Collaborators" />
+                                                                    <input type="hidden" id="ProjectId" name="ProjectId" class="form-control" value="@Model.Item1.objTask.ProjectId" />
+                                                                    <input type="hidden" id="TaskId" name="TaskId" class="form-control" value="@Model.Item1.objTask.TaskId" />
+                                                                    @*   <input type="hidden" id="SubTaskId" name="SubTaskId" class="form-control" /> *@
+                                                                    <button type="button" class="btn btn-primary data-submit me-sm-4 me-1" onclick="SaveSubTask(1)">Add Sub Task</button>
+                                                                    <button type="reset" id="btnClose" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                                                                </div>
+
+                                                            </form>
+
+
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                                    <!-- Modal to view data  -->
+                                                    <div class="offcanvas offcanvas-end" id="view-data">
+                                                        <div class="offcanvas-header border-bottom">
+
+                                                            <h5 class="offcanvas-title" id="exampleModalLabel"><strong>Edit Sub Task</strong></h5>
+                                                            <button type="button" class="btn-close text-reset text-danger" data-bs-dismiss="offcanvas"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="offcanvas-body">
+                                                            <div class="row">
+
+
+
+                                                                <div class="col-lg-12 col-md-12 mb-lg-0 mb-3">
+
+                                                                    <!-- <div class="content-right"> -->
+                                                                    <!-- <div class="card"> -->
+                                                                    <div class="card-body">
+                                                                        <div class="content-body">
+                                                                            <!-- overlay container -->
+
+
+                                                                            <div class="row">
+                                                                                <div class="col-12">
+
+                                                                                    <div class="file-manager-content-body">
+                                                                                        <!-- drives area starts-->
+                                                                                        <div class="drives">
+                                                                                            <div class="row">
+                                                                                                <div class="flex-grow-1">
+                                                                                                    <form class="add-new-record pt-0 new-forms row g-2" id="viewData" method="post" action="/Task/SaveSubTask">
+
+                                                                                                        <!-- Task Name -->
+                                                                                                        <div class="col-sm-12 mt-0">
+                                                                                                            <div class="new-input-box">
+                                                                                                                <div class="main-input input-group-merge">
+                                                                                                                    <input type="text" id="VSubName" class="form-control" name="SubTaskName"
+                                                                                                                           placeholder="Enter Task Name" aria-label="Task Name"
+                                                                                                                           aria-describedby="basicFullname2" />
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+
+
+                                                                                                        <!-- Start Date -->
+                                                                                                        <div class="col-sm-4">
+                                                                                                            <div class="new-input-box upper-box">
+                                                                                                                <label class="form-label mb-0" for="start-date">Start Date</label><br>
+                                                                                                                <div class="d-flex align-items-center">
+                                                                                                                    <i class="fas fa-calendar-alt me-2"></i>
+                                                                                                                    <input type="date" id="Vstart-date" class="form-control custom-date" name="SubTaskStartDate"
+                                                                                                                           value="2025-03-20" />
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                        <!-- Duration -->
+                                                                                                        <span class="col-sm-4">
+                                                                                                            <div class="new-input-box upper-box">
+                                                                                                                <label class="form-label" for="duration">Duration (Days)</label>
+                                                                                                                <input type="text" id="Vduration" class="form-control" name="duration"
+                                                                                                                       placeholder="3 days" readonly />
+                                                                                                            </div>
+                                                                                                        </span>
+
+                                                                                                        <!-- End Date -->
+                                                                                                        <div class="col-sm-4">
+                                                                                                            <div class="new-input-box upper-box">
+                                                                                                                <label class="form-label mb-0" for="due-date">End Date</label><br>
+                                                                                                                <div class="d-flex align-items-center">
+                                                                                                                    <i class="fas fa-calendar-alt me-2"></i>
+                                                                                                                    <input type="date" id="Vdue-date" class="form-control custom-date" name="SubTaskEndDate"
+                                                                                                                           value="2025-03-23" />
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                        <div class="progress mt-2">
+                                                                                                            <div id="Vprogress-bar" class="progress-bar bg-success" role="progressbar"
+                                                                                                                 style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                                                                                            </div>
+                                                                                                        </div>
+
+
+
+                                                                                                        <!-- Priority -->
+                                                                                                        <div class="col-md-12">
+                                                                                                            <div class="new-input-box">
+                                                                                                                <label class="form-label" for="priority">Priority</label>
+                                                                                                                <select name="PriorityId" id="VPriority" required class="form-select select2">
+                                                                                                                    @if (Model.Item1.PriorityList != null)
+                                                                                                                    {
+                                                                                                                        <option value=""> Select</option>
+                                                                                                                        @foreach (var item in Model.Item1.PriorityList)
+                                                                                                                        {
+                                                                                                                            <option value="@item.CompanyPriorityId">@item.CompanyPriority </option>
+
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                        <!-- Status -->
+                                                                                                        <div class="col-md-12">
+                                                                                                            <div class="new-input-box">
+                                                                                                                <label class="form-label" for="basicEmail">Status</label>
+                                                                                                                <select name="StatusId" id="VSubStatus" class="form-select select2">
+                                                                                                                    @if (Model.Item1.StatusList != null)
+                                                                                                                    {
+                                                                                                                        <option value=""> Select</option>
+                                                                                                                        @foreach (var item in Model.Item1.StatusList)
+                                                                                                                        {
+
+                                                                                                                            <option value="@item.ID">@item.Status </option>
+
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+
+
+                                                                                                        <!-- Assigned To -->
+                                                                                                        <div class="col-md-12">
+                                                                                                            <div class="new-input-box">
+                                                                                                                <label for="TagifyUserList" class="form-label">Project Owner</label>
+                                                                                                                <select name="OwnerId" id="VSubOwnerId" class="form-select select2">
+                                                                                                                    @if (Model.Item1.UserListForSubTask != null)
+                                                                                                                    {
+                                                                                                                        <option value=""> Select</option>
+                                                                                                                        @foreach (var item in Model.Item1.UserListForSubTask)
+                                                                                                                        {
+                                                                                                                            <option value="@item.UserId">@item.UserName </option>
+
+                                                                                                                        }
+                                                                                                                        <option value="0"> NA</option>
+                                                                                                                    }
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+
+
+                                                                                                        <!-- Assigned To -->
+                                                                                                        <div class="col-md-6 mb-4">
+                                                                                                            <div class="new-input-box">
+                                                                                                                <label for="TagifyUserList" class="form-label">Collaborators</label>
+                                                                                                                <select id="VSubCollaborators" name="SubCollaborators" class="select2 form-select" multiple>
+                                                                                                                    @{
+
+                                                                                                                        if (Model.Item1.UserListForSubTask != null)
+                                                                                                                        {
+
+                                                                                                                            foreach (var item in Model.Item1.UserListForSubTask)
+                                                                                                                            {
+
+                                                                                                                                <option value="@item.UserId">@item.UserName </option>
+
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+
+                                                                                                        <!-- Task Description -->
+                                                                                                        <div class="col-md-12 mb-2">
+                                                                                                            <label class="form-label fw-bold mt-2" for="project-description">
+                                                                                                                
+                                                                                                                Description
+                                                                                                            </label>
+                                                                                                            <textarea class="summernote-editor" id="editST" name="Description"></textarea>
+                                                                                                        </div>
+
+
+                                                                                                        <!-- File Upload Section -->
+                                                                                                        @*  <div class="col-md-12">
+                                                                                                        <label class="form-label" for="fileUpload">File Upload</label>
+                                                                                                        <input type="file" id="fileUpload" class="form-control border" name="fileUpload" />
+                                                                                                        </div> *@
+
+                                                                                                        <!-- Submit & Cancel Buttons -->
+                                                                                                        <div class="col-sm-12 text-end">
+                                                                                                            <input type="hidden" id="SubCollaborators" name="SubCollaborators" class="form-control" value="@Model.Item2.Collaborators" />
+                                                                                                            <input type="hidden" id="ProjectId" name="ProjectId" class="form-control" value="@Model.Item1.objTask.ProjectId" />
+                                                                                                            <input type="hidden" id="TaskId" name="TaskId" class="form-control" value="@Model.Item1.objTask.TaskId" />
+                                                                                                            <input type="hidden" id="SubTaskId" name="SubTaskId" class="form-control" />
+                                                                                                            <button type="button" class="btn btn-primary data-submit btn-new me-sm-4 me-1" onclick="SaveSubTask(0)">Save</button>
+                                                                                                            <button type="reset" id="btnEClose" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                                                                                                        </div>
+
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <!-- Start Date -->
+
+
+
+                                                                                        </div>
+                                                                                    </div>
+
+
+                                                                                    <!-- drives area ends-->
+                                                                                    <!-- tabs -->
+
+
+
+                                                                                    <div class="row mt-5">
+                                                                                        <div class="col-12 mt-2">
+
+                                                                                            <ul class="nav nav-tabs tab-top-new tabs px-3 bg-light-theme" role="tablist">
+                                                                                                <li class="nav-item">
+                                                                                                    <a class="nav-link new-link active" id="home" data-bs-toggle="tab" href="#comment"
+                                                                                                       aria-controls="home" role="tab" aria-selected="true">Comments</a>
+                                                                                                </li>
+                                                                                                <li class="nav-item">
+                                                                                                    <a class="nav-link new-link " id="about" data-bs-toggle="tab" href="#issue"
+                                                                                                       aria-controls="about" role="tab" aria-selected="false">Issues</a>
+                                                                                                </li>
+
+                                                                                                <li class="nav-item">
+                                                                                                    <a class="nav-link new-link " id="about" data-bs-toggle="tab" href="#activity"
+                                                                                                       aria-controls="about" role="tab" aria-selected="false">Activities</a>
+                                                                                                </li>
+
+                                                                                            </ul>
+
+                                                                                        </div>
+                                                                                    </div>
+
+
+
+
+
+                                                                                    <div class="tab-content task-tabs rounded-3">
+
+                                                                                        <div class="tab-pane active" id="comment" aria-labelledby="home" role="tabpanel">
+
+                                                                                            <!-- Task Description -->
+                                                                                            <div class="col-md-12 position-relative ">
+                                                                                                <div class="textarea-container">
+                                                                                                    <textarea name="comment" placeholder="Type something..." id="SComments" row="1"
+                                                                                                              class="w-100 p-2 border commet-new "></textarea>
+
+                                                                                                    <!-- Submit Button Inside Textarea -->
+
+                                                                                                    <button type="button" class="btn btn-primary submit-btn btn-new waves-effect waves-light d-none" onclick="SaveSubComments()">
+                                                                                                        <span>Submit</span>
+                                                                                                    </button>
+
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <!-- Task Description -->
+
+                                                                                            <div class="col-md-12 mt-5" id="divSChat">
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <!-- Issues  -->
+                                                                                        <div class="tab-pane" id="issue" aria-labelledby="about" role="tabpanel">
+                                                                                            <p>
+                                                                                                Comming Soon....
+                                                                                            </p>
+                                                                                        </div>
+                                                                                        <!-- Issues  -->
+
+
+                                                                                        <div class="tab-pane" id="activity" aria-labelledby="about" role="tabpanel">
+                                                                                            <!-- ----timeline------  -->
+                                                                                            <div class="card">
+                                                                                                <div class="card-body">
+                                                                                                    <ul class="timeline mb-0">
+
+                                                                                                        @if (Model.Item1.ActivityList != null)
+                                                                                                        {
+
+                                                                                                            @foreach (var item in Model.Item1.ActivityList)
+                                                                                                            {
+                                                                                                                <li class="timeline-item timeline-item-transparent">
+                                                                                                                    <span class="timeline-point timeline-point-primary"></span>
+                                                                                                                    <div class="timeline-event">
+                                                                                                                        <div class="timeline-header mb-3">
+                                                                                                                            <h6 class="mb-0">@item.TaskName</h6>
+                                                                                                                            <small class="text-muted">@item.CreationDate</small>
+                                                                                                                        </div>
+                                                                                                                        <p class="mb-2">@item.FullName: @item.Comments</p>
+                                                                                                                        <div class="d-flex align-items-center mb-2">
+                                                                                                                            <div class="badge bg-lighter rounded d-flex align-items-center">
+                                                                                                                                <div class="avatar avatar-sm me-2">
+                                                                                                                                    <img src="~/Profile/@item.ProfileName" alt="Avatar" class="rounded-circle" />
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <p class="mb-0 small fw-medium">@item.FullName</p>
+                                                                                                                                    @*   <small>CEO of Pixinvent</small> *@
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </li>
+                                                                                                            }
+                                                                                                        }
+
+
+
+                                                                                                    </ul>
+                                                                                                </div>
+                                                                                                </li>
+                                                                                                </ul>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+
+
+                                                                    <!-- </div> -->
+                                                                </div>
+
+
+
+
+
+                                                            </div>
+
+
+
+
+
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Modal to view data  -->
+
+                                                </div>
+
+                                            </div>
+
+                                              <div class="tab-pane" id="documents" aria-labelledby="about-tab" role="tabpanel">
+                                                <div class="Documents-container mt-3">
+                                                   
+                                                            <div class="document-item">
+                                                                <div class="hover-buttons">
+
+                                                            <button type="button" class="btn m-0 btn-hover" data-bs-toggle="modal" onclick="previewDocument('@Model.Item1.objTask.FilePath');" data-bs-target="#previewModal">
+                                                                        <i class="fa fa-eye" data-bs-toggle="tooltip" data-bs-placement="right" title="View"></i>
+                                                                    </button>
+                                                            <button type="button" class="btn m-0 btn-hover" data-bs-toggle="modal" onclick="#" data-bs-target="#deleteModal">
+                                                                        <i class="fa fa-trash" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"></i>
+                                                                    </button>
+
+                                                            <button type="button" class="btn m-0 btn-hover" onclick="downloadFile('@Model.Item1.objTask.FilePath')" data-bs-toggle="tooltip" title="Download">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </button>
+
+                                                                </div>
+                                                                <a href="#" data-lightbox="image-1" data-title="My caption">
+                                                                    <div class="document-icon">
+
+                                                                @if (@Model.Item1.objTask.FileExt == ".png" || @Model.Item1.objTask.FileExt == ".jpg")
+                                                                {
+                                                                    <img src="@Model.Item1.objTask.FilePath" alt="">
+                                                                }
+                                                                else if (@Model.Item1.objTask.FileExt == ".pdf")
+                                                                {
+                                                                    <img src="~/assets/image/pdf.png" alt="" />
+                                                                }
+                                                                else if (@Model.Item1.objTask.FileExt == ".ppt" || @Model.Item1.objTask.FileExt == ".pptx")
+                                                                {
+                                                                    <img src="~/assets/image/ppt.png" alt="" />
+                                                                }
+                                                                else if (@Model.Item1.objTask.FileExt == ".xls" || @Model.Item1.objTask.FileExt == ".xlsx")
+                                                                {
+                                                                    <img src="~/assets/image/excel.png" alt="" />
+                                                                }
+                                                                else if (@Model.Item1.objTask.FileExt == ".doc" || @Model.Item1.objTask.FileExt == ".docx")
+                                                                {
+                                                                    <img src="~/assets/image/word.png" alt="" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="@Model.Item1.objTask.FilePath" alt="">
+                                                                }
+                                                                       
+                                                                    </div>
+                                                            <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@Model.Item1.objTask.FileName">
+                                                                <h2 class="document-title">@Model.Item1.objTask.FileName</h2>
+                                                                <h6 class="document-project">Created on @Model.Item1.objTask.CreatedOn.Value.ToString("dd/MMM/yyyy") .</h6>
+
+                                                            </div>
+                                                                </a>
+                                                            </div>
+
+                                                      
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane" id="issues" aria-labelledby="about-tab" role="tabpanel">
+                                                <p>
+                                                    Comming Soon....
+                                                </p>
+
+                                            </div>
+                                            <div class="tab-pane" id="activities" aria-labelledby="about-tab" role="tabpanel">
+                                                <!-- ----timeline------  -->
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <ul class="timeline mb-0">
+
+                                                            @if (Model.Item1.ActivityList != null)
+                                                            {
+
+                                                                @foreach (var item in Model.Item1.ActivityList)
+                                                                {
+                                                                    <li class="timeline-item timeline-item-transparent">
+                                                                        <span class="timeline-point timeline-point-success"></span>
+                                                                        <div class="timeline-event">
+                                                                            <div class="timeline-header mb-3">
+                                                                                <h6 class="mb-0">@item.TaskName</h6>
+                                                                                <small class="text-muted">@item.CreationDate</small>
+                                                                            </div>
+                                                                            <p class="mb-2">@item.FullName: @item.Comments</p>
+                                                                            <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                                                                                <div class="d-flex flex-wrap align-items-center mb-50">
+                                                                                    <div class="avatar avatar-sm me-2">
+                                                                                        @if (item.ProfileName != null)
+                                                                                        {
+                                                                                            <img src="~/Profile/@item.ProfileName" alt="Avatar" class="rounded-circle" />
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <img src="~/Profile/user-default.png" alt="Avatar" class="rounded-circle" />
+                                                                                        }
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p class="mb-0 small fw-medium">@item.FullName</p>
+                                                                                        @*   <small>CEO of Pixinvent</small> *@
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                }
+                                                            }
+
+                                                        </ul>
+                                                    </div>
+                                                    </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+
+
+
+            </div>
+            <!-- / Content -->
+        </div>
+        <input type="hidden" id="selId" name="id" class="form-control" value="0" />
+    </div>
+
+    <div class="loader" style="display:none"><div class="loader_inner"><span class="loader-spinner"></span></div></div>
+
+
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="max-width: 90vh;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Iframe for Preview -->
+                    <!-- Enhanced Iframe for Preview -->
+                    <iframe src="#" id="DocPreview"
+                            width="100%"
+                            height="auto"
+                            style="min-height: 80vh;"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            title="Background Preview"
+                            scrolling="auto">
+                    </iframe>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Document</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this Document?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancel" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnDelete" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @section scripts {
+        @* <script src="~/assets/js/task-datatable.js" asp-append-version="true"></script> *@
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // Initialize DataTable when the Sub Tasks tab is shown
+                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    const targetTab = $(e.target).attr('href'); // e.g., "#subtasks"
+
+                    if (targetTab === '#subtasks') {
+                        if (!$.fn.DataTable.isDataTable('#subtaskTable')) {
+                            setTimeout(() => {
+                                const isMobile = window.innerWidth <= 768;
+                                $('#subtaskTable').DataTable({
+                                    responsive: isMobile,
+                                    paging: true,
+                                    searching: true,
+                                    ordering: true,
+                                    info: true,
+                                    autoWidth: false,
+                                    lengthMenu: [10, 25, 50, 100],
+                                    language: {
+                                        search: "Search:",
+                                        lengthMenu: "Show _MENU_ entries",
+                                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                                        paginate: {
+                                            previous: "Prev",
+                                            next: "Next"
+                                        }
+                                    }
+                                });
+                            }, 100);
+                        } else {
+                            $('#subtaskTable').DataTable().columns.adjust().responsive.recalc();
+                        }
+                    }
+                });
+
+                // Optionally initialize immediately if it's already visible (e.g., by default)
+                if ($('#subtasks').is(':visible') && !$.fn.DataTable.isDataTable('#subtaskTable')) {
+                    setTimeout(() => {
+                        const isMobile = window.innerWidth <= 768;
+                        $('#subtaskTable').DataTable({
+                            responsive: isMobile,
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            info: true,
+                            autoWidth: false,
+                            lengthMenu: [10, 25, 50, 100],
+                            language: {
+                                search: "Search:",
+                                lengthMenu: "Show _MENU_ entries",
+                                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                                paginate: {
+                                    previous: "Prev",
+                                    next: "Next"
+                                }
+                            }
+                        });
+                    }, 500);
+                }
+            });
+        </script>
+
+
+        @*         <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" asp-append-version="true"></script>
+    *@    <!-- codeMirror -->
+        <script src="~/assets/summernote-editor/js/summernote-lite.min.js" asp-append-version="true"></script>
+        <script src="~/assets/summernote-editor/js/summernote-custom.js" asp-append-version="true"></script>
+        @*   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>  *@
+        <script>
+            var selPriortiy = '';
+            var prjStatus = '';
+            var selPhase = '';
+            var owner = '';
+            var sDate = '';
+            var eDate = '';
+            var task = '';
+            var vendor = '';
+            var collUser = '';
+            $(document).ready(function ($) {
+
+                $('.summernote-editor').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']]
+                    ]
+                });
+
+
+
+                if (@Model.Item1.objTask.TaskId != 0 || @Model.Item1.objTask.HttpStatusCode!= 200) {
+                    GetComments();
+                    GetSubTaskDashboard(@Model.Item1.objTask.TaskId);
+                    offCanvasElement = document.querySelector('#add-new-record');
+                    offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
+                    offCanvasEl.show();
+
+                }
+                //  document.getElementById("start-date").disabled = true;
+
+                $.each($("#Collaborators").val().split(","), function (i, e) {
+                    $("#selCollaborators option[value='" + e + "']").prop("selected", true);
+                });
+
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+                let vendorList = document.getElementById("vendor-list");
+                let inhouseRadio = document.getElementById("assign-to-inhouse");
+                let vendorRadio = document.getElementById("assign-to-vendor");
+
+                function toggleVendorList() {
+                    if (vendorRadio.checked) {
+                        vendorList.style.display = "block";
+                    } else {
+                        vendorList.style.display = "none";
+                    }
+                }
+
+                inhouseRadio.addEventListener("change", toggleVendorList);
+                vendorRadio.addEventListener("change", toggleVendorList);
+
+                // Initial check
+                toggleVendorList();
+            });
+
+
+            //       SubCollaborators
+            function GetCollaboration() {
+                var select = document.getElementById('selCollaborators');
+                var selected = [...select.options]
+                    .filter(option => option.selected)
+                    .map(option => option.value);
+
+                jQuery("#Collaborators").val(selected);
+
+                var selectedText = [...select.options]
+                    .filter(option => option.selected)
+                    .map(option => option.text);
+
+                collUser = "Collaboration Users- " + selectedText;
+            }
+
+
+            function GetSubCollaboration() {
+                var select = document.getElementById('SubCollaborators');
+                var selected = [...select.options]
+                    .filter(option => option.selected)
+                    .map(option => option.value);
+
+
+                jQuery("#SubCollaborators").val(selected);
+
+                var selectedText = [...select.options]
+                    .filter(option => option.selected)
+                    .map(option => option.text);
+
+                collUser = "Sub Task Collaboration Users- " + selectedText;
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Select all tab containers (e.g., those with class 'tab-content')
+                let tabContainers = document.querySelectorAll('.tab-content');
+                tabContainers.forEach(container => {
+                    let activeTab = container.querySelector('.tab-pane.active');
+                    if (activeTab) {
+                        activeTab.classList.add('show');
+                    }
+                });
+            });
+
+            $("#priority").change(function () {
+                selPriortiy = "Priority -" + $(this).find("option:selected").text() + ",";
+            });
+            $("#projectPhase").change(function () {
+                selPhase = "Phase -" + $(this).find("option:selected").text() + ",";
+            });
+            $("#vendorList").change(function () {
+                vendor = "Vendor - " + $(this).find("option:selected").text() + ",";
+            });
+            function PopulateStatus() {
+                prjStatus = "Status- " + $("#selStatus").find("option:selected").text() + ",";
+            }
+            function PopulateUser() {
+                owner = "Task Owner- " + $("#TaskOwnerId").find("option:selected").text() + ",";
+            }
+            // $("#TaskName").on('change', function () {
+            //     task = "task Name- " + $("#TaskName").val() + ",";
+            // });
+            function StDate(e) {
+                sDate = "Start Date-" + e.target.value + ",";
+            }
+            function EDate(e) {
+                eDate = "End Date-" + e.target.value;
+            }
+            function SaveUserActivities(taskId) {
+                //  alert('test');
+                if (taskId > 0) {
+
+                    //   $(".loader").show();
+
+                    var rowData = {};
+                    task = "Task Name:- " + $("#TaskName").val() + ": ";
+                    // let result = selPriortiy.concat(" ", selPhase, " ", prjStatus, " ", owner, " ", task, " ", sDate, " ", eDate, " ", vendor);
+                    let result = task.concat(" ", selPhase, " ", prjStatus, " ", owner, " ", selPriortiy, " ", sDate, " ", eDate, " ", vendor, " ", collUser);
+                    if (result.trim() == '0' || result.trim() == '' || result.trim() == 'undefined' || result.trim() == null) {
+                        return;
+                    }
+                    //  result = result + 'Edit By';
+                    rowData.ID = 0;
+                    rowData.Comments = 'Edit:- ' + result;
+                    rowData.Summary = "Task Management"
+                    rowData.ProjectId = $("#TaskProjectId").val();
+                    rowData.TaskId = $("#TaskId").val();
+                    jQuery.ajax({
+                        type: "POST",
+                        url: "/Task/SaveComments",
+                        data: { inputs: rowData },
+                        success: function (data) {
+                            //  $(".loader").hide();
+
+                        },
+                        error: function (result) {
+                            var x = 1;
+                            alert("errror<br>" + result.responseText);
+
+                        }
+                    });
+                }
+            }
+
+            function SaveSubComments() {
+
+
+                if ($("#SComments").val() == '') {
+                    swal(
+                        'Validation!',
+                        'Please add the comments!',
+                        'warning'
+                    )
+                    return;
+                }
+                $(".loader").show();
+                var rowData = {};
+                rowData.ID = $("#selId").val();
+                rowData.Summary = "Comments"
+                rowData.Comments = $("#SComments").val();
+                rowData.ProjectId = $("#TaskProjectId").val();
+                rowData.TaskId = $("#TaskId").val();
+                rowData.SubTaskId = $("#SubTaskId").val();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Task/SaveComments",
+                    data: { inputs: rowData },
+                    success: function (data) {
+                        $("#SComments").val('');
+                        $("#selId").val(0);
+                        GetComments();
+                        $(".loader").hide();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+
+            function SaveComments() {
+
+
+                if ($("#comments").val() == '') {
+                    swal(
+                        'Validation!',
+                        'Please add the comments!',
+                        'warning'
+                    )
+                    return;
+                }
+                $(".loader").show();
+                var rowData = {};
+                rowData.ID = $("#selId").val();
+                rowData.Summary = "Comments"
+                rowData.Comments = $("#comments").val();
+                rowData.ProjectId = $("#TaskProjectId").val();
+                rowData.TaskId = $("#TaskId").val();
+                rowData.SubTaskId = 0;
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Task/SaveComments",
+                    data: { inputs: rowData },
+                    success: function (data) {
+                        $("#comments").val('');
+                        $("#selId").val(0);
+                        GetComments();
+                        $(".loader").hide();
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+
+            function GetComments() {
+
+                // alert('GetComments');
+                $('#divChat div').html('');
+                $('#divSChat div').html('');
+                var chatWindow = '';
+                var rowData = {};
+                //  rowData.Comments = $("#comments").val();
+                rowData.IsComment = true;
+                rowData.ProjectId = $("#TaskProjectId").val();
+                rowData.TaskId = $("#TaskId").val();
+                rowData.SubTaskId = 0;
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Task/GetComments",
+                    data: { inputs: rowData },
+                    success: function (data) {
+                        if (data != null) {
+                            //console.log(data);
+                            // $("divChat").empty();
+                            $.each(data, function (key, item) {
+
+                                chatWindow += '<div class="chat-group"><div class="chat-avatar">'
+                                chatWindow += '<img style="width:20px;height:20px;" class="rounded-circle" src = /Profile/' + (item.profileName == null ? "user-default.png" : item.profileName) + ' > </div>';
+                                chatWindow += '<div class="chat-body"><div class="chat-content pt-2  elevation-2 chat-left  bg-light-theme" id="chat-new-content"> <div class="chat-head w-100   px-2">';
+                                chatWindow += ' <div class="top-header"> <div id="title-name" class="fw-semibold text-dark"> <b class="title">' + item.fullName + '</b>   <small class="time ms-4">' + item.creationDate + ' </small> </div>';
+                                chatWindow += ' <div class="right-side-icon"><div class="thumb-icon"><button class="btn btn-sm btn-icon text-muted p-0 border-0 bg-transparent m-0">';
+                                //chatWindow += '<i class="ti ti-thumb-up ti-md me-1" id="thumbs-up" onclick="toggleThumbColor(this)" data-bs-toggle="tooltip" data-bs-placement="top" title="Like"></i><small class="numbers" onclick="toggleLikesDropdown(this, event)">230</small></button>';
+                                chatWindow += '<div class="likes-dropdown  shadow-sm  rounded p-2"><h6 class="fw-semibold mb-2">Liked by</h6>';
+                                chatWindow += '<ul class="list-unstyled mb-0"><li class="likes-profile d-flex mb-2"><img src="assets/img/avatars/16.png" class="rounded-circle me-2" alt="User 1">';
+                                chatWindow += '<small class="person-name">Jane Smith</small></li><li class="likes-profile d-flex mb-2"><img src="assets/img/avatars/16.png" class="rounded-circle me-2" alt="User 2">';
+                                chatWindow += '<small class="person-name">Michael Brown</small></li></ul></div></div><div class="dropdown"><button class="chat-dot-icon btn  rounded-pill text-muted border-0 p-0 bg-transparent" type="button" id="chatMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                                chatWindow += '<i class="ti ti-dots-vertical ti-md text-muted"></i></button> <div class="dropdown-menu dropdown-menu-end" aria-labelledby="chatMenu">';
+                                chatWindow += ' <a class="dropdown-item" onclick="EditComments(' + item.id + ')" href="javascript:void(0);">Edit</a><a class="dropdown-item" onclick="DeleteComments(' + item.id + ')" href="javascript:void(0);">Delete</a></div></div></div></div></div>';
+                                chatWindow += '<p class="ps-2 pt-0 me-5 text-base new-base">' + item.comments + '</p>';
+                                chatWindow += '</div></div> </div>';
+
+                            });
+                            // console.log(chatWindow);
+
+                            $("#divChat").append(chatWindow);
+                            $("#divSChat").append(chatWindow);
+                        }
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function calculateDuration() {
+                    const startDate = document.getElementById("start-date").value;
+                    const endDate = document.getElementById("due-date").value;
+                    const durationField = document.getElementById("duration");
+                    const progressBar = document.getElementById("progress-bar");
+
+                    if (startDate && endDate) {
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        const diffDays = Math.max((end - start) / (1000 * 60 * 60 * 24), 0);
+
+                        durationField.value = diffDays > 0 ? diffDays + " Days" : "0";
+
+                        // Progress Calculation
+                        const totalDuration = 30; // Assume 30 days for full progress bar
+                        const progress = Math.min((diffDays / totalDuration) * 100, 100);
+                        progressBar.style.width = progress + "%";
+                        progressBar.setAttribute("aria-valuenow", progress);
+                    } else {
+                        durationField.value = "";
+                        progressBar.style.width = "0%";
+                    }
+                }
+
+                function previewImage(event) {
+                    const image = document.getElementById("uploaded-image");
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                }
+
+                document.getElementById("start-date").addEventListener("change", calculateDuration);
+                document.getElementById("due-date").addEventListener("change", calculateDuration);
+
+                calculateDuration(); // Initial calculation if values are pre-filled
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function calculateDuration() {
+                    const startDate = document.getElementById("Astart-date").value;
+                    const endDate = document.getElementById("Adue-date").value;
+                    const durationField = document.getElementById("Aduration");
+                    const progressBar = document.getElementById("Aprogress-bar");
+
+                    if (startDate && endDate) {
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        const diffDays = Math.max((end - start) / (1000 * 60 * 60 * 24), 0);
+
+                        durationField.value = diffDays > 0 ? diffDays + " Days" : "0";
+
+                        // Progress Calculation
+                        const totalDuration = 30; // Assume 30 days for full progress bar
+                        const progress = Math.min((diffDays / totalDuration) * 100, 100);
+                        progressBar.style.width = progress + "%";
+                        progressBar.setAttribute("aria-valuenow", progress);
+                    } else {
+                        durationField.value = "";
+                        progressBar.style.width = "0%";
+                    }
+                }
+
+                function previewImage(event) {
+                    const image = document.getElementById("uploaded-image");
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                }
+
+                document.getElementById("Astart-date").addEventListener("change", calculateDuration);
+                document.getElementById("Adue-date").addEventListener("change", calculateDuration);
+
+                calculateDuration(); // Initial calculation if values are pre-filled
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function calculateDuration() {
+                    const startDate = document.getElementById("Vstart-date").value;
+                    const endDate = document.getElementById("Vdue-date").value;
+                    const durationField = document.getElementById("Vduration");
+                    const progressBar = document.getElementById("Vprogress-bar");
+
+                    if (startDate && endDate) {
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        const diffDays = Math.max((end - start) / (1000 * 60 * 60 * 24), 0);
+
+                        durationField.value = diffDays > 0 ? diffDays + " Days" : "0";
+
+                        // Progress Calculation
+                        const totalDuration = 30; // Assume 30 days for full progress bar
+                        const progress = Math.min((diffDays / totalDuration) * 100, 100);
+                        progressBar.style.width = progress + "%";
+                        progressBar.setAttribute("aria-valuenow", progress);
+                    } else {
+                        durationField.value = "";
+                        progressBar.style.width = "0%";
+                    }
+                }
+
+                function previewImage(event) {
+                    const image = document.getElementById("uploaded-image");
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                }
+
+                document.getElementById("Vstart-date").addEventListener("change", calculateDuration);
+                document.getElementById("Vdue-date").addEventListener("change", calculateDuration);
+
+                calculateDuration(); // Initial calculation if values are pre-filled
+            });
+        </script>
+
+        <script>
+            function toggleLikesDropdown(numberElement, event) {
+                event.stopPropagation(); // Prevent closing on body click
+
+                const dropdown = numberElement.closest('.thumb-icon').querySelector('.likes-dropdown');
+                const isVisible = dropdown.style.display === 'block';
+
+                // Hide all dropdowns first
+                document.querySelectorAll('.likes-dropdown').forEach(el => el.style.display = 'none');
+
+                // Toggle the one related to this number
+                dropdown.style.display = isVisible ? 'none' : 'block';
+            }
+
+            function toggleThumbColor(icon) {
+                const isDarkTheme = document.body.classList.contains('dark-theme');
+
+                icon.classList.toggle('liked');
+
+                // Remove both unliked classes first
+                icon.classList.remove('unliked-light', 'unliked-dark');
+
+                if (icon.classList.contains('liked')) {
+                    // Just add liked class
+                    icon.classList.add('liked');
+                } else {
+                    // Unliked: add based on theme
+                    if (isDarkTheme) {
+                        icon.classList.add('unliked-dark');
+                    } else {
+                        icon.classList.add('unliked-light');
+                    }
+                    icon.classList.remove('liked');
+                }
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.thumb-icon')) {
+                    document.querySelectorAll('.likes-dropdown').forEach(el => el.style.display = 'none');
+                }
+            });
+
+            function EditComments(id) {
+
+                //  alert(id);
+                //var rowData = {};
+                //   rowData.ID = id;
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Task/GetCommentById",
+                    data: { Id: id },
+                    success: function (data) {
+                        // console.log(data);
+                        // alert(data.id);
+                        $("#comments").val(data.comments);
+                        $("#SComments").val(data.comments);
+
+                        $("#selId").val(data.id);
+                        //  GetComments();
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+            function DeleteComments(id) {
+
+                if (confirm("Sure, you want to delete this comment ?")) {
+                    var rowData = {};
+                    rowData.ID = id;
+                    jQuery.ajax({
+                        type: "POST",
+                        url: "/Task/DeleteComments",
+                        data: { inputs: rowData },
+                        success: function (data) {
+                            //  $("#comments").val('');
+                            GetComments();
+
+                        },
+                        error: function (result) {
+                            var x = 1;
+                            alert("errror<br>" + result.responseText);
+
+                        }
+                    });
+                }
+            }
+
+
+
+        </script>
+
+
+        <script>
+            document.querySelectorAll(".commet-new").forEach((textarea) => {
+                const container = textarea.closest(".textarea-container");
+
+                textarea.addEventListener("focus", () => {
+                    textarea.rows = 4;
+                    container.classList.add("active");
+                    autoResize(textarea);
+                });
+
+                textarea.addEventListener("input", () => autoResize(textarea));
+
+                textarea.addEventListener("blur", () => {
+                    if (!textarea.value.trim()) {
+                        textarea.rows = 1;
+                        textarea.style.height = ""; // reset height
+                        container.classList.remove("active");
+                    }
+                });
+
+                function autoResize(el) {
+                    el.style.height = 'auto';
+                    el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+                }
+            });
+
+            function DeleteSubTask(tid) {
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "It will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $(".loader").show();
+                        jQuery.ajax({
+                            type: "POST",
+                            url: "/SubTask/DeleteSubTask",
+                            data: { pId: tid },
+                            success: function (data) {
+                                $(".loader").hide();
+                                GetSubTaskDashboard(@Model.Item1.objTask.TaskId);
+                                // $("#btnClose").trigger("click");
+                                //$("#btnEClose").trigger("click");
+
+                            },
+                            error: function (result) {
+                                var x = 1;
+                                alert("errror<br>" + result.responseText);
+
+                            }
+                        });
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                    }
+                });
+                // alert("Sure, you want to delete this Sub Task ?");
+                // alert(tid);
+                // return false;
+
+
+            }
+
+            function EditSubTask(tid) {
+
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/SubTask/GetSubTaskView",
+                    data: { pId: tid },
+                    success: function (data) {
+                        if (data != null) {
+                            // console.log(data);
+                            // alert(data.statusId);
+                            //  let datest = new Date(data.startDate);
+
+                            document.querySelector("#Vstart-date").valueAsDate = new Date(data.startDate);
+                            document.querySelector("#Vdue-date").valueAsDate = new Date(data.endDate);
+                            const diffTime = Math.abs(new Date(data.endDate) - new Date(data.startDate));
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            $("#VSubName").val(data.subTaskName);
+                            $("#SubTaskId").val(data.subTaskId);
+                            $("#SubTaskId").val(data.subTaskId);
+
+                            $("#Vduration").val(diffDays);
+                            // if (data.priorityId != 0) {
+                            $('#VPriority option[value=' + data.priorityId + ']').attr('selected', 'selected').change();
+                            $('#VSubStatus option[value=' + data.statusId + ']').attr('selected', 'selected').change();
+                            $('#VSubOwnerId option[value=' + data.ownerId + ']').attr('selected', 'selected').change();
+                            $('#VSubCollaborators option[value=' + data.collaborators + ']').attr('selected', 'selected').change();
+                            // }
+                        }
+
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+            }
+            function GetSubTask(tid) {
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/SubTask/GetSubTaskView",
+                    data: { pId: tid },
+                    success: function (data) {
+                        if (data != null) {
+                            // console.log(data);
+                           // alert(data.description);
+                            //  let datest = new Date(data.startDate);
+
+                            document.querySelector("#Vstart-date").valueAsDate = new Date(data.startDate);
+                            document.querySelector("#Vdue-date").valueAsDate = new Date(data.endDate);
+                            const diffTime = Math.abs(new Date(data.endDate) - new Date(data.startDate));
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            $("#VSubName").val(data.subTaskName);
+                            $("#SubTaskId").val(data.subTaskId);
+                           $('#editST').summernote('code', data.description);
+                            
+
+                            $("#Vduration").val(diffDays);
+                            // if (data.priorityId != 0) {
+                            $('#VPriority option[value=' + data.priorityId + ']').attr('selected', 'selected').change();
+                            $('#VSubStatus option[value=' + data.statusId + ']').attr('selected', 'selected').change();
+                            $('#VSubOwnerId option[value=' + data.ownerId + ']').attr('selected', 'selected').change();
+                            $('#VSubCollaborators option[value=' + data.collaborators + ']').attr('selected', 'selected').change();
+                            // }
+                        }
+
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+            }
+
+            function SaveSubTask(isAdd) {
+
+                //   $("#btnClose").trigger("click");
+                // alert(isAdd);
+
+                var rowData = {};
+                if (parseInt(isAdd) == 1) {
+                    rowData.SubTaskId = 0;
+
+                    if (validateInputs($("#ASubName").val())) {
+
+                        alert('Sub Task is left blank');
+                        return false;
+                    }
+                    if (validateInputs($("#Astart-date").val())) {
+                        alert('Start Date is left blank');
+                        return false;
+                    }
+                    if (validateInputs($("#Adue-date").val())) {
+                        alert('End Date is left blank');
+                        return false;
+                    }
+                    if (validateInputs($("#APriority").val())) {
+                        alert('select the Priority');
+                        return false;
+                    }
+                    if (validateInputs($("#ASubStatus").val())) {
+                        alert('select the Status');
+                        return false;
+                    }
+                    if (validateInputs($("#ASubOwnerId").val())) {
+                        alert('select the Owner');
+                        return false;
+                    }
+                    
+                    //   return;
+
+                    rowData.OwnerId = $("#ASubOwnerId").val();
+                    rowData.PriorityId = $("#APriority").val();
+                    rowData.StatusId = $("#ASubStatus").val();
+                    rowData.Collaborators = $("#ASubCollaborators").val();
+                    rowData.SubTaskName = $("#ASubName").val();
+                    rowData.StartDate = $("#Astart-date").val();
+                    rowData.EndDate = $("#Adue-date").val();
+                    rowData.ProjectId = $("#ProjectId").val();
+                    rowData.TaskId = $("#TaskId").val();
+                    rowData.Description = $('#addST').summernote('code');
+                }
+                else {
+                    rowData.SubTaskId = $("#SubTaskId").val();
+                    rowData.OwnerId = $("#VSubOwnerId").val();
+                    rowData.PriorityId = $("#VPriority").val();
+                    rowData.StatusId = $("#VSubStatus").val();
+                    rowData.Collaborators = $("#VSubCollaborators").val();
+                    rowData.SubTaskName = $("#VSubName").val();
+                    rowData.StartDate = $("#Vstart-date").val();
+                    rowData.EndDate = $("#Vdue-date").val();
+                    rowData.ProjectId = $("#ProjectId").val();
+                    rowData.TaskId = $("#TaskId").val();
+                    rowData.Description = $('#editST').summernote('code');
+                }
+
+                $(".loader").show();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/SubTask/SaveSubTask",
+                    data: { inputs: rowData },
+                    success: function (data) {
+                        $(".loader").hide();
+                        GetSubTaskDashboard($("#TaskId").val());
+                        $("#btnClose").trigger("click");
+                        $("#btnEClose").trigger("click");
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+
+            function validateInputs(ctrl) {
+                //  alert(ctrl);
+                if (ctrl == '') {
+                    return true;
+                }
+                return false;
+
+            }
+
+            function GetSubTaskDashboard(tid) {
+
+                $(".loader").show();
+                jQuery("#mycountrytbl").html("")
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/SubTask/GetSubTaskDashboard",
+                    data: { taskId: tid },
+                    success: function (data) {
+                        if (data != null) {
+
+                            var serId = 1;
+                            //  console.log(data);
+                            // $("divChat").empty();
+                            $.each(data, function (key, item) {
+                                if (item.status.trim() == 'Open Tasks') {
+                                    if (item.priority.trim() == 'Low')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-green">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'Normal')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-blue">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'High')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-orange">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-red">' + item.priority + '</span></td><td><span class="badge bg-label-red">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+
+                                }
+                                else if (item.status.trim() == 'Completed') {
+                                    if (item.priority.trim() == 'Low')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-green">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'Normal')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-blue">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'High')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-orange">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-red">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+
+                                }
+
+                                else if (item.status.trim() == 'Overdue') {
+                                    if (item.priority.trim() == 'Low')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-green">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'Normal')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-blue">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'High')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-orange">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-red">' + item.priority + '</span></td><td><span class="badge bg-label-danger">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+
+                                }
+
+                                else if (item.status.trim() == 'In Progress') {
+                                    if (item.priority.trim() == 'Low')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-green">' + item.priority + '</span></td><td><span class="badge bg-label-warning">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-edit text-primary me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'Normal')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-blue">' + item.priority + '</span></td><td><span class="badge bg-label-warning">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-edit text-primary me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'High')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-orange">' + item.priority + '</span></td><td><span class="badge bg-label-warning">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-edit text-primary me-1"></i></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-red">' + item.priority + '</span></td><td><span class="badge bg-label-warning">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-edit text-primary me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+
+                                }
+                                else {
+                                    if (item.priority.trim() == 'Low')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-green">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'Normal')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-blue">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else if (item.priority.trim() == 'High')
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-orange">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+                                    else
+                                        $("#mycountrytbl").append('<tr><td>' + serId + '</td><td><div class="d-flex flex-wrap flex-md-nowrap gap-2"><span>' + item.subTaskName + '</span><div class="action-button hover-action-button ms-auto" style="visibility:initial;"><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" class="btn btn-outline-primary waves-effect" data-bs-toggle="offcanvas" data-bs-target="#view-data"><i class="fa fa-eye me-1"></i> View</a></div></div></td><td>' + item.taskOwner + '</td><td><span class="bg-label-red">' + item.priority + '</span></td><td><span class="badge bg-label-success">' + item.status + '</span></td><td>' + item.startDate + '</td><td>' + item.endDate + '</td><td>' + item.duration + '</td><td>' + item.createdBy + '</td><td>' + item.createdOn + '</td><td><a href="#" onclick="GetSubTask(' + item.subTaskId + ')" data-bs-toggle="offcanvas" data-bs-target="#view-data" ><i class="fa fa-eye text-success me-1"></i></a><a href="#" onclick="DeleteSubTask(' + item.subTaskId + ')"><i class="fa fa-trash text-danger me-1"></i></a></td></tr>');
+
+                                }
+
+
+                                serId++;
+                            });
+                            $(".loader").hide();
+
+                            //  $("#divChat").append(chatWindow);
+                        }
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            }
+
+
+            function previewDocument(url) {
+
+                var output = document.getElementById('DocPreview');
+                output.src = url;
+            }
+
+            function downloadFile(filepath) {
+                window.location.href = "/Task/Download?fileName=" + filepath;
+            }
+
+        </script>
+
+        <script>
+            document.querySelectorAll('.chat-content').forEach(chatBox => {
+                chatBox.addEventListener('click', function () {
+                    if (!this.classList.contains('chevron-visible')) {
+                        this.classList.add('chevron-visible');
+                    }
+                });
+            });
+        </script>
+    }

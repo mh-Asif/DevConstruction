@@ -1,0 +1,638 @@
+﻿@inject IHttpContextAccessor Accessor
+@{
+}
+<div class="container-fluid mt-4 page-content-section content-wrapper">
+    <!-- Content -->
+    <div class="flex-grow-1">
+        <!-- DataTable with Buttons -->
+        <div class="row">
+            <div class="col-12">
+            </div>
+        </div>
+        <div class="card px-2">
+            <div class="d-flex flex-wrap py-2 justify-content-between">
+                <h4 class="mb-0">
+                    <span class="p-0 pl-2 fw-bold">Stock Inventory</span>
+                </h4>
+                <div class="text-end">
+                    <a href="javascript:void(0)" class="btn btn-primary me-sm-3 me-1 addShow" id="btnAddTransaction">Add Transaction</a>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="row mb-3 px-3 pt-3">
+               @*  <div class="col-md-3">
+                    <label class="form-label fw-bold">Transaction Type:</label>
+                    <select id="filterType" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="In">Stock In</option>
+                        <option value="Out">Stock Out</option>
+                    </select>
+                </div> *@
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">From Date:</label>
+                    <input type="date" id="fromDate" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">To Date:</label>
+                    <input type="date" id="toDate" class="form-control" />
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" id="btnFilter" class="btn btn-primary me-2">
+                        <i class="bx bx-filter me-1"></i>Filter
+                    </button>
+                    <button type="button" id="btnClearFilter" class="btn btn-secondary">
+                        <i class="bx bx-refresh me-1"></i>Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-datatable table-responsive border-top pt-0">
+                <table class="master-datatable main-table table">
+                    <thead>
+                        <tr>
+                            <th>Transaction Date</th>
+                            <th>Item Name</th>
+                            <th>Type</th>
+                            <th>Vendor</th>
+                            <th>Quantity</th>
+                            <th>Unit Cost</th>
+                            <th>Total Cost</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal to Add/Edit Transaction -->
+        <div class="modal fade" id="addEditTransactionModal" tabindex="-1" aria-labelledby="addEditTransactionModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="addEditTransactionModalLabel">
+                            <i class="bx bx-transfer me-2"></i><span id="modalTitle">Add Stock</span>
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="transactionForm">
+                        <div class="modal-body p-4">
+                            <input type="hidden" id="transactionId" value="0" />
+                            
+                            <div class="row">
+                                @* <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Transaction Type <span class="text-danger">*</span></label>
+                                    <select id="transactionType" name="transactionType" class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="In">Stock In</option>
+                                        <option value="Out">Stock Out</option>
+                                    </select>
+                                </div> *@
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Item <span class="text-danger">*</span></label>
+                                    <select id="itemId" name="itemId" class="form-select" required>
+                                        <option value="">Select Item</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Vendor</label>
+                                    <select id="vendorId" name="vendorId" class="form-select">
+                                        <option value="0">Select Vendor</option>
+                                    </select>
+                                    <small class="text-muted">Optional - for stock purchases</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Quantity <span class="text-danger">*</span></label>
+                                    <input type="number" id="quantity" name="quantity" class="form-control" placeholder="0.00" step="0.01" min="0" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Transaction Date</label>
+                                    <input type="date" id="transactionDate" name="transactionDate" class="form-control date-picker" />
+                                    <small class="text-muted">Leave blank for today's date</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                               
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Unit Cost <span class="text-danger">*</span></label>
+                                    <input type="number" id="unitCost" name="unitCost" class="form-control" placeholder="0.00" step="0.01" min="0" required />
+                                    <small class="text-muted">Cost per unit</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Total Cost</label>
+                                    <input type="number" id="totalCost" name="totalCost" class="form-control" placeholder="0.00" step="0.01" min="0" readonly />
+                                    <small class="text-muted">Auto-calculated: Quantity × Unit Cost</small>
+                                </div>
+                            </div>
+
+                           @*  <div class="row">
+                               
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Status</label>
+                                    <select id="transactionStatus" name="transactionStatus" class="form-select">
+                                        <option value="true">Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                </div>
+                            </div> *@
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="3" placeholder="Enter description or notes..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="btnSaveTransaction">Save Transaction</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Store transactions data
+        var allTransactionsData = [];
+        var allItems = [];
+        var allVendors = [];
+        
+        // Load Items dropdown
+        function loadItems() {
+            $.ajax({
+                url: 'https://cmsapi.hrclicks.com/api/InventoryAPI/GetActiveItems',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.itemsList) {
+                        allItems = response.itemsList;
+                        var $itemSelect = $('#itemId');
+                        $itemSelect.empty().append('<option value="">Select Item</option>');
+                        $.each(allItems, function (index, item) {
+                            $itemSelect.append($('<option></option>').val(item.itemId).text(item.item_Name));
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading items:', error);
+                }
+            });
+        }
+
+        // Load Vendors dropdown
+        function loadVendors() {
+            var unitId = @Accessor.HttpContext.Session.GetInt32("UnitId");
+            $.ajax({
+                url: 'https://cmsapi.hrclicks.com/api/UsersAPI/GetUsers?UserType=3&unitId=' + unitId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.length > 0) {
+                        allVendors = response;
+                        var $vendorSelect = $('#vendorId');
+                        $vendorSelect.empty().append('<option value="0">Select Vendor</option>');
+                        $.each(allVendors, function (index, vendor) {
+                            // Use BusinessOwner or FullName for display
+                            var displayName = vendor.businessOwner || vendor.fullName || (vendor.firstName + ' ' + vendor.lastName);
+                            displayName = displayName.trim() || 'Vendor #' + vendor.userId;
+                            $vendorSelect.append($('<option></option>').val(vendor.userId).text(displayName));
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading vendors:', error);
+                }
+            });
+        }
+
+        // Initialize dropdowns
+        loadItems();
+        loadVendors();
+
+//Auto-populate unit cost when item is selected
+       // $('#itemId').on('change', function () {
+         //   var selectedItemId = $(this).val();
+           // if (selectedItemId) {
+              //  var selectedItem = allItems.find(i => i.itemId == selectedItemId);
+              //  if (selectedItem && selectedItem.item_Unit_Cost) {
+                  //  $('#unitCost').val(selectedItem.item_Unit_Cost);
+                    // Trigger calculation if quantity is already entered
+                   // var quantity = parseFloat($('#quantity').val()) || 0;
+                  //  var unitCost = parseFloat(selectedItem.item_Unit_Cost) || 0;
+                   // var totalCost = quantity * unitCost;
+                  //  $('#totalCost').val(totalCost.toFixed(2));
+              //  }
+          //  }
+     //   });
+
+        // Auto-calculate total cost
+        $('#quantity, #unitCost').on('input', function () {
+            var quantity = parseFloat($('#quantity').val()) || 0;
+            var unitCost = parseFloat($('#unitCost').val()) || 0;
+            var totalCost = quantity * unitCost;
+            $('#totalCost').val(totalCost.toFixed(2));
+        });
+
+        // Custom date range filter function for DataTable
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var filterType = $('#filterType').val();
+                var fromDate = $('#fromDate').val();
+                var toDate = $('#toDate').val();
+                
+                // Get the transaction row from allTransactionsData
+                var transaction = allTransactionsData[dataIndex];
+                if (!transaction) {
+                    return false;
+                }
+                
+                // Filter by type
+                // if (filterType && transaction.transactionType !== filterType) {
+                //     return false;
+                // }
+                
+                // If no dates are selected, show all rows
+                if (!fromDate && !toDate) {
+                    return true;
+                }
+                
+                // Get transaction date
+                var transactionDateStr = transaction.transactionDate;
+                if (!transactionDateStr) {
+                    return false;
+                }
+                
+                // Parse the transaction date
+                var transactionDate = new Date(transactionDateStr);
+                if (isNaN(transactionDate.getTime())) {
+                    return false;
+                }
+                transactionDate.setHours(0, 0, 0, 0);
+                
+                var filterFromDate = fromDate ? new Date(fromDate) : null;
+                if (filterFromDate) filterFromDate.setHours(0, 0, 0, 0);
+                
+                var filterToDate = toDate ? new Date(toDate) : null;
+                if (filterToDate) filterToDate.setHours(23, 59, 59, 999);
+                
+                var matchesFromDate = !filterFromDate || transactionDate >= filterFromDate;
+                var matchesToDate = !filterToDate || transactionDate <= filterToDate;
+                
+                return matchesFromDate && matchesToDate;
+            }
+        );
+        
+        // Initialize DataTable
+        var table = $('.master-datatable').DataTable({
+            "processing": true,
+            "serverSide": false,
+            "ajax": {
+                "url": "https://cmsapi.hrclicks.com/api/InventoryAPI/GetAllStockTransactions",
+                "type": "GET",
+                "dataType": "json",
+                "dataSrc": function (json) {
+                    console.log('API Response:', json);
+                    if (json && json.stockTransactionsList) {
+                        allTransactionsData = json.stockTransactionsList;
+                        return json.stockTransactionsList;
+                    }
+                    return [];
+                },
+                "error": function (xhr, error, thrown) {
+                    console.error('Error loading transactions:', error);
+                    alert('Error loading transactions. Please try again.');
+                }
+            },
+            "columns": [
+                {
+                    "data": "transactionDate",
+                    "render": function (data, type, row) {
+                        if (!data) return 'N/A';
+                        
+                        var date = new Date(data);
+                        if (isNaN(date.getTime())) return data;
+                        
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        
+                        return day + '/' + month + '/' + year;
+                    }
+                },
+                {
+                    "data": "itemId",
+                    "render": function (data, type, row) {
+                        // Find item name from allItems array
+                        var item = allItems.find(i => i.itemId === data);
+                        return item ? item.item_Name : 'N/A';
+                    }
+                },
+                {
+                    "data": "transactionType",
+                    "render": function (data, type, row) {
+                        if (data === 'In') {
+                            return '<span class="badge bg-success"><i class="bx bx-down-arrow-circle me-1"></i>Stock In</span>';
+                        } else if (data === 'Out') {
+                            return '<span class="badge bg-danger"><i class="bx bx-up-arrow-circle me-1"></i>Stock Out</span>';
+                        }
+                        return '<span class="badge bg-secondary">' + (data || 'N/A') + '</span>';
+                    }
+                },
+                {
+                    "data": "vendorId",
+                    "render": function (data, type, row) {
+                        if (!data) return 'N/A';
+                        // Find vendor name from allVendors array
+                        var vendor = allVendors.find(v => v.userId === data);
+                        if (vendor) {
+                            var displayName = vendor.businessOwner || vendor.fullName || (vendor.firstName + ' ' + vendor.lastName);
+                            displayName = displayName.trim() || 'Vendor #' + data;
+                            return displayName;
+                        }
+                        return 'Vendor #' + data;
+                    }
+                },
+                {
+                    "data": "quantity",
+                    "render": function (data, type, row) {
+                        return data ? parseFloat(data).toFixed(2) : '0.00';
+                    }
+                },
+                {
+                    "data": "unitCost",
+                    "render": function (data, type, row) {
+                        var cost = parseFloat(data) || 0;
+                        return '₹' + cost.toFixed(2);
+                    }
+                },
+                {
+                    "data": "totalCost",
+                    "render": function (data, type, row) {
+                        var cost = parseFloat(data) || 0;
+                        return '₹' + cost.toFixed(2);
+                    }
+                },
+                {
+                    "data": "description",
+                    "render": function (data, type, row) {
+                        if (!data) return 'N/A';
+                        return data.length > 50 ? data.substring(0, 50) + '...' : data;
+                    }
+                },
+                {
+                    "data": "isActive",
+                    "render": function (data, type, row) {
+                        if (data === true || data === 1) {
+                            return '<span class="badge bg-success">Active</span>';
+                        } else {
+                            return '<span class="badge bg-danger">Inactive</span>';
+                        }
+                    }
+                },
+                {
+                    "data": "transactionId",
+                    "orderable": false,
+                    "render": function (data, type, row) {
+                        return '<div class="d-inline-block">' +
+                            '<a href="javascript:void(0)" class="btn btn-sm btn-warning me-1 edit-transaction" data-transaction-id="' + data + '">Edit</a>' +
+                            '<a href="javascript:void(0)" class="btn btn-sm btn-danger delete-transaction" data-transaction-id="' + data + '">Delete</a>' +
+                            '</div>';
+                    }
+                }
+            ],
+            "order": [[0, "desc"]],
+            "pageLength": 10,
+            "language": {
+                "emptyTable": "No transactions found",
+                "loadingRecords": "Loading transactions...",
+                "processing": "Processing..."
+            }
+        });
+
+        // Handle Filter button click
+        $(document).on('click', '#btnFilter', function () {
+            table.draw();
+        });
+
+        // Handle Clear Filter button click
+        $(document).on('click', '#btnClearFilter', function () {
+            $('#filterType').val('');
+            $('#fromDate').val('');
+            $('#toDate').val('');
+            table.search('').draw();
+        });
+
+        // Handle Add Transaction button click
+        $(document).on('click', '#btnAddTransaction', function () {
+            $('#modalTitle').text('Add Transaction');
+            $('#transactionId').val('0');
+            $('#transactionForm')[0].reset();
+            $('#transactionStatus').val('true');
+            $('#transactionDate').val('');
+            $('#totalCost').val('0.00');
+            loadItems(); // Reload items
+            loadVendors(); // Reload vendors
+            showModal();
+        });
+
+        // Handle Edit button click
+        $(document).on('click', '.edit-transaction', function () {
+            var transactionId = $(this).data('transaction-id');
+            editTransaction(transactionId);
+        });
+
+        // Function to edit transaction
+        function editTransaction(transactionId) {
+            $.ajax({
+                url: 'https://cmsapi.hrclicks.com/api/InventoryAPI/GetStockTransactionById?transactionId=' + transactionId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.transactionId) {
+                        // Populate form with transaction data
+                        $('#transactionId').val(response.transactionId);
+                        $('#transactionType').val(response.transactionType || '');
+                        $('#itemId').val(response.itemId || '');
+                        $('#vendorId').val(response.vendorId || '0');
+                        $('#quantity').val(response.quantity || 0);
+                        $('#unitCost').val(response.unitCost || 0);
+                        $('#totalCost').val(response.totalCost || 0);
+                        $('#description').val(response.description || '');
+                        $('#transactionStatus').val(response.isActive === true ? 'true' : 'false');
+                        
+                        // Set transaction date
+                        if (response.transactionDate) {
+                            var date = new Date(response.transactionDate);
+                            if (!isNaN(date.getTime())) {
+                                var year = date.getFullYear();
+                                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                                var day = ("0" + date.getDate()).slice(-2);
+                                $('#transactionDate').val(year + '-' + month + '-' + day);
+                            }
+                        }
+                        
+                        $('#modalTitle').text('Edit Transaction');
+                        loadItems(); // Reload items
+                        loadVendors(); // Reload vendors
+                        showModal();
+                    } else {
+                        alert('Transaction details not found');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading transaction:', error);
+                    alert('An error occurred while loading transaction details. Please try again.');
+                }
+            });
+        }
+
+        // Handle Delete button click
+        $(document).on('click', '.delete-transaction', function () {
+            var transactionId = $(this).data('transaction-id');
+            deleteTransaction(transactionId);
+        });
+
+        // Function to delete transaction
+        function deleteTransaction(transactionId) {
+            if (!confirm('Are you sure you want to delete this transaction?')) {
+                return;
+            }
+
+            $.ajax({
+                url: 'https://cmsapi.hrclicks.com/api/InventoryAPI/DeleteStockTransaction',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(transactionId),
+                success: function (response) {
+                    if (response.httpStatusCode === 200) {
+                        alert('Transaction deleted successfully!');
+                        table.ajax.reload();
+                    } else {
+                        alert('Error deleting transaction: ' + (response.displayMessage || 'Unknown error'));
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error deleting transaction:', error);
+                    alert('An error occurred while deleting the transaction. Please try again.');
+                }
+            });
+        }
+
+        // Handle form submission
+        $(document).on('submit', '#transactionForm', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Validate required fields
+            var transactionType = "In";
+            var itemId = $('#itemId').val();
+            var quantity = $('#quantity').val();
+            var unitCost = $('#unitCost').val();
+
+            if (!transactionType) {
+                alert('Please select transaction type');
+                return;
+            }
+
+            if (!itemId) {
+                alert('Please select an item');
+                return;
+            }
+
+            if (!quantity || parseFloat(quantity) <= 0) {
+                alert('Please enter a valid quantity');
+                return;
+            }
+
+            if (!unitCost || parseFloat(unitCost) < 0) {
+                alert('Please enter a valid unit cost');
+                return;
+            }
+
+            // Get transaction ID (0 for new transaction, actual ID for update)
+            var transactionIdValue = parseInt($('#transactionId').val()) || 0;
+            
+            // Prepare the transaction data
+            var transactionData = {
+                TransactionId: transactionIdValue,
+                ItemId: parseInt(itemId),
+                VendorId: parseInt($('#vendorId').val()) || null,
+                TransactionType: transactionType,
+                Quantity: parseFloat(quantity),
+                UnitCost: parseFloat(unitCost),
+                TotalCost: parseFloat($('#totalCost').val()) || 0,
+                TransactionDate: $('#transactionDate').val() || null,
+                Description: $('#description').val() || null,
+                IsActive: $('#transactionStatus').val() === 'true'
+            };
+
+            // Show loading state
+            var submitBtn = $('#btnSaveTransaction');
+            submitBtn.prop('disabled', true).text('Saving...');
+
+            // Call the API
+            $.ajax({
+                url: 'https://cmsapi.hrclicks.com/api/InventoryAPI/SaveStockTransaction',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(transactionData),
+                success: function (response) {
+                    if (response.httpStatusCode === 200) {
+                        var message = transactionIdValue > 0 ? 'Transaction updated successfully!' : 'Transaction saved successfully!';
+                        alert(message);
+                        
+                        // Close modal
+                        if (typeof bootstrap !== 'undefined') {
+                            var modalEl = document.getElementById('addEditTransactionModal');
+                            var modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        } else {
+                            $('#addEditTransactionModal').modal('hide');
+                        }
+                        
+                        // Reload table
+                        table.ajax.reload();
+                    } else {
+                        var errorMessage = transactionIdValue > 0 ? 'Error updating transaction' : 'Error saving transaction';
+                        alert(errorMessage);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the transaction. Please try again.');
+                },
+                complete: function () {
+                    // Re-enable button
+                    submitBtn.prop('disabled', false).text('Save Transaction');
+                }
+            });
+        });
+
+        // Function to show modal
+        function showModal() {
+            if (typeof bootstrap !== 'undefined') {
+                // Bootstrap 5
+                var modal = new bootstrap.Modal(document.getElementById('addEditTransactionModal'));
+                modal.show();
+            } else {
+                // Bootstrap 4 or jQuery
+                $('#addEditTransactionModal').modal('show');
+            }
+        }
+    });
+</script>

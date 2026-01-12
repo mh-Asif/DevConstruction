@@ -1,0 +1,446 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/assets/summernote-editor/css/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+<style>
+    button {
+        background-color: cadetblue;
+        color: whitesmoke;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        font-size: 18px;
+        font-weight: 500;
+        border-radius: 7px;
+        padding: 15px 35px;
+        cursor: pointer;
+        white-space: nowrap;
+        margin: 10px;
+    }
+
+    img {
+        width: 200px;
+    }
+
+    input[type="text"] {
+        padding: 12px 20px;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        border-bottom: solid 2px grey;
+    }
+
+    #success {
+        background: green;
+    }
+
+    #error {
+        background: red;
+    }
+
+    #warning {
+        background: coral;
+    }
+
+    #info {
+        background: cornflowerblue;
+    }
+
+    #question {
+        background: grey;
+    }
+
+</style>
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1 container-p-y">
+            <div class="row">
+                <div class="col-12">
+                    <div class="navbar-brand app-brand demo d-flex d-md-none py-0 me-4">
+                        <h2 class="app-brand-link page-heading me-2">
+                            <span class="app-brand-text demo menu-text p-0 fw-bold">Add Vender</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <form class="card form-new-editable" action="/User/SaveVendorUser" method="post" enctype="multipart/form-data">
+                <!-- Header -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-6 border-right">
+                            <div class="d-flex flex-lg-row text-sm-start text-center my-2">
+                                <div class="flex-shrink-0 mx-sm-0 mx-auto">
+                                    <div class="user-profile-new ms-0 ms-sm-6" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Upload business Logo">
+                                        <input type="file" name="profileImageInput" id="profileImageInput" accept="image/*" hidden>
+                                        <label class="edit-profile" for="profileImageInput">
+                                            <i class="fas fa-edit"></i>
+                                        </label>
+                                        @if (Model.Base64ProfileImage != null)
+                                        {
+                                            <img src="/Profile/@Model.Base64ProfileImage" alt="user image" class="d-block user-profile-img" id="profileImagePreview" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/assets/image/building.png" alt="user image" class="d-block user-profile-img" id="profileImagePreview" />
+                                        }
+
+                                    </div>
+
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center h-100 align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
+                                        <div class="user-profile-info w-100">
+                                            <h4 class="my-2"><input type="text" name="FullName" value="@Model.FullName" required placeholder="Enter Name Here.." class="editable-text main-input form-control"></h4>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Header -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <!-- add-user Wizard -->
+                        <!-- User Profile Content -->
+
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Basic Details -->
+                                <div class="col-md-12">
+
+                                    <h4 class="heading-form-section my-3">Basic Details</h4>
+                                    <div class="row my-2 py-1">
+                                      
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="business-email" class="label-fix form-label mb-0">
+                                                <i class="ti ti-mail ti-lg"></i>
+                                                <span class="fw-medium mx-2">Email <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <input id="business-email" name="EmailAddress" value="@Model.EmailAddress" type="email" placeholder="Enter email here..." class="editable-text form-control" required>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="business-contact" class="label-fix form-label mb-0">
+                                                <i class="ti ti-phone ti-lg"></i>
+                                                <span class="fw-medium mx-2">Contact No <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <input id="business-contact" type="text" name="ContactNumber" value="@Model.ContactNumber" placeholder="Enter contact number..." class="editable-text form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Business Details -->
+                                <div class="col-md-12">
+
+                                    <h4 class="heading-form-section my-3">Address Details</h4>
+                                    <div class="row my-2 py-1">
+                                      
+
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="payment-term" class="label-fix form-label mb-0">
+                                                <i class="ti ti-credit-card ti-lg"></i>
+                                                <span class="fw-medium mx-2">Address<span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <input type="text" id="current-address-1" name="Address" value="@Model.Address" class="editable-text form-control" placeholder="Enter Address" />
+                                        </div>
+
+                                        <!-- Address Fields -->
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="country" class="label-fix form-label mb-0">
+                                                <i class="ti ti-map ti-lg"></i>
+                                                <span class="fw-medium mx-2">Country <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <select id="selCountryId" name="CountryId" onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="state" class="label-fix form-label mb-0">
+                                                <i class="ti ti-world"></i>
+                                                <span class="fw-medium mx-2">State <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <select id="selStateId" name="StateId" onchange="javascript:PopulateCityDDL(this.value)" class="select2 form-select">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="city" class="label-fix form-label mb-0">
+                                                <i class="ti ti-building"></i>
+                                                <span class="fw-medium mx-2">City <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <select id="selCityId" name="CityId" class="select2 form-select">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-center mb-4">
+                                            <label for="zipcode" class="label-fix form-label mb-0">
+                                                <i class="ti ti-mailbox"></i>
+                                                <span class="fw-medium mx-2">Zipcode <span class="text-danger">*</span>:</span>
+                                            </label>
+                                            <input id="zipcode" type="text" name="PostalOrZipCode" value="@Model.PostalOrZipCode" class="editable-text form-control" placeholder="Enter Zipcode...">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- --bank-detail---  -->
+                            @*     <div class="col-md-12">
+
+                                    <h4 class="heading-form-section my-3">Bank Details</h4>
+                                    <div class="row my-2 py-1">
+                                        <div class="col-md-3 d-flex align-items-center mb-3">
+                                            <label for="bank-name" class="label-fix form-label mb-0">
+                                                <i class="ti ti-user ti-lg"></i>
+                                                <span class="fw-medium mx-2">Bank:</span>
+                                            </label>
+                                            <input type="text" id="BankName" name="BankName" value="@Model.BankName" class="editable-text form-control" placeholder="Enter Bank" />
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-center mb-3">
+                                            <label for="AccountNumber" class="label-fix form-label mb-0">
+                                                <i class="ti ti-phone ti-lg"></i>
+                                                <span class="fw-medium mx-2">Account Name :</span>
+                                            </label>
+                                            <input id="AccountNumber" type="text" name="AccountName" value="@Model.AccountName" placeholder="Enter Account Number..." class="editable-text form-control">
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-center mb-3">
+                                            <label for="AccountNumber" class="label-fix form-label mb-0">
+                                                <i class="ti ti-phone ti-lg"></i>
+                                                <span class="fw-medium mx-2">Account Number :</span>
+                                            </label>
+                                            <input id="AccountNumber" type="text" name="AccountNumber" value="@Model.AccountNumber" placeholder="Enter Account Number..." class="editable-text form-control">
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-center mb-3">
+                                            <label for="IFSC" class="label-fix form-label mb-0">
+                                                <i class="ti ti-mail ti-lg"></i>
+                                                <span class="fw-medium mx-2">IFSC Code:</span>
+                                            </label>
+                                            <input id="IFSC" type="text" name="IFSCOrShiftCode" value="@Model.IFSCOrShiftCode" class="editable-text form-control" placeholder="Enter IFSC Code...">
+                                        </div>
+
+                                    </div>
+                                </div> *@
+
+                                <!-- Business Details -->
+                                <div class="col-md-12">
+                                    <div class="col-md-12 mb-4">
+                                        <label for="additional-details" class="label-fix form-label mb-2">
+                                            <i class="ti ti-notebook"></i>
+                                            <span class="fw-medium mx-2">Additional Details / Terms:</span>
+                                        </label>
+                                        <textarea id="summernote" name="Description">@Model.Description </textarea>
+                                    </div>
+                                  
+                                    <div class="col-12 text-end mb-2">
+                                        <input type="hidden" id="hdnUserType" name="UserType" value="4">
+                                        <input type="hidden" id="hdnUserId" name="UserId" value="@Model.UserId">
+                                        <button type="submit" class="btn btn-primary me-3 waves-effect waves-light">Submit</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- / Content -->
+
+
+    </div>
+</div>
+@section scripts {
+@* <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> *@
+<script src="~/assets/summernote-editor/js/summernote-lite.min.js"></script>
+
+<script src="~/assets/summernote-editor/js/summernote-custom.js"></script>
+@* <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> *@
+
+<script type="text/javascript">
+        var environmentUrl = '@ViewBag.EnvironmentUrl';
+    $(document).ready(function () {
+
+        GetCountry();
+
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+
+                swal(
+                    'Success',
+                    "@Model.DisplayMessage",
+                    'success'
+                )
+            }
+            else {
+
+                swal(
+                    'Error!',
+                    "@Model.DisplayMessage",
+                    'error'
+                )
+            }
+        }
+
+
+    });
+
+
+    // function UploadFiles()
+    // {
+
+
+
+    // }
+
+
+
+    function GetCountry() {
+
+
+        jQuery("#selCountryId").html("")
+        var optionhtml1 = '';
+        $("#selCountryId").append('<option value=" ">' + "--Select--" + '</option>');
+        jQuery.ajax({          
+                url: environmentUrl + '/MasterAPIs/GetCountry',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].countryId + '">' + response[i].countryName + '</option>';
+                    $("#selCountryId").append(optionhtml);
+                });
+                $('#selCountryId').val(@Model.CountryId).change();
+            },
+            failure: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            },
+            error: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            }
+        });
+    }
+
+    function PopulateStateDDL(countryId) {
+
+
+        jQuery("#selStateId").html("")
+        var optionhtml1 = '';
+        $("#selStateId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",           
+                url: environmentUrl + '/MasterAPIs/GetCountryState',
+            data: { countryId: countryId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].stateId + '">' + response[i].stateName + '</option>';
+                    $("#selStateId").append(optionhtml);
+                });
+
+                $('#selStateId').val(@Model.StateId).change();
+            },
+            failure: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            },
+            error: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            }
+
+        });
+
+    }
+
+    function PopulateCityDDL(stateId) {
+
+
+        jQuery("#selCityId").html("")
+        var optionhtml1 = '';
+        $("#selCityId").append('<option value=" ">' + "--Select--" + '</option>');
+
+        jQuery.ajax({
+            type: "GET",         
+                url: environmentUrl + '/MasterAPIs/GetStateCity',
+            data: { stateId: stateId },
+            success: function (response) {
+
+                $.each(response, function (i) {
+                    var optionhtml = '<option value="' +
+                        response[i].cityId + '">' + response[i].cityName + '</option>';
+                    $("#selCityId").append(optionhtml);
+                });
+                $('#selCityId').val(@Model.CityId).change();
+            },
+            failure: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            },
+            error: function (response) {
+                swal(
+                    'Error!',
+                    response.responseText,
+                    'error'
+                )
+            }
+
+        });
+
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('profileImageInput');
+        const imgPreview = document.getElementById('profileImagePreview');
+
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result; // Set the selected image as the source
+                };
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        });
+    });
+
+
+</script>
+}

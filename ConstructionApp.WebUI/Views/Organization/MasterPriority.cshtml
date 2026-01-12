@@ -1,0 +1,161 @@
+﻿@model Construction.Infrastructure.Models.PriorityMasterDTO
+@{
+    ViewData["Title"] = "Priority Management";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+                <div class="row">
+                    <div class="col-12">
+
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span> Priority </h4>
+                        <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                            <div class="card-body">
+                                <button type="button"
+                                        class="btn btn-primary mb-2"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-offset="0,4"
+                                        data-bs-placement="right"
+                                        data-bs-html="true"
+                                        style="float:right;"
+                                        onclick="AddView()">
+                                    @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                    Add Record
+                                </button>
+
+                                <div style="clear:both"></div>
+                                <div class="card-datatable table-responsive pt-0">
+                                    <table class="master-datatable table" id="List">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Priority</th>                                               
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        @*  <tbody id="mycountrytbl">
+                                        </tbody> *@
+
+                                        <tbody>
+                                            @if (Model.PriorityMasterList != null)
+                                                @foreach (var item in Model.PriorityMasterList)
+                                                {
+                                                    <tr>
+
+                                                        <td>@item.Priority</td>
+
+                                                        <td>
+                                                            <a href="/Organization/GetPriorityById/@item.EncPriorityId"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.Priority','@item.PriorityId')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                            <div class="card-body">
+                                <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                <div style="clear:both"></div>
+                                <form method="post" action="/Organization/PriorityMaster">
+                                    <div class="row g-3">
+                                        @*   <div class="col-md-6">
+                                        <label class="form-label" for="multicol-last-name">Code</label>
+                                        <input type="text" id="CountryCode" name="CountryCode" required maxlength="10"  class="form-control" placeholder="Country Code">
+
+                                        </div> *@
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">Priority Name</label>
+                                            <input type="text" id="Priority" name="Priority" required maxlength="100" value="@Model.Priority" class="form-control" placeholder="Priority Name">
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <input type="hidden" id="PriorityId" name="PriorityId" value="@Model.PriorityId">
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                        <!--/ add=user Wizard -->
+                    </div>
+                </div>
+            </div>
+            <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+@* <script src="~/assets/js/masters-datatable.js"></script> *@
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (@Model.PriorityId != 0 || @Model.HttpStatusCode!= 200) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+    });
+    //  new DataTable('#List');
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+       // ClearInputs();
+    }
+
+    function DeleteRecord(Priority, PhaseId) {
+
+        if (confirm("Sure want to delete Priority '" + Priority + "'?")) {
+
+            jQuery.ajax({
+                type: "GET",
+                // url: "https://localhost:7013/api/MasterAPIs/DeletePriority",
+                url: "http://208.110.72.220:93/api/MasterAPIs/DeletePriority",
+                data: { pId: PhaseId },
+                success: function (response) {
+                    window.location.href = "/Organization/MasterPriority";
+                },
+                failure: function (response) {
+                    alert("errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    alert("errror<br>" + response.responseText);
+                }
+
+            });
+
+
+        }
+        return false;
+    }
+   
+
+
+
+
+
+</script>
+

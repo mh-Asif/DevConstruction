@@ -1,0 +1,561 @@
+﻿@model Construction.Infrastructure.Models.UnitStatusMasterDTO
+@{
+    ViewData["Title"] = "Status Management";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+
+           
+            <!-- Tab Content -->
+            <div class="tab-content" id="profileTabContent">
+                <!-- Navbar pills -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="nav-align-top">
+                            <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0" id="profileTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1-content" role="tab" aria-controls="tab1-content" aria-selected="true"><i class="ti-sm ti ti-user-check me-1_5"></i>Project</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2-content" role="tab" aria-controls="tab2-content" aria-selected="false"><i class="ti-sm ti ti-users me-1_5"></i> Task</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Navbar pills -->
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="tab1-content" role="tabpanel" aria-labelledby="tab1-tab">
+                    <div class="card px-2">
+
+                        <div class="row">
+                            <div class="col-12">
+
+
+                                <div class="addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between flex-wrap gap-5">
+                                            <h4 class="fw-bold"><span class="text-muted fw-light"></span> Status </h4>
+                                            <div>
+                                                @*  <button type="button"
+                                                class="btn btn-primary mb-2"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                Status Master
+                                                </button> *@
+                                                <button type="button"
+                                                        class="btn btn-primary mb-2 ms-2"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-offset="0,4"
+                                                        data-bs-placement="right"
+                                                        data-bs-html="true"
+                                                        onclick="AddView()">
+                                                    @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                                    Add Record
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Master List</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-datatable table-responsive border-top pt-0 " id="MasterList">
+                                                            <table class="datatable1 table ">
+                                                                <thead>
+                                                                    <tr>
+
+                                                                        <th>Status</th>
+                                                                        @*  <th>Select</th> *@
+                                                                        <th><input type="checkbox" class="form-check-input me-2" onclick="CheckAll(this)">Select</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                @*  <tbody id="mycountrytbl">
+                                                                </tbody> *@
+
+                                                                <tbody>
+                                                                    @if (Model.StatusMasterList != null)
+                                                                    {
+                                                                        int iCtr = 1;
+                                                                        var ctrlId = string.Empty;
+                                                                        @foreach (var item in Model.StatusMasterList)
+                                                                        {
+                                                                            <tr>
+
+                                                                                <td><label id="Phase_@iCtr"> @item.Status</label></td>
+
+                                                                                <td>
+                                                                                    @if (@item.IsActive == true)
+                                                                                    {
+                                                                                        <input type="checkbox" id="StatusId_@iCtr" checked value="@item.StatusId" class="form-check-input">
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="checkbox" id="StatusId_@iCtr" value="@item.StatusId" class="form-check-input">
+                                                                                    }
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            iCtr++;
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                            <div class="col-md-12 mt-3">
+
+                                                                <div style="width: 200px; margin: 0 auto;">
+                                                                    <button class="btn py-1 px-5 btn-primary" type="button" onclick="RegulerizeSelected()" style="width: 100%;">
+                                                                        <span>Submit</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="card-datatable table-responsive border-top pt-0">
+                                            <table class="master-datatable table" id="List">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Status</th>
+                                                        <th>Status For</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.UnitStatusMasterList != null)
+                                                        @foreach (var item in Model.UnitStatusMasterList.Where(x => x.StatusType.Trim() == "P"))
+                                                        {
+                                                            <tr>
+                                                                <td>@item.Status</td>
+                                                                <td>@(item.StatusType.Trim() == "T" ? "Task" : "Project")</td>
+
+                                                                <td>
+                                                                    <a href="/Master/GetUnitStatusById/@item.EncryptedId"><i class="fa fa-edit me-1"></i></a>
+                                                                    <a href="#" onclick="DeleteRecord('@item.Status','@item.EncryptedId')"><i class="fa fa-trash me-1"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                                    <div class="card-body">
+                                        <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                                        <div style="clear:both"></div>
+                                        <form method="post" action="/Master/UnitStatusMaster">
+                                            <div class="row g-3">
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="Status">Status Name</label>
+                                                    <input type="text" id="Status" name="Status" required maxlength="100" class="form-control" value="@Model.Status" placeholder="Status Name">
+
+                                                </div>
+                                              @*   <div class="col-md-6">
+                                                    <label class="form-label" for="StatusType">Status For</label>
+                                                    <select id="StatusType" name="StatusType" class="select2 form-select">
+                                                        <option selected>Select Status For</option>
+                                                        <option value="T">Task</option>
+                                                        <option value="P">Project</option>
+                                                    </select>
+
+                                                </div> *@
+                                            </div>
+                                            <div class="pt-4">
+                                                <input type="hidden" id="ID" value="@Model.ID" name="ID">
+                                                <input type="hidden" id="TaskStatusType" value="P" name="StatusType">
+                                                <input type="hidden" id="MasterStatusId" value="0" name="MasterStatusId">
+
+                                                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                                <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+
+                                <!--/ add=user Wizard -->
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+
+                <!-- Tab 2 -->
+                <div class="tab-pane fade" id="tab2-content" role="tabpanel" aria-labelledby="tab2-tab">
+                    <div class="card px-2">
+
+                        <div class="row">
+                            <div class="col-12">
+
+
+                                <div class="addShow" id="ListT" style="@(ViewBag.Div=="AddT" ? "display:none" : "")">
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between flex-wrap gap-5">
+                                            <h4 class="fw-bold"><span class="text-muted fw-light"></span> Status </h4>
+                                            <div>
+                                                @*  <button type="button"
+                                                class="btn btn-primary mb-2"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                Status Master
+                                                </button> *@
+                                                <button type="button"
+                                                        class="btn btn-primary mb-2 ms-2"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-offset="0,4"
+                                                        data-bs-placement="right"
+                                                        data-bs-html="true"
+                                                        onclick="AddTaskView()">
+                                                    @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                                    Add Record
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Master List</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-datatable table-responsive border-top pt-0 " id="MasterList">
+                                                            <table class="datatable1 table ">
+                                                                <thead>
+                                                                    <tr>
+
+                                                                        <th>Status</th>
+                                                                        @*  <th>Select</th> *@
+                                                                        <th><input type="checkbox" class="form-check-input me-2" onclick="CheckAll(this)">Select</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                @*  <tbody id="mycountrytbl">
+                                                                </tbody> *@
+
+                                                                <tbody>
+                                                                    @if (Model.StatusMasterList != null)
+                                                                    {
+                                                                        int iCtr = 1;
+                                                                        var ctrlId = string.Empty;
+                                                                        @foreach (var item in Model.StatusMasterList)
+                                                                        {
+                                                                            <tr>
+
+                                                                                <td><label id="Phase_@iCtr"> @item.Status</label></td>
+
+                                                                                <td>
+                                                                                    @if (@item.IsActive == true)
+                                                                                    {
+                                                                                        <input type="checkbox" id="StatusId_@iCtr" checked value="@item.StatusId" class="form-check-input">
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <input type="checkbox" id="StatusId_@iCtr" value="@item.StatusId" class="form-check-input">
+                                                                                    }
+
+                                                                                </td>
+                                                                            </tr>
+                                                                            iCtr++;
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                            <div class="col-md-12 mt-3">
+
+                                                                <div style="width: 200px; margin: 0 auto;">
+                                                                    <button class="btn py-1 px-5 btn-primary" type="button" onclick="RegulerizeSelected()" style="width: 100%;">
+                                                                        <span>Submit</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="card-datatable table-responsive border-top pt-0">
+                                            <table class="master-datatable table" id="List">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Status</th>
+                                                        <th>Status For</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.UnitStatusMasterList != null)
+                                                        @foreach (var item in Model.UnitStatusMasterList.Where(x => x.StatusType.Trim() == "T"))
+                                                        {
+                                                            <tr>
+                                                                <td>@item.Status</td>
+                                                                <td>@(item.StatusType.Trim() == "T" ? "Task" : "Project")</td>
+
+                                                                <td>
+                                                                    <a href="/Master/GetUnitStatusById/@item.EncryptedId"><i class="fa fa-edit me-1"></i></a>
+                                                                    <a href="#" onclick="DeleteRecord('@item.Status','@item.EncryptedId')"><i class="fa fa-trash me-1"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="card" id="AddT" style="@(ViewBag.Div=="AddT" ? "" : "display:none")">
+                                    <div class="card-body">
+                                        <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListTaskView();">List</button></div>
+
+                                        <div style="clear:both"></div>
+                                        <form method="post" action="/Master/UnitStatusMaster">
+                                            <div class="row g-3">
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="Status">Status Name</label>
+                                                    <input type="text" id="Status" name="Status" required maxlength="100" class="form-control" value="@Model.Status" placeholder="Status Name">
+
+                                                </div>
+                                               @*  <div class="col-md-6">
+                                                    <label class="form-label" for="StatusType">Status For</label>
+                                                    <select id="StatusType" name="StatusType" class="select2 form-select">
+                                                        <option selected>Select Status For</option>
+                                                        <option value="T">Task</option>
+                                                        <option value="P">Project</option>
+                                                    </select>
+
+                                                </div> *@
+                                            </div>
+                                            <div class="pt-4">
+                                                <input type="hidden" id="ID" value="@Model.ID" name="ID">
+                                                <input type="hidden" id="TaskStatusType" value="T" name="StatusType">
+                                                <input type="hidden" id="MasterStatusId" value="0" name="MasterStatusId">
+
+                                                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                                <button type="reset" class="btn btn-label-secondary" onclick="ListTaskView();">Cancel</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+
+                                <!--/ add=user Wizard -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           
+            <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+@* <script src="~/assets/js/masters-datatable.js"></script> *@
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        if (@Model.ID != 0 || @Model.HttpStatusCode!= 200) {
+            $("#List").hide();
+            $("#Add").show();
+            $("#ListT").hide();
+            $("#AddT").show();
+        }
+        if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            if ("@Model.HttpStatusCode" == 200) {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+            else {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+        }
+    });
+    //  new DataTable('#List');
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+       // $("#MasterList").hide();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+      //  $("#MasterList").hide();
+    }
+    function AddTaskView() {
+        $("#AddT").show();
+        $("#ListT").hide();
+        //  $("#MasterList").hide();
+    }
+    function ListTaskView() {
+        $("#AddT").hide();
+        $("#ListT").show();
+        // $("#MasterList").hide();
+    }
+    
+
+    function DeleteRecord(countryName, countryId) {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/Master/DeleteUnitStatus/" + countryId;
+                Swal.fire(
+                    'Deleted!',
+                    'Status has been deleted.',
+                    'success'
+                );
+
+            }
+        });
+
+
+        // if (confirm("Sure want to delete status '" + countryName + "'?")) {
+        //     window.location.href = "/Master/DeleteUnitStatus/" + countryId;
+        // }
+        return false;
+    }
+
+
+    function CheckAll(regularizeAll) {
+
+        isAllChecked = regularizeAll.checked;
+
+        for (iCtr = 1; iCtr <= @Model.StatusMasterList.Count; iCtr = iCtr + 1) {
+            chkBox = jQuery("#StatusId_" + iCtr)
+
+
+
+            if (chkBox != undefined) {
+                isChecked = chkBox.is(":checked")
+
+                //  alert(isAllChecked);
+
+
+                if (isAllChecked && !isChecked) {
+                    chkBox.attr('checked', true).change();
+                }
+                else if (!isAllChecked && isChecked) {
+                    chkBox.attr('checked', false).change();
+                }
+
+                // alert(chkBox);
+            }
+        }
+    }
+
+    function ShowServerMessage(sMsg) {
+
+        Swal.fire({
+            title: 'Message',
+            text: sMsg,
+            icon: 'success',
+            confirmButtonText: 'OK!'
+        });
+    }
+
+    function RegulerizeSelected() {
+        //alert('Regularize')
+        var rowData = {};
+        var formData = {};
+        var isData = false;
+        var dataCollection = new Array();
+        var results = new Array();
+        //var formData = new FormData();
+        var iCtr = 0;
+        var sValidMsg = "";
+        // var isData = true;
+
+        if (@Model.StatusMasterList.Count> 0) {
+            for (iCtr = 1; iCtr <= @Model.StatusMasterList.Count; iCtr = iCtr + 1) {
+                isChecked = jQuery("#StatusId_" + iCtr).is(":checked")
+                // alert(isChecked);
+                if (isChecked) {
+
+                    // alert($("#Priority_" + iCtr).html())
+                    rowData.Priority = rowData.Priority != undefined ? rowData.Priority + "," + jQuery("#Status_" + iCtr).html() : jQuery("#Status_" + iCtr).html();
+                    rowData.PriorityIds = rowData.PriorityIds != undefined ? rowData.PriorityIds + "," + jQuery("#StatusId_" + iCtr).val() : jQuery("#StatusId_" + iCtr).val();
+
+                    isData = true;
+                }
+            }
+        }
+
+        if (isData) {
+
+            //  return;
+            // console.log(rowData);
+            jQuery.ajax({
+                type: "POST",
+                url: "/Master/StatusMaster",
+                data: { userAction: rowData },
+                success: function (data) {
+
+                    window.location.href = "/Master/UnitStatus";
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+
+        }
+        else {
+            alert("Please select at least an status");
+        }
+
+    }
+
+
+
+
+
+</script>

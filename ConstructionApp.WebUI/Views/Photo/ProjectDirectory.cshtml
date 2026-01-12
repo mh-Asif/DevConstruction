@@ -1,0 +1,101 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Project Directory";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+
+    <!-- ---tabs--  -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="navbar-brand app-brand demo d-flex d-md-none pt-2 me-4">
+                <h2 class="app-brand-link page-heading me-2">
+                    <span class="app-brand-text demo menu-text p-0 fw-bold">All Projects</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid tab-new mb-6 nav-tabs-shadow">
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a href="#"
+                               type="button"
+                               class="nav-link active">
+                                Active Projects
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#"
+                               type="button"
+                               class="nav-link">
+                                Closed Project
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- / Navbar -->
+    <!-- Content wrapper -->
+    <div class="container-fluid">
+        <!-- Content -->
+
+        <div class="flex-grow-1 container-p-y">
+
+            <div class="flex-grow-">
+                <div class="row g-6">
+                    <!-- Basic -->
+
+
+
+                    <div class="col-md-12">
+                        <div class="project-folders">
+                            @if (Model.ProjectDashboardList != null)
+                            {
+                                @foreach (var item in Model.ProjectDashboardList)
+                                {
+                                    <a href="~/Photo/ProjectCategoryDirectory/@item.EncProjectId" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.ProjectName" class="project-folder-item">
+                                        <div class="folder-icon">
+                                            <img src="~/assets/image/folder.png" alt="">
+                                        </div>
+                                        <div class="project-content">
+                                            <img src="~/assets/image/folder.png" class="sm-folder-icon" alt="">
+                                            <h2 class="project-title">@item.ProjectName</h2>
+                                        </div>
+                                    </a>
+                                }
+                            }
+
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- /Basic -->
+
+                </div>
+
+            </div>
+            <!-- / Content -->
+
+        </div>
+
+    </div>
+
+</div>

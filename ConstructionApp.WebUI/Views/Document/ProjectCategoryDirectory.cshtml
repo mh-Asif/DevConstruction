@@ -1,0 +1,182 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Project Category Directory";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-content-section">
+
+    <!-- ---tabs--  -->
+     
+
+
+    <div class="container-fluid over-flow-auto px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+
+                            <li class="nav-item">
+                                <a href="~/Project/ProjectOverview/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Task/TaskDetails/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Tasks
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Document/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link active">
+                                    Documents
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Drawing/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Drawing
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Photo/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Photos
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments/@Model.EncProjectId"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- / Navbar -->
+    <!-- Content wrapper -->
+    <div class="container-fluid">
+        <!-- Content -->
+        <h3 class="app-brand-link page-heading">
+            <span class="app-brand-text demo menu-text ">@Model.ProjectName</span>
+        </h3>
+        <div class="flex-grow-1 container-p-y">
+
+            <div class="flex-grow-">
+                <div class="row g-6">
+                    <!-- Basic -->
+
+
+
+                    <div class="col-md-12">
+                        <div class="project-folders">
+                            @if (Model.DocumentCategoryList != null)
+                            {
+                                @foreach (var item in Model.DocumentCategoryList)
+                                {
+                                    if(item.IsDisable == true)
+                                    {
+                                        <a href="~/Document/ProjectDocuments/@item.EncCategoryId" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.Category" class="project-folder-item">
+                                            <div class="folder-icon">
+                                                <img src="~/assets/image/folder.png" alt="">
+                                            </div>
+                                            <div class="project-content">
+                                                <img src="~/assets/image/folder.png" class="sm-folder-icon" alt="">
+                                                <h2 class="project-title">@item.Category</h2>
+                                            </div>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" onclick="Info()" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.Category" class="project-folder-item">
+                                            <div class="folder-icon">
+                                                <img src="~/assets/image/disable-folder.png" alt="">
+                                            </div>
+                                            <div class="project-content">
+                                                <img src="~/assets/image/disable-folder.png" class="sm-folder-icon" alt="">
+                                                <h2 class="project-title">@item.Category</h2>
+                                            </div>
+                                        </a>
+                                    }
+
+                                   
+                                }
+                            }
+
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- /Basic -->
+
+                </div>
+
+            </div>
+            <!-- / Content -->
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    function Info() {
+        Swal.fire({
+            title: 'Information',
+            text: 'Category is disable by admin?',
+            icon: 'info',
+            confirmButtonText: 'Got it!'
+        });
+    }
+</script>

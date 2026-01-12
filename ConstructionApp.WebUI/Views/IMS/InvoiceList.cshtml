@@ -1,0 +1,725 @@
+﻿@inject IHttpContextAccessor Accessor
+@{
+}
+<div class="container-fluid mt-4 page-content-section content-wrapper">
+    <!-- Content -->
+
+
+
+    <div class=" flex-grow-1">
+        <!-- DataTable with Buttons -->
+        <div class="row">
+            <div class="col-12">
+            </div>
+
+        </div>
+        <div class="card px-2">
+            <div class="d-flex flex-wrap py-2 justify-content-between">
+
+                <h4 class="mb-0">
+                    <span class=" p-0 pl-2 fw-bold">All Invoice</span>
+                </h4>
+              
+                    <div class="text-end"><a href="~/IMS/CreateInvoice" class="btn btn-primary me-sm-3 me-1addShow">Create Invoice</a></div>
+
+               
+
+
+            </div>
+            <!-- Date Filter Section -->
+            <div class="row mb-3 px-3 pt-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">From Date:</label>
+                    <input type="date" id="fromDate" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">To Date:</label>
+                    <input type="date" id="toDate" class="form-control" />
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" id="btnFilter" class="btn btn-primary me-2">
+                        <i class="bx bx-filter me-1"></i>Filter
+                    </button>
+                    <button type="button" id="btnClearFilter" class="btn btn-secondary">
+                        <i class="bx bx-refresh me-1"></i>Clear
+                    </button>
+                </div>
+            </div>
+            <div class="card-datatable table-responsive border-top pt-0">
+                <table class="master-datatable main-table table">
+                    <thead>
+                        <tr>
+
+
+                            <th>Invoice Number</th>
+                            <th>Invoice Amount</th>
+                            <th>GSTN</th>
+                           <th>Invoice Date</th>
+                            <th>Invoice Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                       
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Modal to view invoice -->
+        <div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-labelledby="viewInvoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="viewInvoiceModalLabel">
+                            <i class="bx bx-receipt me-2"></i>Invoice Details
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <!-- Invoice Template -->
+                        <div class="invoice-template" style="border: 1px solid #e0e0e0; background: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                            <!-- Header -->
+                            <div class="invoice-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center;">
+                                <h2 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 2px;">INVOICE</h2>
+                            </div>
+
+                            <!-- Invoice Info Section -->
+                            <div style="padding: 30px; border-bottom: 2px solid #f0f0f0;">
+                                <div class="row">
+                                    <!-- Invoice Details -->
+                                    <div class="col-12">
+                        <div class="row">
+                                            <div class="col-md-3  mb-3">
+                                                <div style="background: #fff; padding: 20px; border-radius: 8px; height: 100%;">
+                                                    <div class="mb-3" style="border-bottom: 1px dashed #e0e0e0; padding-bottom: 10px;">
+                                                        <div style="color: #666; font-size: 13px; font-weight: 600; margin-bottom: 5px;">Invoice Number:</div>
+                                                        <div style="color: #333; font-weight: 700; font-size: 15px;" id="modal-invoice-number">-</div>
+                                                    </div>
+                                                    <div>
+                                                        <div style="color: #666; font-size: 13px; font-weight: 600; margin-bottom: 5px;">Status:</div>
+                                                        <div id="modal-status">-</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3  mb-3">
+                                                <div style="background: #fff; padding: 20px; border-radius: 8px; height: 100%;">
+                                                    <div class="mb-3" style="border-bottom: 1px dashed #e0e0e0; padding-bottom: 10px;">
+                                                        <div style="color: #666; font-size: 13px; font-weight: 600; margin-bottom: 5px;">Invoice Date:</div>
+                                                        <div style="color: #333; font-weight: 600;" id="modal-invoice-date">-</div>
+                                                    </div>
+                                                    <div>
+                                                        <div style="color: #666; font-size: 13px; font-weight: 600; margin-bottom: 5px;">Created On:</div>
+                                                        <div style="color: #333; font-weight: 600;" id="modal-created-date">-</div>
+                                                    </div>
+                                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; height: 100%;">
+                                                    <h6 style="color: #667eea; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Bill To:</h6>
+                                                    <div style="color: #333; font-size: 14px; line-height: 1.8;">
+                                                        <p style="margin: 0; font-weight: 600; font-size: 16px;" id="modal-from-company">-</p>
+                                                        <p style="margin: 4px 0; color: #666;" id="modal-from-address">-</p>
+                                                        <p style="margin: 4px 0; color: #666;" id="modal-from-city-state-zip">-</p>
+                                                        <p style="margin: 4px 0; color: #666;">GSTN: <span id="companyGSTN">09AAFCK1970K2Z6</span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Billing Information -->
+                            <div style="padding: 30px; background: #fafafa;">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #764ba2;">
+                                            <h6 style="color: #764ba2; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Bill From:</h6>
+                                            <div style="color: #333; font-size: 14px; line-height: 1.8;">
+                                                <p style="margin: 0; font-weight: 600; font-size: 16px;" id="modal-vendor-name">-</p>
+                                                <p style="margin: 4px 0; color: #666;" id="modal-company-name">-</p>
+                                                <p style="margin: 4px 0; color: #666;" id="modal-vendor-address">-</p>
+                                                <p style="margin: 4px 0; color: #666;">Phone: <span id="modal-vendor-phone">-</span></p>
+                                                <p style="margin: 4px 0; color: #666;">Email: <span id="modal-vendor-email">-</span></p>
+                                                <p style="margin: 4px 0; color: #666;">GSTN: <span id="modal-vendor-gstn">-</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div style="background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                                            <h6 style="color: #667eea; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Bank Details:</h6>
+                                            <div style="color: #333; font-size: 14px; line-height: 1.8;">
+                                                <p style="margin: 0; font-weight: 600; font-size: 16px;" id="modal-bank-name">-</p>
+                                                <p style="margin: 4px 0; color: #666;">Account Name: <span id="modal-account-name">-</span></p>
+                                                <p style="margin: 4px 0; color: #666;">Account Number: <span id="modal-account-number">-</span></p>
+                                                <p style="margin: 4px 0; color: #666;">IFSC Code: <span id="modal-ifsc-code">-</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Items Table -->
+                            <div style="padding: 30px;">
+                                <h6 style="color: #333; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Description</h6>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; min-height: 100px;">
+                                    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8; white-space: pre-wrap;" id="modal-description">-</p>
+                                </div>
+                            </div>
+
+                            <!-- Amount Summary -->
+                            <div style="padding: 0 30px 30px;">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-5">
+                                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                                            <div class="row mb-2" style="border-bottom: 1px solid #e0e0e0; padding-bottom: 15px;">
+                                                <div class="col-7" style="color: #666; font-size: 14px; font-weight: 600;">Subtotal:</div>
+                                                <div class="col-5 text-end" style="color: #333; font-weight: 600; font-size: 14px;" id="modal-amount">-</div>
+                                            </div>
+                                            <div class="row mb-2" style="border-bottom: 1px solid #e0e0e0; padding-bottom: 15px;">
+                                                <div class="col-7" style="color: #666; font-size: 14px; font-weight: 600;" id="modal-tax-label">Tax (0%):</div>
+                                                <div class="col-5 text-end" style="color: #333; font-weight: 600; font-size: 14px;" id="modal-tax-amount">₹0.00</div>
+                                            </div>
+                                            <div class="row" style="padding-top: 10px;">
+                                                <div class="col-7" style="color: #667eea; font-size: 18px; font-weight: 700;">Total Amount:</div>
+                                                <div class="col-5 text-end" style="color: #667eea; font-weight: 700; font-size: 24px;" id="modal-total-amount">-</div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div style="padding: 25px 30px; background: #f8f9fa; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">
+                                    Thank you for your business! For any questions regarding this invoice, please contact us.
+                                </p>
+                                <p style="margin: 8px 0 0 0; color: #999; font-size: 11px;">
+                                    This is a system generated invoice
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bx bx-x me-1"></i>Close
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="window.print()">
+                            <i class="bx bx-printer me-1"></i>Print Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ Modal to view invoice -->
+
+        <style>
+            @@media print {
+                /* Hide everything except invoice */
+                body * {
+                    visibility: hidden;
+                }
+                
+                /* Show only invoice template */
+                .invoice-template, .invoice-template * {
+                    visibility: visible !important;
+                }
+                
+                /* Reset modal positioning for print */
+                .modal {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    bottom: 0 !important;
+                    overflow: visible !important;
+                }
+                
+                .modal-dialog {
+                    max-width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                
+                .modal-content {
+                    border: none !important;
+                    box-shadow: none !important;
+                    height: auto !important;
+                    min-height: auto !important;
+                }
+                
+                .modal-body {
+                    padding: 0 !important;
+                }
+                
+                /* Invoice template sizing for A4 */
+                .invoice-template {
+                    position: relative !important;
+                    left: auto !important;
+                    top: auto !important;
+                    width: 21cm !important;
+                    max-width: 21cm !important;
+                    margin: 0 auto !important;
+                    background: white !important;
+                }
+                
+                /* Hide non-essential elements */
+                .modal-header,
+                .modal-footer,
+                .btn,
+                .btn-close {
+                    display: none !important;
+                }
+                
+                /* A4 page settings */
+                @@page {
+                    size: A4;
+                    margin: 0.5cm;
+                }
+                
+                /* Prevent page breaks in key sections */
+                .invoice-header {
+                    page-break-inside: avoid;
+                    page-break-after: avoid;
+                }
+                
+                /* Font sizing for print */
+                .invoice-template {
+                    font-size: 11px !important;
+                }
+                
+                /* Padding adjustments for print */
+                .invoice-template > div[style*="padding"] {
+                    padding: 15px !important;
+                }
+                
+                /* Ensure proper display of rows */
+                .row {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                }
+                
+                /* Column sizing for print */
+                .col-md-6 {
+                    width: 50% !important;
+                }
+                
+                .col-md-3 {
+                    width: 25% !important;
+                }
+                
+                .col-12 {
+                    width: 100% !important;
+                }
+            }
+        </style>
+
+    </div>
+    <!-- / Content -->
+    @*   <div class="content-backdrop fade"></div> *@
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var environmentUrl = '@ViewBag.EnvironmentUrl';
+    
+    $(document).ready(function () {
+        // Store invoices data
+        var allInvoicesData = [];
+        
+        // Custom date range filter function for DataTable
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var fromDate = $('#fromDate').val();
+                var toDate = $('#toDate').val();
+                
+                // If no dates are selected, show all rows
+                if (!fromDate && !toDate) {
+                    return true;
+                }
+                
+                // Get the invoice row from allInvoicesData
+                var invoice = allInvoicesData[dataIndex];
+                if (!invoice) {
+                    return false;
+                }
+                
+                // Get invoice date (try multiple case variations)
+                var invoiceDateStr = invoice.invoice_date || invoice.Invoice_date;
+                if (!invoiceDateStr) {
+                    return false;
+                }
+                
+                // Parse the invoice date
+                var invoiceDate = new Date(invoiceDateStr);
+                if (isNaN(invoiceDate.getTime())) {
+                    return false;
+                }
+                invoiceDate.setHours(0, 0, 0, 0);
+                
+                var filterFromDate = fromDate ? new Date(fromDate) : null;
+                if (filterFromDate) filterFromDate.setHours(0, 0, 0, 0);
+                
+                var filterToDate = toDate ? new Date(toDate) : null;
+                if (filterToDate) filterToDate.setHours(23, 59, 59, 999);
+                
+                var matchesFromDate = !filterFromDate || invoiceDate >= filterFromDate;
+                var matchesToDate = !filterToDate || invoiceDate <= filterToDate;
+                
+                return matchesFromDate && matchesToDate;
+            }
+        );
+        
+        // Initialize DataTable
+        var table = $('.master-datatable').DataTable({
+            "processing": true,
+            "serverSide": false,
+            "ajax": {
+                "url": environmentUrl + "/IMSAPI/GetInvoicesByVendorId?vendorId=" + @Accessor.HttpContext.Session.GetInt32("UserId"),
+                "type": "GET",
+                "dataType": "json",
+                "dataSrc": function (json) {
+                    console.log('API Response:', json);
+                    if (json && json.invoicesList) {
+                        allInvoicesData = json.invoicesList; // Store all invoices
+                        return json.invoicesList;
+                    }
+                    return [];
+                },
+                "error": function (xhr, error, thrown) {
+                    console.error('Error loading invoices:', error);
+                    alert('Error loading invoices. Please try again.');
+                }
+            },
+            "columns": [
+                {
+                    "data": "invoice_number",
+                    "render": function (data, type, row) {
+                        return data || 'N/A';
+                    }
+                },
+                {
+                    "data": "amount",
+                    "render": function (data, type, row) {
+                        var baseAmount = parseFloat(data) || 0;
+                        var taxType = row.tax_type || 0;
+                        var taxValue = parseFloat(row.tax_value) || 0;
+                        var calculatedTax = 0;
+                        var totalAmount = baseAmount;
+                        
+                        if (taxType === 1) {
+                            // Percentage calculation
+                            calculatedTax = (baseAmount * taxValue) / 100;
+                            totalAmount = baseAmount + calculatedTax;
+                        } else if (taxType === 2) {
+                            // Amount calculation
+                            calculatedTax = taxValue;
+                            totalAmount = baseAmount + calculatedTax;
+                        }
+                        
+                        return '₹' + totalAmount.toFixed(2);
+                    }
+                },
+                {
+                    "data": "tax_value",
+                    "render": function (data, type, row) {
+                        var taxType = row.tax_type || 0;
+                        var taxValue = parseFloat(data) || 0;
+                        
+                        if (taxType === 1) {
+                            return taxValue > 0 ? taxValue + '%' : '0%';
+                        } else if (taxType === 2) {
+                            return taxValue > 0 ? '₹' + taxValue.toFixed(2) : '₹0.00';
+                        }
+                        
+                        return 'N/A';
+                    }
+                },
+                {
+                    "data": "invoice_date",
+                    "render": function (data, type, row) {
+                        if (!data) return 'N/A';
+                        
+                        // Parse the date and format it
+                        var date = new Date(data);
+                        if (isNaN(date.getTime())) return data; // Return original if invalid
+                        
+                        // Format as DD/MM/YYYY
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        
+                        return day + '/' + month + '/' + year;
+                    }
+                },
+                {
+                    "data": "status",
+                    "render": function (data, type, row) {
+                        var statusClass = 'badge bg-primary';
+                        var statusText = 'Active';
+
+                        if (data === 2) {
+                            statusClass = 'badge bg-success';
+                            statusText = 'Approved';
+                        } else if (data === 3) {
+                            statusClass = 'badge bg-danger';
+                            statusText = 'Rejected';
+                        } else if (data === 1) {
+                            statusClass = 'badge bg-warning';
+                            statusText = 'Pending';
+                        }
+                        else if (data === 4) {
+                            statusClass = 'badge bg-success';
+                            statusText = 'Payment Processed';
+                        }
+
+                        return '<span class="' + statusClass + '">' + statusText + '</span>';
+                    }
+                },
+                {
+                    "data": "invoice_id",
+                    "orderable": false,
+                    "render": function (data, type, row) {
+                        var status = row.status || 0;
+                        var isPaid = (status === 4 || status === 2);
+                        
+                        var editButton = '<a href="javascript:void(0)" class="btn btn-sm btn-warning me-1 ' + (isPaid ? 'disabled' : '') + '" data-invoice-id="' + data + '" ' + (isPaid ? 'style="pointer-events: none; opacity: 0.5;"' : '') + '>Edit</a>';
+                        var deleteButton = '<a href="javascript:void(0)" class="btn btn-sm btn-danger ' + (isPaid ? 'disabled' : '') + '" data-invoice-id="' + data + '" ' + (isPaid ? 'style="pointer-events: none; opacity: 0.5;"' : '') + '>Delete</a>';
+                        
+                        return '<div class="d-inline-block">' +
+                            '<a href="javascript:void(0)" class="btn btn-sm btn-info me-1" data-invoice-id="' + data + '">View</a>' +
+                            editButton +
+                            deleteButton +
+                            '</div>';
+                    }
+                }
+            ],
+            "order": [[0, "desc"]],
+            "pageLength": 10,
+            "language": {
+                "emptyTable": "No invoices found",
+                "loadingRecords": "Loading invoices...",
+                "processing": "Processing..."
+            }
+        });
+
+        // Handle Filter button click
+        $(document).on('click', '#btnFilter', function () {
+            table.draw();
+        });
+
+        // Handle Clear Filter button click
+        $(document).on('click', '#btnClearFilter', function () {
+            $('#fromDate').val('');
+            $('#toDate').val('');
+            table.search('').draw();
+        });
+
+        // Handle Enter key on date inputs
+        $(document).on('keypress', '#fromDate, #toDate', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                table.draw();
+            }
+        });
+
+        // Handle View button click
+        $(document).on('click', '.btn-info[data-invoice-id]', function () {
+            var invoiceId = $(this).data('invoice-id');
+            viewInvoiceDetails(invoiceId);
+        });
+
+        // Function to view invoice details
+        function viewInvoiceDetails(invoiceId) {
+            $.ajax({
+                url: environmentUrl + '/IMSAPI/GetInvoiceById?invoiceId=' + invoiceId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response && response.invoice_id) {
+                        // Populate modal with invoice data
+                        $('#modal-invoice-number').text(response.invoice_number || 'N/A');
+                        
+                        var baseAmount = response.amount ? parseFloat(response.amount) : 0;
+                        var formattedAmount = baseAmount > 0 ? '₹' + baseAmount.toFixed(2) : '₹0.00';
+                        $('#modal-amount').text(formattedAmount);
+                        
+                        // Calculate tax based on tax_type
+                        var taxType = response.tax_type || 0;
+                        var taxValue = parseFloat(response.tax_value) || 0;
+                        var calculatedTax = 0;
+                        var taxLabel = 'Tax:';
+                        
+                        if (taxType === 1) {
+                            // Percentage calculation
+                            calculatedTax = (baseAmount * taxValue) / 100;
+                            taxLabel = 'Tax (' + taxValue.toFixed(0) + '%):';
+                        } else if (taxType === 2) {
+                            // Amount calculation
+                            calculatedTax = taxValue;
+                            taxLabel = 'Tax:';
+                        }
+                        
+                        var formattedTax = calculatedTax > 0 ? '₹' + calculatedTax.toFixed(2) : '₹0.00';
+                        $('#modal-tax-label').text(taxLabel);
+                        $('#modal-tax-amount').text(formattedTax);
+                        
+                        // Calculate total amount (base + tax)
+                        var totalAmount = baseAmount + calculatedTax;
+                        var formattedTotal = totalAmount > 0 ? '₹' + totalAmount.toFixed(2) : '₹0.00';
+                        $('#modal-total-amount').text(formattedTotal);
+                        
+                        // Populate company/organization details (From section)
+                        $('#modal-from-company').text("KRASA INTERNATIONAL PRIVATE LIMITED" || 'N/A');
+                        $('#modal-from-address').text("PLOT NO.1, SECTOR -140, 201301" || 'N/A');
+                        
+                        // Combine city, state, and zip code
+                        // var cityStateZip = '';
+                        // if (response.fromCity || response.fromState || response.fromPostalOrZipCode) {
+                        //     var parts = [];
+                        //     if (response.fromCity) parts.push(response.fromCity);
+                        //     if (response.fromState) parts.push(response.fromState);
+                        //     if (response.fromPostalOrZipCode) parts.push(response.fromPostalOrZipCode);
+                        //     cityStateZip = parts.join(', ');
+                        // } else {
+                        //     cityStateZip = 'N/A';
+                        // }
+                        $('#modal-from-city-state-zip').text("NOIDA, Gautam Buddha Nagar, Uttar Pradesh");
+                        
+                        // Populate vendor details
+                        $('#modal-vendor-name').text(response.vendor_name || 'N/A');
+                        $('#modal-company-name').text(response.companyName ? response.companyName : '');
+                        $('#modal-vendor-address').text(response.address || '');
+                        $('#modal-vendor-phone').text(response.businessContactNumber || 'N/A');
+                        $('#modal-vendor-email').text(response.businessEmail || 'N/A');
+                        $('#modal-vendor-gstn').text(response.gstn || 'N/A');
+                        
+                        // Populate bank details
+                        $('#modal-bank-name').text(response.bankName || 'N/A');
+                        $('#modal-account-name').text(response.accountName || 'N/A');
+                        $('#modal-account-number').text(response.accountNumber || 'N/A');
+                        $('#modal-ifsc-code').text(response.ifscOrShiftCode || 'N/A');
+                        
+                        $('#modal-description').text(response.description || 'N/A');
+                        
+                        // Format Invoice Date
+                        if (response.invoice_date) {
+                            var invoiceDate = new Date(response.invoice_date);
+                            if (!isNaN(invoiceDate.getTime())) {
+                                var day = ("0" + invoiceDate.getDate()).slice(-2);
+                                var month = ("0" + (invoiceDate.getMonth() + 1)).slice(-2);
+                                var year = invoiceDate.getFullYear();
+                                $('#modal-invoice-date').text(day + '/' + month + '/' + year);
+                            } else {
+                                $('#modal-invoice-date').text(response.invoiceDate);
+                            }
+                        } else {
+                            $('#modal-invoice-date').text('N/A');
+                        }
+                        
+                        // Format Created Date
+                        if (response.created_date) {
+                            var createdDate = new Date(response.created_date);
+                            if (!isNaN(createdDate.getTime())) {
+                                var day = ("0" + createdDate.getDate()).slice(-2);
+                                var month = ("0" + (createdDate.getMonth() + 1)).slice(-2);
+                                var year = createdDate.getFullYear();
+                                $('#modal-created-date').text(day + '/' + month + '/' + year);
+                            } else {
+                                $('#modal-created-date').text(response.created_date);
+                            }
+                        } else {
+                            $('#modal-created-date').text('N/A');
+                        }
+                        
+                        // Format Status
+                        var status = response.status || 0;
+                        var statusText = 'Active';
+                        var statusClass = 'badge bg-primary';
+                        
+                        if (status === 2) {
+                            statusClass = 'badge bg-success';
+                            statusText = 'Approved';
+                        } else if (status === 3) {
+                            statusClass = 'badge bg-danger';
+                            statusText = 'Rejected';
+                        } else if (status === 1) {
+                            statusClass = 'badge bg-warning';
+                            statusText = 'Pending';
+                        } else if (status === 4) {
+                            statusClass = 'badge bg-success';
+                            statusText = 'Payment Processed';
+                        }
+                        
+                        $('#modal-status').html('<span class="' + statusClass + '">' + statusText + '</span>');
+                        
+                        // Show modal (Bootstrap 5 or Bootstrap 4 compatible)
+                        if (typeof bootstrap !== 'undefined') {
+                            // Bootstrap 5
+                            var modal = new bootstrap.Modal(document.getElementById('viewInvoiceModal'));
+                            modal.show();
+                        } else {
+                            // Bootstrap 4 or jQuery
+                            $('#viewInvoiceModal').modal('show');
+                        }
+                    } else {
+                        alert('Invoice details not found');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading invoice details:', error);
+                    alert('An error occurred while loading invoice details. Please try again.');
+                }
+            });
+        }
+
+        // Handle Edit button click
+        $(document).on('click', '.btn-warning[data-invoice-id]', function (e) {
+            // Prevent action if button is disabled
+            if ($(this).hasClass('disabled') || $(this).css('pointer-events') === 'none') {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+            
+            var invoiceId = $(this).data('invoice-id');
+            // Navigate to CreateInvoice page with invoice ID for editing
+            window.location.href = '/IMS/CreateInvoice?invoiceId=' + invoiceId;
+        });
+
+        // Handle Delete button click
+        $(document).on('click', '.btn-danger[data-invoice-id]', function (e) {
+            // Prevent action if button is disabled
+            if ($(this).hasClass('disabled') || $(this).css('pointer-events') === 'none') {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+            
+            var invoiceId = $(this).data('invoice-id');
+            
+            if (confirm('Are you sure you want to delete this invoice?')) {
+                $.ajax({
+                    url: environmentUrl + '/IMSAPI/DeleteInvoice',
+                    type: 'DELETE',
+                    data: { invoiceId: invoiceId },
+                    success: function (response) {
+                        if (response.HttpStatusCode === 200) {
+                            alert(response.DisplayMessage || 'Invoice deleted successfully');
+                            table.ajax.reload();
+                        } else {
+                            alert(response.DisplayMessage || 'Error deleting invoice');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while deleting the invoice');
+                    }
+                });
+            }
+        });
+    });
+</script>

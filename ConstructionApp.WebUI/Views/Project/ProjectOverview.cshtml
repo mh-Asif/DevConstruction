@@ -1,0 +1,509 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Add User";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/assets/summernote-editor/css/summernote-lite.min.css" rel="stylesheet">
+<div class="page-content-section">
+
+    <div class="container-fluid over-flow-auto px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if (Model.AccessList != null)
+                        {
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+
+                                <li class="nav-item">
+                                    <a href="~/Project/ProjectOverview/@Model.ProjectId"
+                                       type="button"
+                                       class="nav-link active">
+                                        Overview
+                                    </a>
+                                </li>
+                            }
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Task/TaskDetails/@Model.ProjectId"
+                                       type="button"
+                                       class="nav-link">
+                                        Tasks
+                                    </a>
+                                </li>
+                            }
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+                                if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Document/ProjectCategoryDirectory/@Model.EncProjectId"
+                                        type="button"
+                                        class="nav-link">
+                                            Documents
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Document/ProjectDirectory"
+                                        type="button"
+                                        class="nav-link">
+                                            Documents
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+                                if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Document/ProjectCategoryDirectory/@Model.EncProjectId"
+                                        type="button"
+                                        class="nav-link">
+                                            Drawing
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Drawing/ProjectDirectory"
+                                        type="button"
+                                        class="nav-link">
+                                            Drawing
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+                                if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Photo/ProjectCategoryDirectory/@Model.EncProjectId"
+                                        type="button"
+                                        class="nav-link">
+                                            Photos
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Photo/ProjectDirectory"
+                                           type="button"
+                                           class="nav-link">
+                                            Photos
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                            {
+                                if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Organization/ViewComments/@Model.EncProjectId"
+                                        type="button"
+                                        class="nav-link">
+                                            Activities
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a href="~/Organization/ViewComments"
+                                           type="button"
+                                           class="nav-link">
+                                            Activities
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content wrapper -->
+
+
+    <div class="container-fluid">
+        <!-- Content -->
+        <div class="d-flex">
+
+            <select name="PriorityId1" id="priority" onchange="javascript:ProjectDDL(this.value)" class="form-select w-auto min-width-select">
+                @if (Model.ProjectDashboardList != null)
+                {
+                    <option value=""> Project</option>
+                    @foreach (var item in Model.ProjectDashboardList)
+                    {
+                        if (item.ProjectId == Model.ProjectId)
+                        {
+                            <option value="@item.ProjectId" selected>@item.ProjectName </option>
+
+
+                        }
+                        else
+                        {
+                            <option value="@item.ProjectId">@item.ProjectName </option>
+                        }
+                    }
+                }
+            </select>
+
+
+        </div>
+
+        <div class="flex-grow-1 container-p-y pt-3">
+
+            <div class="row g-6">
+
+                <div class="col-md-8">
+
+                    <!-- Support Tracker -->
+                    <div class="col-md-12">
+                        <div class="card h-100">
+                            <div class="card-header d-flex pb-1 justify-content-between">
+                                <div class="card-title mb-0">
+                                    <h4 class="mb-0">Project Overview</h4>
+                                </div>
+
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-12 col-sm-4 col-md-12 col-lg-4">
+                                    @if (Model.ProjectSummeryList != null)
+                                    {
+                                        if (Model.ProjectSummeryList.Count > 0)
+                                        {
+                                            <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
+                                                <h2 class="mb-0">@Model.ProjectSummeryList[0].TotalTask</h2>
+                                                <p class="mb-0">Total Tasks</p>
+                                            </div>
+                                            <ul class="p-0 m-0">
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-info p-1_5">
+                                                        <i class="ti ti-circle-check ti-md"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Open Tasks</h6>
+                                                        <small class="text-muted">@Model.ProjectSummeryList[0].OpenTask</small>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-primary p-1_5"><i class="ti ti-ticket ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">In Progress</h6>
+                                                        <small class="text-muted">@Model.ProjectSummeryList[0].InProgressTask</small>
+                                                    </div>
+                                                </li>
+
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-success p-1_5"><i class="ti ti-ticket ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Completed</h6>
+                                                        <small class="text-muted">@Model.ProjectSummeryList[0].CompletedTask</small>
+                                                    </div>
+                                                </li>
+
+                                                <li class="d-flex gap-4 align-items-center pb-1">
+                                                    <div class="badge rounded bg-label-warning p-1_5"><i class="ti ti-clock ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Overdue</h6>
+                                                        <small class="text-muted">@Model.ProjectSummeryList[0].OverdueTask</small>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex gap-4 align-items-center pb-1">
+                                                    <div class="badge rounded bg-label-warning p-1_5"><i class="ti ti-clock ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Approved</h6>
+                                                        <small class="text-muted">@Model.ProjectSummeryList[0].ApprovedTask</small>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @*    <input type="hidden" id="Completed" name="Completed" class="form-control" value=@Model.ProjectSummeryList[0].CompletePrc />
+                                    *@
+                                            <input type="hidden" id="OpenTPrc" name="OpenTPrc" class="form-control" value=@Model.ProjectSummeryList[0].OpenPrc />
+                                            <input type="hidden" id="InProgressTPrc" name="InProgressTPrc" class="form-control" value=@Model.ProjectSummeryList[0].InProgressPrc />
+                                            <input type="hidden" id="CompleteTPrc" name="CompleteTPrc" class="form-control" value=@Model.ProjectSummeryList[0].CompletePrc />
+                                            <input type="hidden" id="OverdueTPrc" name="OverdueTPrc" class="form-control" value=@Model.ProjectSummeryList[0].OverduePrc />
+                                            <input type="hidden" id="ApprovedTPrc" name="ApprovedTPrc" class="form-control" value=@Model.ProjectSummeryList[0].ApprovedPrc />
+                                        }
+                                        else
+                                        {
+                                            <div class="mt-lg-4 mt-lg-2 mb-lg-6 mb-2">
+                                                <h2 class="mb-0">0</h2>
+                                                <p class="mb-0">Total Tasks</p>
+                                            </div>
+                                            <ul class="p-0 m-0">
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-info p-1_5">
+                                                        <i class="ti ti-circle-check ti-md"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Open Tasks</h6>
+                                                        <small class="text-muted">0</small>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-primary p-1_5"><i class="ti ti-ticket ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">In Progress</h6>
+                                                        <small class="text-muted">0</small>
+                                                    </div>
+                                                </li>
+
+                                                <li class="d-flex gap-4 align-items-center mb-lg-3 pb-1">
+                                                    <div class="badge rounded bg-label-success p-1_5"><i class="ti ti-ticket ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Completed</h6>
+                                                        <small class="text-muted">0</small>
+                                                    </div>
+                                                </li>
+
+                                                <li class="d-flex gap-4 align-items-center pb-1">
+                                                    <div class="badge rounded bg-label-warning p-1_5"><i class="ti ti-clock ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Overdue</h6>
+                                                        <small class="text-muted">0</small>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex gap-4 align-items-center pb-1">
+                                                    <div class="badge rounded bg-label-warning p-1_5"><i class="ti ti-clock ti-md"></i></div>
+                                                    <div>
+                                                        <h6 class="mb-0 text-nowrap">Approved</h6>
+                                                        <small class="text-muted">0</small>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @*  <input type="hidden" id="Completed" name="Completed" class="form-control" value=0 /> *@
+                                            <input type="hidden" id="OpenTPrc" name="OpenTPrc" class="form-control" value=0 />
+                                            <input type="hidden" id="InProgressTPrc" name="InProgressTPrc" class="form-control" value=0 />
+                                            <input type="hidden" id="CompleteTPrc" name="CompleteTPrc" class="form-control" value=0 />
+                                            <input type="hidden" id="OverdueTPrc" name="OverdueTPrc" class="form-control" value=0 />
+                                            <input type="hidden" id="ApprovedTPrc" name="ApprovedTPrc" class="form-control" value=0 />
+                                        }
+
+                                    }
+
+                                </div>
+                                <div class="col-12 col-sm-8 col-md-12 col-lg-8" style="width:300px;">
+                                    <canvas id="doughnutChartProject" class="chartjs mb-6"></canvas>
+                                    @*  <div id="doughnutChartProject"></div> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Tracker -->
+                    <div class="col-md-12 pt-4">
+                        <div class="card h-100">
+                            <div class="card-body row">
+
+
+                                <!-- Task Description -->
+                                @*  <div class="col-md-12">
+                                <label class="form-label" for="project-description">
+                                <h4 class="mb-0">Description</h4>
+                                </label>
+                                <div id="summernote"></div>
+
+                                </div> *@
+                                <div class="col-md-12 mt-0">
+                                    <!-- Assigned To -->
+
+                                    <label for="TagifyUserList" class="form-label">
+                                        <h4 class="mb-0">Project roles</h4>
+                                    </label>
+                                    <div class="d-flex gap-3 flex-wrap">
+
+
+                                        <div class="dropdown">
+                                            <button class="btn btn-user-box  text-muted border-0 p-2 me-n1"
+                                                    type="button" data-bs-toggle="modal" data-bs-target="#add-member">
+                                                <div class="d-flex justify-content-start align-items-center user-name">
+
+
+                                                    @if (Model.ProjectRoleSummeryList != null)
+                                                    {
+                                                        @foreach (var item in Model.ProjectRoleSummeryList)
+                                                        {
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-user-box  text-muted border-0 p-2 me-n1"
+                                                                        type="button" id="supportTrackerMenu" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                    <div class="d-flex justify-content-start align-items-center user-name">
+                                                                        <div class="avatar-wrapper">
+                                                                            <div class="avatar avatar-sm me-2">
+                                                                                @if (item.Base64ProfileImage != null)
+                                                                                {
+                                                                                    <img src="~/Profile/@item.Base64ProfileImage" alt="Avatar" class="rounded-circle" />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <img src="~/Profile/user-default.png" alt="Avatar" class="rounded-circle" />
+                                                                                }
+                                                                                @*  <img src="~/Profile/@item.Base64ProfileImage" alt="Avatar"
+                                                                        class="rounded-circle"> *@
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="d-flex flex-column">
+                                                                            <a href="#"
+                                                                               class="text-heading text-truncate">
+                                                                                <span class="fw-medium">
+                                                                                    @item.UserName
+                                                                                </span>
+                                                                            </a>
+                                                                            <small>
+                                                                                @(item.IsProjectOwner == 1 ? "Project Owner" : "Collaborator")
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                </button>
+                                                                @*  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="supportTrackerMenu">
+                                                        <a class="dropdown-item" href="javascript:void(0);">Add role</a>
+                                                        <a class="dropdown-item text-danger" href="javascript:void(0);">Remove from project</a>
+                                                        </div> *@
+                                                            </div>
+                                                        }
+                                                    }
+
+
+
+                                                </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 mt-5">
+
+                                <!-- Support Tracker -->
+                                <div class="card">
+                                    <div class="card-body row">
+                                        <div class="col-md-12 mt-0">
+                                            <!-- Assigned To -->
+
+
+                                            <h4 class="mb-0">Project Description</h4>
+
+                                            <div class="mt-2">
+                                                @if (Model.ProjectSummeryList != null)
+                                                {
+                                                    if (Model.ProjectSummeryList.Count > 0)
+                                                    {
+                                                        <p>@Model.ProjectSummeryList[0].ProjectDescription </p>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+
+
+                        <!--/ Support Tracker -->
+                        <div class="col-md-4">
+                            <!-- ----timeline------  -->
+                            <div class="card">
+                                <h4 class="card-header">Activities</h4>
+                                <div class="card-body">
+                                    <ul class="timeline mb-0">
+                                        @if (Model.ActivityList != null)
+                                        {
+
+                                            @foreach (var item in Model.ActivityList)
+                                            {
+                                                <li class="timeline-item timeline-item-transparent">
+                                                    <span class="timeline-point timeline-point-primary"></span>
+                                                    <div class="timeline-event">
+                                                        <div class="timeline-header mb-3">
+                                                            <h6 class="mb-0">@item.ProjectName</h6>
+                                                            <small class="text-muted">@item.CreationDate</small>
+                                                        </div>
+                                                        <p class="mb-2">@item.FullName: @item.Comments</p>
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <div class="badge bg-lighter rounded d-flex align-items-center">
+
+                                                                @if (item.ProfileName != null)
+                                                                {
+                                                                    <img src="~/Profile/@item.ProfileName" alt="img" width="15" class="me-2" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/Profile/user-default.png" alt="img" width="15" class="me-2" />
+                                                                }
+
+
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0 small fw-medium">@item.FullName</p>
+                                                                @*   <small>CEO of Pixinvent</small> *@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            }
+
+                                        }
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- -----description-----  -->
+
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        @*   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> *@
+        @section scripts {
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+            <script defer src="~/assets/js/charts-chartjs.js" asp-append-version="true"></script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+
+                });
+                function ProjectDDL(projectId) {
+
+                    window.location.href = "/Project/ProjectOverviewWithFilter?pId=" + projectId;
+
+                }
+            </script>
+
+        }

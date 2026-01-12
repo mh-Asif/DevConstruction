@@ -1,0 +1,288 @@
+﻿@model Construction.Infrastructure.Models.UsersMasterDTO
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = null;
+}
+
+
+
+<style>
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        text-align: center;
+        width: 100%;
+    }
+
+    .loader_inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -50px;
+    }
+</style>
+
+<!doctype html>
+
+<html lang="en"
+      class="light-style layout-wide customizer-hide"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="@Url.Content("assets/")"
+      data-template="vertical-menu-template"
+      data-style="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Login | KRasa International Pvt. Ltd</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+          rel="stylesheet" />
+
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="~/assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="~/assets/vendor/css/pages/page-auth.css" />
+    <script src="~/assets/vendor/js/helpers.js"></script>
+    <script src="~/assets/js/config.js"></script>
+   
+</head>
+
+<body>
+    <!-- Content -->
+
+    <div class="container-fluid background-auth">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner py-6">
+                <!-- Login -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Logo -->
+                        <div class="app-brand justify-content-center mb-3">
+                            <a href="#" class="app-brand main-logo">
+                                <img src="~/assets/image/main-logo.png" style="width:110px;height:105px;" alt="Karsa Construction">
+                            </a>
+                        </div>
+                       
+                        <h4 class="mb-1 login-heading pb-2 text-center">Welcome to CMS</h4>
+
+                        <form id="formAuthentication" class="mb-4" action="#" method="post">
+                            <div class="mb-6">
+                                <label for="email" class="form-label">Email or Username</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="EmailAddress" required
+                                       name="EmailAddress"
+                                       placeholder="Enter your email or username"
+                                       autofocus />
+                            </div>
+                            <div class="mb-6 form-password-toggle">
+                                <label class="form-label" for="password">Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" required
+                                           id="LoginPassword"
+                                           class="form-control"
+                                           name="LoginPassword"
+                                           placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                           aria-describedby="password" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye"></i></span>
+                                </div>
+                            </div>
+                            <div class="my-8">
+                                <div class="d-flex justify-content-between">
+                                    <div class="form-check mb-0 ms-2">
+                                        <input class="form-check-input" type="checkbox" id="remember-me" />
+                                        <label class="form-check-label" for="remember-me"> Remember Me </label>
+                                    </div>
+                                    <a href="~/Home/ForgotPassword">
+                                        <p class="mb-0">Forgot Password?</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <button class="btn btn-primary d-grid w-100" id="btnSubmit" onclick="GetLogin()" type="button">
+                                    Login
+                                </button>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <!-- /Register -->
+            </div>
+
+
+        </div>
+
+    </div>
+   
+    <div>
+        <footer class="content-footer py-0 container-fluid footer bg-footer-theme">
+            <div>
+                <div class="footer-container d-flex align-items-center justify-content-end py-1 flex-md-row flex-column">
+                    <div class="d-flex w-100 justify-content-between flex-wrap align-items-center text-dark gx-2">
+                       <div>
+                          @*   ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>, Karsa Group Inc. *@
+                       </div>
+                        <div>
+                            Powered by <a href="https://aisoftmind.com/" target="_blank" class="footer-link">AI Soft Mind</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <div class="loader" style="display:none"><div class="loader_inner"><span class="loader-spinner"></span></div></div>
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {          
+                        
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                history.pushState(null, null, location.href);
+                window.location.href = '/Home/Index'; 
+            };            
+
+
+        });
+
+        var environmentUrl = '@ViewBag.EnvironmentUrl';
+
+        function GetLogin() {
+         
+         //   alert("Login button clicked!  " + environmentUrl + '/UsersAPI/GetUserLogin'); // For debugging purposes)
+            $(".loader").show();
+            var email = $('#EmailAddress').val().trim();
+            var password = $('#LoginPassword').val().trim();
+            fetch(environmentUrl + '/UsersAPI/GetUserLogin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    EmailAddress: email,
+                    LoginPassword: password
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                       
+                        fetch('/Session/SetUserSession', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                UserId: data.userId,
+                                FullName: data.fullName,
+                                UserType: data.userType,
+                                IsAdmin: data.isAdmin,
+                                UnitId: data.unitId,
+                                RoleId: data.roleId,
+                                DepartmentId: data.departmentId,
+                                JobTitleId: data.jobTitleId,
+                                ProfileName: data.profileName,
+                                EmailAddress: data.emailAddress,
+                            })
+                        })
+                            .then(() => {
+                                if (data.userType == '2' || data.userType == '3' || data.userType == '4') {
+                                    window.location.href = '/Home/ClientDashboard';
+                                }
+                                else { 
+                                    window.location.href = '/Home/Dashboard';
+                                }
+                                
+                            });
+                    } else {
+                        $(".loader").hide();
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || 'Login failed',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                      
+                    }
+                })
+                .catch((err) => {
+                    $(".loader").hide();
+                
+                    const errorMessage = 'Login failed, user does not exist, or wrong password.';
+             
+                    Swal.fire({
+                        title: 'Error!',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                  
+                });
+        }
+        $(window).on('load', function () {
+            $(".loader").hide();
+        });
+
+        
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+           
+            const eyeIcons = document.querySelectorAll('.input-group-text .ti-eye');
+
+            eyeIcons.forEach(icon => {
+                icon.addEventListener('click', function () {
+                    const input = this.closest('.input-group').querySelector('input');
+                    const icon = this;
+
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('ti-eye');
+                        icon.classList.add('ti-eye-off');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('ti-eye-off');
+                        icon.classList.add('ti-eye');
+                    }
+                });
+            });
+
+           
+
+        });
+    </script>
+
+    
+
+</body>
+</html>
+

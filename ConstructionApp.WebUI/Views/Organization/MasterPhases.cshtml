@@ -1,0 +1,186 @@
+﻿@model Construction.Infrastructure.Models.PhasesMasterDTO
+@{
+    ViewData["Title"] = "Phases Management";
+   // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-section">
+    <!-- Content wrapper -->
+    <div class="container-fluid mt-4  content-wrapper">
+        <!-- Content -->
+
+
+        <div class="flex-grow-1">
+            <div class="card px-2">
+
+            <div class="row">
+                <div class="col-12">
+
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span> Phases </h4>
+                    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+                        <div class="card-body">
+                            <button type="button"
+                                    class="btn btn-primary mb-2"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-offset="0,4"
+                                    data-bs-placement="right"
+                                    data-bs-html="true"
+                                    style="float:right;"
+                                    onclick="AddView()">
+                                @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                                Add Record
+                            </button>
+
+                            <div style="clear:both"></div>
+                            <div class="card-datatable table-responsive pt-0">
+                                <table class="master-datatable table" id="List">
+                                    <thead>
+                                        <tr>
+                                           
+                                           <th>Phase Name</th>
+                                         @*    <th>Status</th> *@
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                        <tbody>
+                                            @if (Model.PhasesList != null)
+                                                @foreach (var item in Model.PhasesList)
+                                                {
+                                                    <tr>
+
+                                                        <td>@item.Phases</td>
+
+                                                        <td>
+                                                            <a href="/Organization/GetPhasesById/@item.EncryptedId"><i class="fa fa-edit me-1"></i></a>
+                                                            <a href="#" onclick="DeleteRecord('@item.Phases','@item.PhaseID')"><i class="fa fa-trash me-1"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+
+                                   
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+                        <div class="card-body">
+                            <div class="text-end"><button type="button" class="btn btn-primary me-sm-3 me-1addShow" value="List" onclick="ListView();">List</button></div>
+
+                            <div style="clear:both"></div>
+                                <form method="post" action="/Organization/PhasesMaster">
+                                <div class="row g-3">
+                                  @*   <div class="col-md-6">
+                                        <label class="form-label" for="multicol-last-name">Code</label>
+                                        <input type="text" id="CountryCode" name="CountryCode" required maxlength="10"  class="form-control" placeholder="Country Code">
+
+                                    </div> *@
+                                    <div class="col-md-12">
+                                        <label class="form-label" for="multicol-last-name">Phase Name</label>
+                                            <input type="text" id="Phases" name="Phases" required maxlength="100" value="@Model.Phases" class="form-control" placeholder="Phase Name">
+
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+                                        <input type="hidden" id="PhaseID" name="PhaseID" value="@Model.PhaseID">
+                                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                    <button type="reset" class="btn btn-label-secondary" onclick="ListView();">Cancel</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+
+                    <!--/ add=user Wizard -->
+                </div>
+            </div>
+        </div>
+        <!-- / Content -->
+        </div>
+
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+@* <script src="~/assets/js/masters-datatable.js"></script> *@
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (@Model.PhaseID != 0 || @Model.HttpStatusCode!= 200) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+    });
+    //  new DataTable('#List');
+
+    function ListView() {
+        $("#Add").hide();
+        $("#List").show();
+    }
+    function AddView() {
+        $("#Add").show();
+        $("#List").hide();
+        ClearInputs();
+    }
+
+    function DeleteRecord(Phases, PhaseId) {
+        
+        if (confirm("Sure want to delete Phase '" + Phases + "'?")) {
+
+         
+                jQuery.ajax({
+                    type: "GET",
+                    // url: "https://localhost:7013/api/MasterAPIs/DeletePhase",
+                url: "http://208.110.72.220:93/api/MasterAPIs/DeletePhase",
+                    data: { phaseId: PhaseId },
+                    success: function (response) {
+                        window.location.href = "/Organization/MasterPhases";
+                    },
+                    failure: function (response) {
+                        alert("errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        alert("errror<br>" + response.responseText);
+                    }
+
+                });
+
+          
+        }
+        return false;
+    }
+    function GetCountry() {
+        //var objDDL = countryDDL
+        // jQuery("#CountryId").attr("disabled", true)
+        jQuery("#mycountrytbl").html("")
+        jQuery.ajax({
+            // url: 'https://localhost:7013/api/MasterAPIs/GetCountry',
+            url: 'http://208.110.72.220:93/api/MasterAPIs/GetCountry',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // console.log(response);
+                $.each(response, function (key, item) {
+                    // alert(item.countryName);
+                    $("#mycountrytbl").append('<tr><td>' + item.countryCode + '</td><td>' + item.countryName + '</td><td>' + item.countryName + '</td></tr>');
+                });
+
+            },
+            failure: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            },
+            error: function (response) {
+                $erroralert("Error!", "errror<br>" + response.responseText);
+            }
+        });
+    }
+
+
+
+
+
+</script>
+

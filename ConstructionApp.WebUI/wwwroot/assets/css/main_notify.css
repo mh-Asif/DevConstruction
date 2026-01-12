@@ -1,0 +1,28 @@
+
+.new-backgrnd{
+    background-color: #690D1F  !important;
+    border-radius: 6px;
+    box-shadow: rgba(105, 13, 31, 0.3) 0px 0.125rem 0.375rem 0px !important;
+
+}
+.new-notification-list{
+    border-bottom: 1px solid #edeae9;
+    list-style: none;
+    
+}
+ .new-button{
+    color:#fff !important;
+ }
+
+.notification-items{
+    max-width: 100%;
+    margin: 0 auto;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    position: relative;
+}
+
+.notification-scroller-new{
+    overflow-y: auto !important;
+    height: 443px;
+}

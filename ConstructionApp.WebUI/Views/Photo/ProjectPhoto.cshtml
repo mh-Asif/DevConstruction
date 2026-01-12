@@ -1,0 +1,776 @@
+﻿@model Construction.Infrastructure.Models.ProjectsDTO
+@{
+    ViewData["Title"] = "Project Documents";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@* <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" rel="stylesheet" /> *@
+<div class="page-content-section">
+
+    <div class="container-fluid overflow-hidden px-md-4 px-0 tab-new mb-6 nav-tabs-shadow pt-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="nav-align-top ">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "P" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+
+                            <li class="nav-item">
+                                <a href="~/Project/ProjectOverview/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Overview
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "T" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Task/TaskDetails/@Model.ProjectId"
+                                   type="button"
+                                   class="nav-link">
+                                    Tasks
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "DC" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Document/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Documents
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "D" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Drawing/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link">
+                                    Drawing
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            <li class="nav-item">
+                                <a href="~/Photo/ProjectCategoryDirectory"
+                                   type="button"
+                                   class="nav-link active">
+                                    Photos
+                                </a>
+                            </li>
+                        }
+                        @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "CM" && x.IsView == true).Count() > 0) || Model.UserType == 0)
+                        {
+                            if (Model.EncProjectId != null && Model.EncProjectId != "" && Model.EncProjectId != "0" && Model.EncProjectId != "undefined" && Model.EncProjectId != "null")
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments/@Model.EncProjectId"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a href="~/Organization/ViewComments"
+                                       type="button"
+                                       class="nav-link">
+                                        Activities
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <!-- Content -->
+        <h3 class="app-brand-link page-heading">
+            <span class="app-brand-text demo menu-text ">@Model.ProjectName > @Model.CategoryName</span>
+        </h3>
+        <div class="flex-grow-1 container-p-y">
+
+            <div class="flex-grow-1">
+                <div class="row g-6">
+                    <!-- Basic -->
+
+                    <div class="col-12">
+
+                        <div class="row">
+
+                            <div class="col-md-12 mb-5 ">
+                                <div class="row">
+
+                                    <div class="col-sm-8 mb-2 mb-md-0">
+
+                                        <div class="d-flex flex-wrap gap-5">
+                                            <div>
+                                                <h5 class="all-file">All Album</h5>
+                                                <h2 class="project-name"><a href="~/Photo/ProjectCategoryDirectory">@Model.ProjectName</a></h2>
+                                            </div>
+                                            <div class="pt-5 min-width-select mt-1">
+                                                <select name="Category" id="CategoryId" class="form-select  select2" onchange="javascript:CategoryDDL(this.value)">
+                                                    <option value="Category">Category</option>
+                                                    @if (Model.PhotoCategoryList != null)
+                                                    {
+                                                        @foreach (var item in Model.PhotoCategoryList)
+                                                        {
+
+                                                            if (item.Id == Model.CategoryId)
+                                                            {
+                                                                <option value="@item.Id" selected>@item.Category </option>
+
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id">@item.Category </option>
+                                                            }
+                                                        }
+                                                    }
+
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4" id="invite">
+                                        <div class="d-flex justify-content-sm-end">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-md-end align-items-center flex-wrap border-top-0 p-0">
+                                                    <div class="d-flex flex-wrap align-items-center">
+                                                        <ul class="list-unstyled users-list d-flex align-items-center avatar-group m-0 me-2">
+                                                            @if (Model.PhotoFolderList.Count > 0)
+                                                                @foreach (var item in Model.ProjectRoleSummeryList)
+                                                                {
+                                                                    @if (item.Base64ProfileImage == null || item.Base64ProfileImage.Trim() == "")
+                                                                    {
+                                                                        item.Base64ProfileImage = "user-default.png";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        item.Base64ProfileImage = @item.Base64ProfileImage;
+                                                                    }
+
+
+                                                                    <li data-bs-toggle="tooltip"
+                                                                        data-popup="tooltip-custom"
+                                                                        data-bs-placement="top"
+                                                                        title=" @item.UserName"
+                                                                        class="avatar pull-up">
+                                                                        <img class="rounded-circle" src="~/Profile/@item.Base64ProfileImage" alt="Avatar" />
+                                                                    </li>
+                                                                }
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                            @*   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invitemember">
+                                            <i class="fa fa-plus"></i> &nbsp; Invite Member
+                                            </button> *@
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                @if ((Model.AccessList.Where(x => x.ModuleCode.Trim() == "PH" && x.IsView == true).Count() > 0))
+                                {
+                                    <div class="d-flex button-project-page">
+                                        <!-- Button to open Upload Photoss Modal -->
+                                        <button type="button" class="btn btn-project btn-upload" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                            <i class="fa fa-upload"></i> &nbsp; Create New Album
+                                        </button>
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="col-md-12 mt-5 pt-5">
+                                <div>
+                                    @*   <h5 class="all-file">Project Images</h5> *@
+                                    <h2 class="project-name">Albums</h2>
+                                </div>
+
+                                <div class="Documents-container mt-3">
+                                    @if (Model.PhotoFolderList != null)
+                                        @foreach (var item in Model.PhotoFolderList)
+                                        {
+                                            <div class="document-item">
+                                                @if (@item.UserType == 1)
+                                                {
+                                                    <div class="hover-buttons">
+                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="ShareFolder(@item.Id)" data-bs-target="#invitemember">
+                                                            <i class="fa fa-share" data-bs-toggle="tooltip" data-bs-placement="right" title="Share"></i>
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="deleteFolder(@item.Id)" data-bs-target="#deleteModal">
+                                                            <i class="fa fa-trash" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="editFolder(@item.Id)" data-bs-target="#editModal">
+                                                            <i class="fa fa-edit" data-bs-toggle="tooltip" title="Edit"></i>
+                                                        </button>
+                                                    </div>
+                                                }
+                                                else if (@item.UserId == 0)
+                                                {
+                                                    <div class="hover-buttons">
+                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="deleteFolder(@item.Id)" data-bs-target="#deleteModal">
+                                                            <i class="fa fa-trash" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-hover" data-bs-toggle="modal" onclick="editFolder(@item.Id)" data-bs-target="#editModal">
+                                                            <i class="fa fa-edit" data-bs-toggle="tooltip" title="Edit"></i>
+                                                        </button>
+                                                    </div>
+                                                }
+
+                                                <a href="~/Photo/Albums/@item.EnFolderId">
+                                                    <div class="document-icon">
+                                                        <img src="~/assets/image/album.png" alt="">
+                                                    </div>
+                                                    <div class="document-content" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.FolderName">
+                                                        <h2 class="document-title">@item.FolderName</h2>
+                                                        <!-- avatar  -->
+                                                        <ul class="list-unstyled new-unstyled users-list d-flex align-items-left avatar-group m-0 me-2">
+
+                                                            @if (item.Base64ProfileImage == null || item.Base64ProfileImage.Trim() == "")
+                                                            {
+                                                                item.Base64ProfileImage = "user-default.png";
+                                                            }
+                                                            else
+                                                            {
+                                                                item.Base64ProfileImage = @item.Base64ProfileImage;
+                                                            }
+                                                            <li data-bs-toggle="tooltip"
+                                                                data-popup="tooltip-custom"
+                                                                data-bs-placement="top"
+                                                                title="@item.UserName"
+                                                                class="avatar pull-up">
+                                                                <img class="rounded-circle" src="~/Profile/@item.Base64ProfileImage" alt="Avatar" />
+                                                            </li>
+                                                        </ul>
+                                                        <!-- avatar  -->
+                                                        <div class="album-footer">
+                                                            <small>Created on @item.CreationDate.Value.ToString("dd/MMM/yyyy")</small>
+                                                            @* <button type="button" class="btn btn-hover">
+                                                    <i class="fas fa-download" data-bs-toggle="tooltip" data-bs-placement="right" title="Download"></i>
+                                                    </button> *@
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        }
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <!-- /Basic -->
+
+                </div>
+
+            </div>
+            <!-- / Content -->
+
+        </div>
+
+    </div>
+
+
+    <!-- Modal Structure for Preview -->
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="max-width: 90vh;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Iframe for Preview -->
+                    <!-- Enhanced Iframe for Preview -->
+                    <iframe src="assets/image/background-auth.webp"
+                            width="100%"
+                            height="auto"
+                            style="min-height: 80vh;"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            title="Background Preview"
+                            scrolling="auto">
+                    </iframe>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Album</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Would you like to delete this album? It will delete all photos in this album</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancel" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnDelete" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Create Subfolder Modal -->
+    <div class="modal fade" id="subfolderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Subfolder</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Folder Name Input -->
+                    <div class="mb-3">
+                        <label for="subfolderName" class="form-label">Folder Name</label>
+                        <input type="text" id="subfolderName" class="form-control" placeholder="Enter subfolder name" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Create Subfolder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Upload Photoss Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Album</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Folder Name Input -->
+                    <div class="mb-4">
+                        <label for="albumName" class="form-label">Album Name</label>
+                        <input type="text" id="albumName" class="form-control" placeholder="Enter Album name" />
+                    </div>
+                    @*   <form action="/upload" class="dropzone needsclick" id="dropzone-multi">
+                    <div class="dz-message needsclick">
+                    Drop files here or click to upload
+                    <span class="note needsclick">
+                    Cover Photo
+                    <span class="fw-medium"></span> upload
+                    </span>
+                    </div>
+                    <div class="fallback">
+                    <input name="file" type="file" />
+                    </div>
+                    </form> *@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="DrawingFolderCreation();">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ----invite-member--modal--------  -->
+    <!-- Modal -->
+    <div class="modal fade" id="invitemember" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share it to Client/Vendor team</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="InviteClient" id="Client" checked value="C">
+                        <label class="form-check-label" for="External">Client</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="InviteClient" id="Vendor" value="V">
+                        <label class="form-check-label" for="External">Vendor</label>
+                    </div>
+                    <p>They get access to folders shared with the team. Manage access now or later.</p>
+
+                    <div class="mb-3" id="divClient">
+                        <label for="SelClient" class="form-label">select client users</label>
+                        <select id="selClient" name="SelClient" onchange="javascript:GetCollaboration('C')" class="select2 form-select" multiple>
+                            @{
+                                string[] collaboratorsClient = Model.Collaborators == null ? null : Model.Collaborators.Split(",");
+                                if (Model.ClientList != null)
+                                {
+
+                                    foreach (var item in Model.ClientList)
+                                    {
+                                        if (collaboratorsClient != null)
+                                        {
+                                            if (collaboratorsClient.Contains(item.UserId.ToString()))
+                                            {
+
+                                                <option value="@item.UserId" selected>
+                                                    @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                                </option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.UserId">
+                                                    @(item.FullName != null ? item.FullName : item.BusinessOwner)
+
+                                                </option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.UserId">
+                                                @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                            </option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                        @*    <input type="email" id="emailBasic" class="form-control" placeholder="Enter email addresses" /> *@
+                    </div>
+
+                    <div class="mb-3" id="divVendor" style="display:none;">
+                        <label for="emailBasic" class="form-label">select Vendor Users</label>
+                        <select id="selVendor" name="SelVendor" onchange="javascript:GetCollaboration('V')" class="select2 form-select" multiple>
+                            @{
+                                string[] collaboratorsVendor = Model.Collaborators == null ? null : Model.Collaborators.Split(",");
+                                if (Model.VendorList != null)
+                                {
+
+                                    foreach (var item in Model.VendorList)
+                                    {
+                                        if (collaboratorsVendor != null)
+                                        {
+                                            if (collaboratorsVendor.Contains(item.UserId.ToString()))
+                                            {
+
+                                                <option value="@item.UserId" selected>
+                                                    @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                                </option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.UserId">
+                                                    @(item.FullName != null ? item.FullName : item.BusinessOwner)
+
+                                                </option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.UserId">
+                                                @(item.FullName != null ? item.FullName : item.BusinessOwner)
+                                            </option>
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                        @*    <input type="email" id="emailBasic" class="form-control" placeholder="Enter email addresses" /> *@
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="messageBasic" class="form-label">Add an Optional Message</label>
+                        <textarea id="messageBasic" class="form-control" placeholder="Write a message..."></textarea>
+                    </div>
+                    @*
+                    <div class="mb-3">
+                    <label class="form-label">Modify Folder Access</label>
+                    <select class="form-control" id="selAccessType">
+                    <option value="1">View Only</option>
+                    <option value="2">Edit Access</option>
+                    <option value="3">Full Access</option>
+                    </select>
+                    </div> *@
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="Collaborators" name="Collaborators" class="form-control" />
+                    <input type="hidden" id="UserType" name="UserType" class="form-control" />
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnFolderShare" class="btn btn-primary">Invite</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Folder</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="editProject" class="form-label">Folder Name</label>
+                        <input type="text" class="form-control" id="editFolder">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnEdit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function ($) {
+
+        });
+
+        function CategoryDDL(categoryId) {
+
+            //  $("#Cid").val(categoryId);
+            window.location.href = "/Photo/ProjectPhotoById?CategoryId=" + categoryId;
+
+        }
+        function DrawingFolderCreation() {
+
+            if ($("#albumName").val() == '') {
+                alert('Album name is empty');
+                return;
+            }
+
+            let categoryId = $("#CategoryId").val();
+            jQuery.ajax({
+                type: "POST",
+                url: "/Photo/CreatePhotoAlbum",
+                data: { folderName: $("#albumName").val(), cId: categoryId },
+                success: function (data) {
+                    // console.log(data);
+                    window.location.href = "/Photo/ProjectPhoto";
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+
+        }
+
+
+        function deleteFolder(id) {
+
+
+            document.querySelector("#btnDelete").addEventListener("click", function () {
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Photo/DeleteFolder",
+                    data: { FileId: id },
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            });
+
+            document.querySelector("#btnCancel").addEventListener("click", function () {
+
+                location.reload();
+            });
+
+
+        }
+
+
+        function GetCollaboration(type) {
+            jQuery("#UserType").val(type);
+            var select;
+            if (type == "C") {
+
+                select = document.getElementById('selClient');
+            }
+            else {
+                select = document.getElementById('selVendor');
+            }
+
+
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+
+            jQuery("#Collaborators").val(selected);
+        }
+
+        $('input[name="InviteClient"]').on('change', function () {
+
+            var selectedValue = $(this).val();
+
+            if (selectedValue == "C") {
+
+                jQuery("#divClient").show();
+                jQuery("#divVendor").hide();
+
+            }
+            else {
+
+                jQuery("#divVendor").show();
+                jQuery("#divClient").hide();
+
+            }
+            // console.log("Selected:", selectedValue);
+
+
+        });
+
+        function ShareFolder(id) {
+
+           
+        jQuery.ajax({
+            type: "GET",
+            url: "/Photo/GetInviteUsers",
+            data: { Id: id },
+            success: function (data) {
+
+                    if (data.accessIds && data.accessIds !== 'null' && data.accessIds !== '') {
+                        var userArray = data.accessIds.split(',');
+                        userArray = userArray.map(function (v) { return v.trim(); });
+                        $('#selVendor').val(userArray).change();
+                        $('#messageBasic').val(data.optMessage);
+                    }
+
+
+                    if (data.clientIds && data.clientIds !== 'null' && data.clientIds !== '') {
+                        var userClient = data.clientIds.split(',');
+                        userClient = userClient.map(function (v) { return v.trim(); });
+                        $('#selClient').val(userClient).change();
+                        $('#messageBasic').val(data.optMessage);
+                    }
+
+
+            },
+            error: function (result) {
+            var x = 1;
+            alert("errror<br>" + result.responseText);
+
+            }
+            });
+           
+                document.querySelector("#btnFolderShare").addEventListener("click", function () {
+
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Photo/InviteSent",
+                        data: { accessId: jQuery("#Collaborators").val(), accessType: jQuery("#selAccessType").val(), Id: id, OptMessage: jQuery("#messageBasic").val(), UserType: jQuery("#UserType").val() },
+                        success: function (data) {
+
+                            //  alert(data.displayMessage);
+                            location.reload();
+                        },
+                        error: function (result) {
+                            var x = 1;
+                            alert("errror<br>" + result.responseText);
+
+                        }
+                    });
+
+                });
+
+            // document.querySelector("#btnFCancel").addEventListener("click", function () {
+
+            //     location.reload();
+            // });
+
+
+        }
+
+        function editFolder(id) {
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/Photo/GetInviteUsers",
+                data: { Id: id },
+                success: function (data) {
+                    $('#editFolder').val(data.folderName);
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror<br>" + result.responseText);
+
+                }
+            });
+            document.querySelector("#btnEdit").addEventListener("click", function () {
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Photo/EditFileName",
+                    data: { Id: id, Name: jQuery("#editFolder").val() },
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+
+                    }
+                });
+
+            });
+
+            // document.querySelector("#btnFCancel").addEventListener("click", function () {
+
+            //     location.reload();
+            // });
+
+
+        }
+    </script>
+
+}

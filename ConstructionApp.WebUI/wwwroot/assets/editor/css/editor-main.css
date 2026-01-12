@@ -1,0 +1,21 @@
+
+.sun-editor {
+   border-radius: 4px;
+   overflow: hidden;
+}
+.sun-editor .se-toolbar {
+    border-radius: 4px;
+}
+#suneditor_editor_classic.sun-editor .se-resizing-bar {
+    border-radius: 4px;
+}
+#suneditor_editor_classic.sun-editor .se-btn {
+    width: 24px;
+    height: 24px;
+}
+#suneditor_editor_classic.sun-editor .se-svg, .sun-editor button > svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+
